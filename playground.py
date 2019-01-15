@@ -26,14 +26,25 @@ class Sphere(object):
         self.center = center
         self.radius = radius
 
-    def print:
-        TODO
+    def spy(self, message):
+        print "Sphere", message, \
+            "\n  center =", self.center, \
+            "\n  radius =", self.radius
 
-    def point_is_on_surface(point, epsilon_distance):
-        TODO
+    def point_is_on_surface(self, point, epsilon_distance):
+        """TODO"""
         return False
-        
-def get_sphere(4 points):
-   TODO
-   Sphere sphere(vec(0, 0, 0), 0)
-   return sphere
+
+def get_sphere():
+    """TODO: Input: 4 points"""
+    sphere = Sphere((0, 0, 0), 0)
+    return sphere
+
+sphere_A = Sphere((1, 2, 3), 7)
+sphere_A.spy("sphere_A")
+
+sphere_B = get_sphere()
+sphere_B.spy("sphere_B")
+
+
+print "\nFinished."
