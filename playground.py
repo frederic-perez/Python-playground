@@ -2,6 +2,7 @@
 
 import math
 
+from numpy import array
 from numpy import matrix
 from numpy import linalg
 
@@ -25,26 +26,39 @@ class Sphere(object):
     def __init__(self, center, radius):
         self.center = center
         self.radius = radius
+        return
 
     def spy(self, message):
         print "Sphere", message, \
             "\n  center =", self.center, \
             "\n  radius =", self.radius
+        return
 
     def point_is_on_surface(self, point, epsilon_distance):
-        """TODO"""
-        return False
+        distance = linalg.norm(self.center-point)
+        return distance <= epsilon_distance
 
 def get_sphere():
     """TODO: Input: 4 points"""
-    sphere = Sphere((0, 0, 0), 0)
+    sphere = Sphere(array((0., 0., 0.)), 1.)
     return sphere
 
-sphere_A = Sphere((1, 2, 3), 7)
+epsilon = 0.001
+
+sphere_A = Sphere(array((1, 2, 3)), 7)
 sphere_A.spy("sphere_A")
 
-sphere_B = get_sphere()
-sphere_B.spy("sphere_B")
+point = array((1., 2., 3.))
+on_surface = sphere_A.point_is_on_surface(point, epsilon)
+print "point", point, "on_surface?", on_surface
 
+point = array((1.0, 2.0, 3.1))
+on_surface = sphere_A.point_is_on_surface(point, epsilon)
+print "point", point, "on_surface?", on_surface
+
+print
+
+sphere_B = get_sphere()
+sphere_B.spy("sphere_B (obtained with get_sphere)")
 
 print "\nFinished."
