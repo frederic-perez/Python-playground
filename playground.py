@@ -32,8 +32,8 @@ class Sphere(object):
         return
 
     def point_is_on_surface(self, point, epsilon_distance):
-        distance = np.linalg.norm(self.center-point)
-        return distance <= epsilon_distance
+        distance = np.linalg.norm(self.center-point) - self.radius
+        return abs(distance) <= epsilon_distance
 
 def get_sphere():
     """TODO: Input: 4 points"""
@@ -45,11 +45,19 @@ epsilon = 0.001
 sphere_A = Sphere(np.array([1, 2, 3], np.float_), 7)
 sphere_A.spy("sphere_A")
 
-point = np.array([1, 2, 3], np.float_)
+point = np.array([8, 2, 3], np.float_)
 on_surface = sphere_A.point_is_on_surface(point, epsilon)
 print "point", point, "on_surface?", on_surface
 
-point = np.array([1, 2, 3.1], np.float_)
+point = np.array([8.01, 2, 3], np.float_)
+on_surface = sphere_A.point_is_on_surface(point, epsilon)
+print "point", point, "on_surface?", on_surface
+
+point = np.array([7.99, 2, 3], np.float_)
+on_surface = sphere_A.point_is_on_surface(point, epsilon)
+print "point", point, "on_surface?", on_surface
+
+point = np.array([7.99999, 2, 3], np.float_)
 on_surface = sphere_A.point_is_on_surface(point, epsilon)
 print "point", point, "on_surface?", on_surface
 
