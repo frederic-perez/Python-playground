@@ -1,10 +1,7 @@
 'module docstring should be here'
 
 import math
-
-from numpy import array
-from numpy import matrix
-from numpy import linalg
+import numpy as np
 
 def average(*numbers):
     """Self-explanatory"""
@@ -15,7 +12,7 @@ assert average(1) == 1
 assert average(math.pi) == math.pi
 assert average(1, 2) == 1.5
 
-assert linalg.det(matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]])) == 1
+assert np.linalg.det(np.matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]])) == 1
 
 """
 TODO
@@ -35,24 +32,24 @@ class Sphere(object):
         return
 
     def point_is_on_surface(self, point, epsilon_distance):
-        distance = linalg.norm(self.center-point)
+        distance = np.linalg.norm(self.center-point)
         return distance <= epsilon_distance
 
 def get_sphere():
     """TODO: Input: 4 points"""
-    sphere = Sphere(array((0., 0., 0.)), 1.)
+    sphere = Sphere(np.array([0, 0, 0], np.float_), 1.)
     return sphere
 
 epsilon = 0.001
 
-sphere_A = Sphere(array((1, 2, 3)), 7)
+sphere_A = Sphere(np.array([1, 2, 3], np.float_), 7)
 sphere_A.spy("sphere_A")
 
-point = array((1., 2., 3.))
+point = np.array([1, 2, 3], np.float_)
 on_surface = sphere_A.point_is_on_surface(point, epsilon)
 print "point", point, "on_surface?", on_surface
 
-point = array((1.0, 2.0, 3.1))
+point = np.array([1, 2, 3.1], np.float_)
 on_surface = sphere_A.point_is_on_surface(point, epsilon)
 print "point", point, "on_surface?", on_surface
 
