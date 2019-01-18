@@ -35,8 +35,19 @@ class Sphere(object):
         distance = np.linalg.norm(self.center-point) - self.radius
         return abs(distance) <= epsilon_distance
 
-def get_sphere():
-    """TODO: Input: 4 points"""
+def get_sphere(points):
+    assert len(points) == 4
+    a = np.zeros((4, 4))
+    for i in range(0, 4):
+        a[i][0] = points[i][0]
+        a[i][1] = points[i][1]
+        a[i][2] = points[i][2]
+        a[i][3] = 1
+    
+    minor_11 = np.linalg.det(a)
+    if (minor_11 == 0):
+        return Sphere(np.array([0, 0, 0], np.float_), 0.)
+
     sphere = Sphere(np.array([0, 0, 0], np.float_), 1.)
     return sphere
 
@@ -63,7 +74,12 @@ print "point", point, "on_surface?", on_surface
 
 print
 
-sphere_B = get_sphere()
+point_1 = np.array([1, 2, 3], np.float_)
+point_2 = np.array([1, 2, 3], np.float_)
+point_3 = np.array([1, 2, 3], np.float_)
+point_4 = np.array([1, 2, 3], np.float_)
+points = (point_1, point_2, point_3, point_4)
+sphere_B = get_sphere(points)
 sphere_B.spy("sphere_B (obtained with get_sphere)")
 
 print "\nFinished."
