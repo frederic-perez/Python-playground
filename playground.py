@@ -25,6 +25,9 @@ class Sphere(object):
         self.radius = radius
         return
 
+    def get_radius(self):
+        return self.radius
+
     def spy(self, message):
         print "Sphere", message, \
             "\n  center =", self.center, \
@@ -36,6 +39,11 @@ class Sphere(object):
         return abs(distance) <= epsilon_distance
 
 def get_sphere(points):
+    """
+    Translation from code retrieved from
+    http://www.convertalot.com/sphere_solver.html
+    on December 21, 2018
+    """
     assert len(points) == 4
     a = np.zeros((4, 4))
     for i in range(0, 4):
@@ -50,6 +58,20 @@ def get_sphere(points):
 
     sphere = Sphere(np.array([0, 0, 0], np.float_), 1.)
     return sphere
+
+point_A = np.array([1, 3, 6], np.float_)
+point_B = np.array([1, 3, 0], np.float_)
+point_C = np.array([1, 6, 3], np.float_)
+point_D = np.array([1, 0, 0], np.float_)
+center_ABCD = np.array([1, 3, 3], np.float_)
+radius_ABCD = 3.
+
+assert Sphere(point_A, 3.) == Sphere(point_A, 3.)
+assert Sphere(point_A, 3.) != Sphere(point_B, 3.)
+assert Sphere(point_A, 3.) == Sphere(point_A, 4.)
+
+assert get_sphere((point_A, point_A, point_A, point_A)).get_radius() == 0.
+assert get_sphere((point_A, point_B, point_C, point_D)) == Sphere(center_ABCD, radius_ABCD)
 
 epsilon = 0.001
 
