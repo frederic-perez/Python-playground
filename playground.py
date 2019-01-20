@@ -57,27 +57,26 @@ def get_sphere(points):
 
     for i in range(0, 4):
         a[i][0] = points[i][0]**2 + points[i][1]**2 + points[i][2]**2
+
+    for i in range(0, 4):
         a[i][1] = points[i][1]
         a[i][2] = points[i][2]
         a[i][3] = 1
     minor_12 = np.linalg.det(a)
     
     for i in range(0, 4):
-        a[i][0] = points[i][0]**2 + points[i][1]**2 + points[i][2]**2
         a[i][1] = points[i][0]
         a[i][2] = points[i][2]
         a[i][3] = 1
     minor_13 = np.linalg.det(a)
     
     for i in range(0, 4):
-        a[i][0] = points[i][0]**2 + points[i][1]**2 + points[i][2]**2
         a[i][1] = points[i][0]
         a[i][2] = points[i][1]
         a[i][3] = 1
     minor_14 = np.linalg.det(a)
     
     for i in range(0, 4):
-        a[i][0] = points[i][0]**2 + points[i][1]**2 + points[i][2]**2
         a[i][1] = points[i][0]
         a[i][2] = points[i][1]
         a[i][3] = points[i][2]
