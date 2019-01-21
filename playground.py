@@ -19,22 +19,31 @@ TODO
 class Point (?). Perhaps in numpy? In scipy?
 """
 
+epsilon_distance = 1e-3
+
 class Sphere(object):
     def __init__(self, center, radius):
         self.center = center
         self.radius = radius
         return
 
+    def __eq__(self, other):
+        return \
+            abs(self.center[0] - other.center[0]) < epsilon_distance \
+            and abs(self.center[1] - other.center[1]) < epsilon_distance \
+            and abs(self.center[2] - other.center[2]) < epsilon_distance \
+            and abs(self.radius - other.radius) < epsilon_distance
+        
     def get_radius(self):
         return self.radius
 
     def spy(self, message):
         print "Sphere", message, \
             "\n  center =", self.center, \
-            "\n  radius =", self.radius
+            "\n  radius =", '{:e}'.format(self.radius)
         return
 
-    def point_is_on_surface(self, point, epsilon_distance):
+    def point_is_on_surface(self, point):
         distance = np.linalg.norm(self.center-point) - self.radius
         return abs(distance) <= epsilon_distance
 
@@ -89,38 +98,36 @@ def get_sphere(points):
     return Sphere(np.array([x, y, z], np.float_), r)
 
 point_A = np.array([1, 3, 6], np.float_)
-point_B = np.array([1, 3, 0], np.float_)
+point_B = np.array([4, 3, 3], np.float_)
 point_C = np.array([1, 6, 3], np.float_)
-point_D = np.array([1, 0, 0], np.float_)
+point_D = np.array([1, 0, 3], np.float_)
 center_ABCD = np.array([1, 3, 3], np.float_)
 radius_ABCD = 3.
 
 assert Sphere(point_A, 3.) == Sphere(point_A, 3.)
 assert Sphere(point_A, 3.) != Sphere(point_B, 3.)
-assert Sphere(point_A, 3.) == Sphere(point_A, 4.)
+assert Sphere(point_A, 3.) != Sphere(point_A, 4.)
 
 assert get_sphere((point_A, point_A, point_A, point_A)).get_radius() == 0.
 assert get_sphere((point_A, point_B, point_C, point_D)) == Sphere(center_ABCD, radius_ABCD)
-
-epsilon = 0.001
 
 sphere_A = Sphere(np.array([1, 2, 3], np.float_), 7)
 sphere_A.spy("sphere_A")
 
 point = np.array([8, 2, 3], np.float_)
-on_surface = sphere_A.point_is_on_surface(point, epsilon)
+on_surface = sphere_A.point_is_on_surface(point)
 print "point", point, "on_surface?", on_surface
 
 point = np.array([8.01, 2, 3], np.float_)
-on_surface = sphere_A.point_is_on_surface(point, epsilon)
+on_surface = sphere_A.point_is_on_surface(point)
 print "point", point, "on_surface?", on_surface
 
 point = np.array([7.99, 2, 3], np.float_)
-on_surface = sphere_A.point_is_on_surface(point, epsilon)
+on_surface = sphere_A.point_is_on_surface(point)
 print "point", point, "on_surface?", on_surface
 
 point = np.array([7.99999, 2, 3], np.float_)
-on_surface = sphere_A.point_is_on_surface(point, epsilon)
+on_surface = sphere_A.point_is_on_surface(point)
 print "point", point, "on_surface?", on_surface
 
 print
