@@ -40,7 +40,7 @@ class Sphere(object):
     def spy(self, message):
         print "Sphere", message, \
             "\n  center =", self.center, \
-            "\n  radius =", '{:e}'.format(self.radius)
+            "\n  radius =", self.radius
         return
 
     def point_is_on_surface(self, point):
@@ -110,34 +110,3 @@ assert Sphere(point_A, 3.) != Sphere(point_A, 4.)
 
 assert get_sphere((point_A, point_A, point_A, point_A)).get_radius() == 0.
 assert get_sphere((point_A, point_B, point_C, point_D)) == Sphere(center_ABCD, radius_ABCD)
-
-sphere_A = Sphere(np.array([1, 2, 3], np.float_), 7)
-sphere_A.spy("sphere_A")
-
-point = np.array([8, 2, 3], np.float_)
-on_surface = sphere_A.point_is_on_surface(point)
-print "point", point, "on_surface?", on_surface
-
-point = np.array([8.01, 2, 3], np.float_)
-on_surface = sphere_A.point_is_on_surface(point)
-print "point", point, "on_surface?", on_surface
-
-point = np.array([7.99, 2, 3], np.float_)
-on_surface = sphere_A.point_is_on_surface(point)
-print "point", point, "on_surface?", on_surface
-
-point = np.array([7.99999, 2, 3], np.float_)
-on_surface = sphere_A.point_is_on_surface(point)
-print "point", point, "on_surface?", on_surface
-
-print
-
-point_1 = np.array([1, 2, 3], np.float_)
-point_2 = np.array([1, 2, 3], np.float_)
-point_3 = np.array([1, 2, 3], np.float_)
-point_4 = np.array([1, 2, 3], np.float_)
-points = (point_1, point_2, point_3, point_4)
-sphere_B = get_sphere(points)
-sphere_B.spy("sphere_B (obtained with get_sphere)")
-
-print "\nFinished."
