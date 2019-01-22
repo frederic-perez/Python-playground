@@ -33,14 +33,15 @@ class Sphere(object):
             and abs(self.center[1] - other.center[1]) < epsilon_distance \
             and abs(self.center[2] - other.center[2]) < epsilon_distance \
             and abs(self.radius - other.radius) < epsilon_distance
-        
+
+    def __str__(self):
+        return 'Sphere(center={0}, radius={1})'.format(self.center, self.radius)
+
     def get_radius(self):
         return self.radius
 
     def spy(self, message):
-        print "Sphere", message, \
-            "\n  center =", self.center, \
-            "\n  radius =", self.radius
+        print '{0}: {1}'.format(message, self)
         return
 
     def point_is_on_surface(self, point):
@@ -66,19 +67,19 @@ def get_sphere(points):
     for i in range(0, 4):
         a[i][0] = points[i][0]**2 + points[i][1]**2 + points[i][2]**2
     minor_12 = np.linalg.det(a)
-    
+
     for i in range(0, 4):
         a[i][1] = points[i][0]
     minor_13 = np.linalg.det(a)
-    
+
     for i in range(0, 4):
         a[i][2] = points[i][1]
     minor_14 = np.linalg.det(a)
-    
+
     for i in range(0, 4):
         a[i][3] = points[i][2]
     minor_15 = np.linalg.det(a)
-    
+
     x = .5 * minor_12 / minor_11
     y = -.5 * minor_13 / minor_11
     z = .5 * minor_14 / minor_11
