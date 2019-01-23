@@ -3,17 +3,6 @@
 import math
 import numpy as np
 
-def average(*numbers):
-    """Self-explanatory"""
-    numbers = [float(number) for number in numbers]
-    return sum(numbers) / float(len(numbers))
-
-assert average(1) == 1
-assert average(math.pi) == math.pi
-assert average(1, 2) == 1.5
-
-assert np.linalg.det(np.matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]])) == 1
-
 """
 TODO
 class Point (?). Perhaps in numpy? In scipy?

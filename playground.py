@@ -1,7 +1,17 @@
 'module docstring should be here'
 
+import math
 import numpy as np
 from sphere import Sphere, get_sphere
+
+def average(*numbers):
+    """Self-explanatory"""
+    numbers = [float(number) for number in numbers]
+    return sum(numbers) / float(len(numbers))
+
+assert average(1) == 1
+assert average(math.pi) == math.pi
+assert average(1, 2) == 1.5
 
 sphere_A = Sphere(np.array([1, 2, 3], np.float_), 7)
 sphere_A.spy("sphere_A")
