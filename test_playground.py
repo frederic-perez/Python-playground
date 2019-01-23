@@ -7,7 +7,7 @@ import math
 import unittest
 from playground import average
 
-class TestAverage(unittest.TestCase):
+class Test_average(unittest.TestCase):
 
     def test_WHEN_single_parameter_THEN_result_must_be_equal_to_parameter(self):
         self.assertEqual(average(1), 1)
