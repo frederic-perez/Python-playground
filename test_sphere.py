@@ -10,6 +10,23 @@ from sphere import Sphere, get_sphere
 
 class Test_Sphere(unittest.TestCase):
 
+    def test_WHEN_setting_two_spheres_with_the_same_parameters_WHEN_comparing_them_THEN_result_is_true(self):
+        point_A = np.array([1, 3, 6], np.float_)
+        point_B = np.array([4, 3, 3], np.float_)
+        point_C = np.array([1, 6, 3], np.float_)
+        point_D = np.array([1, 0, 3], np.float_)
+        self.assertEqual(Sphere(point_A, 3.), Sphere(point_A, 3.))
+        sphere = Sphere(point_A, 3.)
+        self.assertEqual(sphere, Sphere(point_A, 3.))
+
+    def test_WHEN_setting_two_spheres_with_different_parameters_WHEN_comparing_them_THEN_result_is_false(self):
+        point_A = np.array([1, 3, 6], np.float_)
+        point_B = np.array([4, 3, 3], np.float_)
+        point_C = np.array([1, 6, 3], np.float_)
+        point_D = np.array([1, 0, 3], np.float_)
+        self.assertNotEqual(Sphere(point_A, 3.), Sphere(point_B, 3.))
+        self.assertNotEqual(Sphere(point_A, 3.), Sphere(point_A, 4.))
+
     def test_WHEN_setting_a_sphere_with_a_given_radius_R_WHEN_calling_get_radius_THEN_result_is_R(self):
         radius = 7
         sphere_A = Sphere(np.array([1, 2, 3], np.float_), radius)
@@ -41,6 +58,9 @@ class Test_get_sphere(unittest.TestCase):
         center_39_136_10_106 = np.array([-26.6817636, 111.423225, -5.83905964], np.float_)
         radius_39_136_10_106 = 112.378256
         self.assertEqual(sphere_39_136_10_106, Sphere(center_39_136_10_106, radius_39_136_10_106))
+
+point_A = np.array([1, 3, 6], np.float_)
+assert get_sphere((point_A, point_A, point_A, point_A)).get_radius() == 0.
 
 sphere_A = Sphere(np.array([1, 2, 3], np.float_), 7)
 

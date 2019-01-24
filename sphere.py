@@ -74,17 +74,3 @@ def get_sphere(points):
     z = .5 * minor_14 / minor_11
     r = math.sqrt(x*x + y*y + z*z - minor_15/minor_11)
     return Sphere(np.array([x, y, z], np.float_), r)
-
-point_A = np.array([1, 3, 6], np.float_)
-point_B = np.array([4, 3, 3], np.float_)
-point_C = np.array([1, 6, 3], np.float_)
-point_D = np.array([1, 0, 3], np.float_)
-center_ABCD = np.array([1, 3, 3], np.float_)
-radius_ABCD = 3.
-
-assert Sphere(point_A, 3.) == Sphere(point_A, 3.)
-assert Sphere(point_A, 3.) != Sphere(point_B, 3.)
-assert Sphere(point_A, 3.) != Sphere(point_A, 4.)
-
-assert get_sphere((point_A, point_A, point_A, point_A)).get_radius() == 0.
-assert get_sphere((point_A, point_B, point_C, point_D)) == Sphere(center_ABCD, radius_ABCD)
