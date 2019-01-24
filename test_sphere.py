@@ -35,6 +35,10 @@ class Test_Sphere(unittest.TestCase):
 
 class Test_get_sphere(unittest.TestCase):
 
+    def test_WHEN_calling_get_sphere_with_a_wrong_sphere_WHEN_calling_get_sphere_THEN_its_radius_must_be_0(self):
+        point_A = np.array([1, 3, 6], np.float_)
+        self.assertEqual(get_sphere((point_A, point_A, point_A, point_A)).get_radius(), 0.)
+
     def test_WHEN_calling_get_sphere_with_31_136_12_106_data_THEN_result_must_be_equal_to_that_of_the_original_site(self):
         point_1 = np.array([-34.1186,  1.389,   8.5034], np.float_)
         point_2 = np.array([-34.3179,  1.3719, -29.432], np.float_)
@@ -58,9 +62,6 @@ class Test_get_sphere(unittest.TestCase):
         center_39_136_10_106 = np.array([-26.6817636, 111.423225, -5.83905964], np.float_)
         radius_39_136_10_106 = 112.378256
         self.assertEqual(sphere_39_136_10_106, Sphere(center_39_136_10_106, radius_39_136_10_106))
-
-point_A = np.array([1, 3, 6], np.float_)
-assert get_sphere((point_A, point_A, point_A, point_A)).get_radius() == 0.
 
 sphere_A = Sphere(np.array([1, 2, 3], np.float_), 7)
 
