@@ -34,8 +34,8 @@ class Sphere(object):
         return
 
     def point_is_on_surface(self, point):
-        distance = np.linalg.norm(self.center-point) - self.radius
-        return abs(distance) <= epsilon_distance
+        DISTANCE = np.linalg.norm(self.center-point) - self.radius
+        return abs(DISTANCE) <= epsilon_distance
 
 def get_sphere(points):
     """
@@ -49,28 +49,29 @@ def get_sphere(points):
         a[i][1] = points[i][1]
         a[i][2] = points[i][2]
         a[i][3] = 1
-    minor_11 = np.linalg.det(a)
-    if (minor_11 == 0):
+    MINOR_11 = np.linalg.det(a)
+    if (MINOR_11 == 0):
         return Sphere(np.array([0, 0, 0], np.float_), 0.)
 
     for i in range(0, 4):
         a[i][0] = points[i][0]**2 + points[i][1]**2 + points[i][2]**2
-    minor_12 = np.linalg.det(a)
+    MINOR_12 = np.linalg.det(a)
 
     for i in range(0, 4):
         a[i][1] = points[i][0]
-    minor_13 = np.linalg.det(a)
+    MINOR_13 = np.linalg.det(a)
 
     for i in range(0, 4):
         a[i][2] = points[i][1]
-    minor_14 = np.linalg.det(a)
+    MINOR_14 = np.linalg.det(a)
 
     for i in range(0, 4):
         a[i][3] = points[i][2]
-    minor_15 = np.linalg.det(a)
+    MINOR_15 = np.linalg.det(a)
 
-    x = .5 * minor_12 / minor_11
-    y = -.5 * minor_13 / minor_11
-    z = .5 * minor_14 / minor_11
-    r = math.sqrt(x*x + y*y + z*z - minor_15/minor_11)
-    return Sphere(np.array([x, y, z], np.float_), r)
+    X = .5 * MINOR_12 / MINOR_11
+    Y = -.5 * MINOR_13 / MINOR_11
+    Z = .5 * MINOR_14 / MINOR_11
+    CENTER = np.array([X, Y, Z], np.float_)
+    RADIUS = math.sqrt(X*X + Y*Y + Z*Z - MINOR_15/MINOR_11)
+    return Sphere(CENTER, RADIUS)
