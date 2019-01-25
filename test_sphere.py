@@ -6,7 +6,7 @@ $ python -m unittest -v test_sphere
 import math
 import numpy as np
 import unittest
-from sphere import Sphere, get_sphere
+from sphere import Sphere, get_sphere, epsilon_distance
 
 class Test_Sphere(unittest.TestCase):
 
@@ -61,25 +61,26 @@ class Test_get_sphere(unittest.TestCase):
         RADIUS_39_136_10_106 = 112.378256
         self.assertEqual(SPHERE_39_136_10_106, Sphere(CENTER_39_136_10_106, RADIUS_39_136_10_106))
 
-SPHERE = Sphere(np.array([1, 2, 3], np.float_), 7)
+    def test_GIVEN_a_sphere_and_a_point_being_equal_to_center_plus_radius_for_x_WHEN_calling_point_is_on_surface_THEN_result_is_true(self):
+        CENTER = np.array([1, 2, 3], np.float_)
+        RADIUS = 7
+        SPHERE = Sphere(CENTER, RADIUS)
+        POINT = CENTER + np.array([RADIUS, 0, 0], np.float_)
+        self.assertTrue(SPHERE.point_is_on_surface(POINT))
 
-point = np.array([8, 2, 3], np.float_)
-on_surface = SPHERE.point_is_on_surface(point)
-print "point", point, "on_surface?", on_surface
+    def test_GIVEN_a_sphere_and_a_point_almost_equal_to_center_plus_radius_for_x_WHEN_calling_point_is_on_surface_THEN_result_is_true(self):
+        CENTER = np.array([1, 2, 3], np.float_)
+        RADIUS = 7
+        SPHERE = Sphere(CENTER, RADIUS)
+        POINT = CENTER + np.array([RADIUS + epsilon_distance/2., 0, 0], np.float_)
+        self.assertTrue(SPHERE.point_is_on_surface(POINT))
 
-point = np.array([8.01, 2, 3], np.float_)
-on_surface = SPHERE.point_is_on_surface(point)
-print "point", point, "on_surface?", on_surface
-
-point = np.array([7.99, 2, 3], np.float_)
-on_surface = SPHERE.point_is_on_surface(point)
-print "point", point, "on_surface?", on_surface
-
-point = np.array([7.99999, 2, 3], np.float_)
-on_surface = SPHERE.point_is_on_surface(point)
-print "point", point, "on_surface?", on_surface
-
-print "\n"
+    def test_GIVEN_a_sphere_and_a_point_far_enough_to_center_plus_radius_for_x_WHEN_calling_point_is_on_surface_THEN_result_is_false(self):
+        CENTER = np.array([1, 2, 3], np.float_)
+        RADIUS = 7
+        SPHERE = Sphere(CENTER, RADIUS)
+        POINT = CENTER + np.array([RADIUS + 2. * epsilon_distance, 0, 0], np.float_)
+        self.assertFalse(SPHERE.point_is_on_surface(POINT))
 
 if __name__ == '__main__':
     unittest.main()
