@@ -13,3 +13,4 @@ A place for continuous learning of Python and software engineering through exper
 ## References and influencing material
 
 - [Martin-2009] Robert C. Martin, _Clean Code - A Handbook of Agile Software Craftsmanship_, Prentice Hall, 2009
+- [Ziadé-2008] Tarek Ziadé, _Expert Python Programming_, Packt Publishing, 2008
