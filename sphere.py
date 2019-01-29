@@ -8,7 +8,7 @@ TODO
 class Point (?). Perhaps in numpy? In scipy?
 """
 
-epsilon_distance = 1e-3
+epsilon_distance = 1e-12
 
 class Sphere(object):
     def __init__(self, center, radius):

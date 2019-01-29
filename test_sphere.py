@@ -45,8 +45,9 @@ class Test_get_sphere(unittest.TestCase):
         POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
         SPHERE_31_136_12_106 = get_sphere(POINTS)
         SPHERE_31_136_12_106.spy("SPHERE_31_136_12_106 (obtained with get_sphere)")
-        CENTER_31_136_12_106 = np.array([-21.9428099,113.523437, -10.5793414], np.float_)
-        RADIUS_31_136_12_106 = 114.39638
+        CENTER_31_136_12_106 = np.array([-21.942809924607257, 113.52343730620188,-10.579341367428881], np.float_)
+        RADIUS_31_136_12_106 = 114.39638504793206
+        Sphere(CENTER_31_136_12_106, RADIUS_31_136_12_106).spy("from the site")
         self.assertEqual(SPHERE_31_136_12_106, Sphere(CENTER_31_136_12_106, RADIUS_31_136_12_106))
 
     def test_GIVEN_4_points_from_39_136_10_106_WHEN_calling_get_sphere_using_them_THEN_result_must_be_equal_to_that_of_the_original_site(self):
@@ -57,8 +58,8 @@ class Test_get_sphere(unittest.TestCase):
         POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
         SPHERE_39_136_10_106 = get_sphere(POINTS)
         SPHERE_39_136_10_106.spy("SPHERE_39_136_10_106 (obtained with get_sphere)")
-        CENTER_39_136_10_106 = np.array([-26.6817636, 111.423225, -5.83905964], np.float_)
-        RADIUS_39_136_10_106 = 112.378256
+        CENTER_39_136_10_106 = np.array([-26.681763623168056, 111.42322500511179, -5.8390596432420425], np.float_)
+        RADIUS_39_136_10_106 = 112.37825558460493
         self.assertEqual(SPHERE_39_136_10_106, Sphere(CENTER_39_136_10_106, RADIUS_39_136_10_106))
 
     def test_GIVEN_a_sphere_and_a_point_being_equal_to_center_plus_radius_for_x_WHEN_calling_point_is_on_surface_THEN_result_is_true(self):
