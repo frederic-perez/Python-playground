@@ -9,11 +9,11 @@ from playground import average
 
 class Test_average(unittest.TestCase):
 
-    def test_WHEN_single_parameter_THEN_result_must_be_equal_to_parameter(self):
+    def test_GivenSingleParameterP_When_average_ThenReturnP(self):
         self.assertEqual(average(1), 1)
         self.assertEqual(average(math.pi), math.pi)
 
-    def test_WHEN_two_parameters_THEN_result_must_be_equal_to_half_their_sum(self):
+    def test_Given2Parameters_When_average_ThenReturnHalfTheirSum(self):
         self.assertEqual(average(1, 2), (1+2)/2.)
 
 if __name__ == '__main__':
