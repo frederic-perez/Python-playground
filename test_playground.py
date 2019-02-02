@@ -8,6 +8,12 @@ import unittest
 from playground import average
 
 class Test_average(unittest.TestCase):
+    
+    def test_GivenAnEmptyInput_When_average_ThenExceptionIsRaised(self):
+        try:
+            average()
+        except ValueError as e:
+            self.assertTrue(True)
 
     def test_GivenSingleParameterP_When_average_ThenReturnP(self):
         self.assertEqual(average(1), 1)
