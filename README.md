@@ -8,6 +8,7 @@ A place for continuous learning of Python and software engineering through exper
 - tutorialspoint.com's [Python Tutorial](https://www.tutorialspoint.com/python) 
 - python.org's [Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/)
 - python.org's [unittest](https://docs.python.org/3/library/unittest.html) documentation
+- [The Hitchhiker’s Guide to Python](https://docs.python-guide.org/), with its [Code Style](https://docs.python-guide.org/writing/style/)
 - [The Hitchhiker’s Guide to Packaging](https://the-hitchhikers-guide-to-packaging.readthedocs.io/en/latest/)
 
 ## References and influencing material
