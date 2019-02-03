@@ -2,6 +2,10 @@
 
 A place for continuous learning of Python and software engineering through experimentation
 
+## Some Notes
+
+- Type checking is generally not Pythonic. In Python, it is more usual to use [duck typing](https://en.m.wikipedia.org/wiki/Duck_typing).
+
 ## Some interesting URLs
 
 - [Execute Python Online](http://www.compileonline.com/execute_python_online.php)
