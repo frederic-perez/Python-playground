@@ -10,6 +10,20 @@ from sphere import Sphere, get_sphere, epsilon_distance
 
 class Test_Sphere(unittest.TestCase):
 
+    def test_GivenAnEmptyCenter_When_Sphere_ThenExceptionIsRaised(self):
+        try:
+            RADIUS = 3.
+            Sphere(None, RADIUS)
+        except ValueError as e:
+            self.assertTrue(True)
+
+    def test_GivenAnEmptyRadius_When_Sphere_ThenExceptionIsRaised(self):
+        try:
+            POINT = np.array([1, 3, 6], np.float_)
+            Sphere(CENTER)
+        except ValueError as e:
+            self.assertTrue(True)
+
     def test_Given2SpheresCreatedEqually_WhenComparision_ThenReturnTrue(self):
         POINT = np.array([1, 3, 6], np.float_)
         RADIUS = 3.
