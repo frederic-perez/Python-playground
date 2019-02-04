@@ -14,22 +14,22 @@ class Test_Sphere(unittest.TestCase):
         try:
             RADIUS = 3.
             Sphere(None, RADIUS)
-        except ValueError as e:
+        except TypeError:
             self.assertTrue(True)
 
-    def test_GivenAnEmptyRadius_When_Sphere_ThenExceptionIsRaised(self):
+    def test_GivenAMissingRadius_When_Sphere_ThenExceptionIsRaised(self):
         try:
-            POINT = np.array([1, 3, 6], np.float_)
+            CENTER = np.array([1, 3, 6], np.float_)
             Sphere(CENTER)
-        except ValueError as e:
+        except TypeError:
             self.assertTrue(True)
 
     def test_Given2SpheresCreatedEqually_WhenComparision_ThenReturnTrue(self):
-        POINT = np.array([1, 3, 6], np.float_)
+        CENTER = np.array([1, 3, 6], np.float_)
         RADIUS = 3.
-        self.assertEqual(Sphere(POINT, RADIUS), Sphere(POINT, RADIUS))
-        SPHERE = Sphere(POINT, RADIUS)
-        self.assertEqual(SPHERE, Sphere(POINT, RADIUS))
+        self.assertEqual(Sphere(CENTER, RADIUS), Sphere(CENTER, RADIUS))
+        SPHERE = Sphere(CENTER, RADIUS)
+        self.assertEqual(SPHERE, Sphere(CENTER, RADIUS))
 
     def test_Given2SpheresCreatedNotEqually_WhenComparision_ThenReturnFalse(self):
         POINT_A = np.array([1, 3, 6], np.float_)
@@ -39,17 +39,19 @@ class Test_Sphere(unittest.TestCase):
         self.assertNotEqual(Sphere(POINT_A, RADIUS), Sphere(POINT_B, RADIUS))
 
     def test_GivenSphereCreatedWithRadiusR_When_get_radius_ThenReturnR(self):
-        POINT = np.array([1, 2, 3], np.float_)
+        CENTER = np.array([1, 2, 3], np.float_)
         RADIUS = 7
-        SPHERE = Sphere(POINT, RADIUS)
+        SPHERE = Sphere(CENTER, RADIUS)
         # SPHERE.spy("SPHERE")
         self.assertEqual(SPHERE.get_radius(), RADIUS)
 
 class Test_get_sphere(unittest.TestCase):
 
-    def test_GivenAPointP_When_get_sphere_WithP4x_and_get_radius_ThenReturn0(self):
-        POINT = np.array([1, 3, 6], np.float_)
-        self.assertEqual(get_sphere((POINT, POINT, POINT, POINT)).get_radius(), 0.)
+    def test_GivenAPointP_When_get_sphere_WithP4x_and_get_radius_ThenExceptionIsRaised(self):
+        try:
+            POINT = np.array([1, 3, 6], np.float_)
+        except TypeError:
+            self.assertTrue(True)
 
     def test_Given4PointsFrom_31_136_12_106_When_get_sphere_ThenReturnTheSitesResult(self):
         POINT_1 = np.array([-34.1186,  1.389,   8.5034], np.float_)

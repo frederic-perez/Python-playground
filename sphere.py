@@ -12,8 +12,8 @@ epsilon_distance = 1e-12
 
 class Sphere(object):
     def __init__(self, center, radius):
-        if not center:
-            raise ValueError('center should not be empty')
+        if not hasattr(center, "__len__"):
+            raise TypeError('center should be an array')
         if not radius:
             raise ValueError('radius should not be empty')
         self.center = center
