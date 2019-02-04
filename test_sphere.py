@@ -11,18 +11,17 @@ from sphere import Sphere, get_sphere, epsilon_distance
 class Test_Sphere(unittest.TestCase):
 
     def test_GivenAnEmptyCenter_When_Sphere_ThenExceptionIsRaised(self):
-        try:
-            RADIUS = 3.
-            Sphere(None, RADIUS)
-        except TypeError:
-            self.assertTrue(True)
+        RADIUS = 3.
+        self.assertRaises(TypeError, Sphere, None, RADIUS)
+
+    def test_GivenA2DCenterPoint_When_Sphere_ThenExceptionIsRaised(self):
+        CENTER = np.array([1, 3], np.float_)
+        RADIUS = 3.
+        self.assertRaises(TypeError, Sphere, CENTER, RADIUS)
 
     def test_GivenAMissingRadius_When_Sphere_ThenExceptionIsRaised(self):
-        try:
-            CENTER = np.array([1, 3, 6], np.float_)
-            Sphere(CENTER)
-        except TypeError:
-            self.assertTrue(True)
+        CENTER = np.array([1, 3, 6], np.float_)
+        self.assertRaises(TypeError, Sphere, CENTER)
 
     def test_Given2SpheresCreatedEqually_WhenComparision_ThenReturnTrue(self):
         CENTER = np.array([1, 3, 6], np.float_)
@@ -48,10 +47,9 @@ class Test_Sphere(unittest.TestCase):
 class Test_get_sphere(unittest.TestCase):
 
     def test_GivenAPointP_When_get_sphere_WithP4x_and_get_radius_ThenExceptionIsRaised(self):
-        try:
-            POINT = np.array([1, 3, 6], np.float_)
-        except TypeError:
-            self.assertTrue(True)
+        POINT = np.array([1, 3, 6], np.float_)
+        POINTS = (POINT, POINT, POINT, POINT)
+        self.assertRaises(ArithmeticError, get_sphere, POINTS)
 
     def test_Given4PointsFrom_31_136_12_106_When_get_sphere_ThenReturnTheSitesResult(self):
         POINT_1 = np.array([-34.1186,  1.389,   8.5034], np.float_)

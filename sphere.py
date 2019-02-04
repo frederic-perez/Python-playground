@@ -14,6 +14,8 @@ class Sphere(object):
     def __init__(self, center, radius):
         if not hasattr(center, "__len__"):
             raise TypeError('center should be an array')
+        if center.__len__() != 3:
+            raise TypeError('center should be an array of 3 elements')
         if not radius:
             raise ValueError('radius should not be empty')
         self.center = center
@@ -55,7 +57,7 @@ def get_sphere(points):
         a[i][3] = 1
     MINOR_11 = np.linalg.det(a)
     if (MINOR_11 == 0):
-        return Sphere(np.array([0, 0, 0], np.float_), 0.)
+        raise ArithmeticError('It is impossible to divide by zero')
 
     for i in range(0, 4):
         a[i][0] = points[i][0]**2 + points[i][1]**2 + points[i][2]**2
