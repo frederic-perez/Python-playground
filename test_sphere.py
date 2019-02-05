@@ -1,6 +1,12 @@
 """
-Run the tests by executing:
-$ python -m unittest -v test_sphere
+Run the tests by executing, for all test classes:
+
+  $ python -m unittest -v test_sphere
+
+or, for individual test classes:
+
+  $ python -m unittest -v test_sphere.Test_Sphere
+  $ python -m unittest -v test_sphere.Test_get_sphere
 """
 
 import math
@@ -44,6 +50,27 @@ class Test_Sphere(unittest.TestCase):
         # SPHERE.spy("SPHERE")
         self.assertEqual(SPHERE.get_radius(), RADIUS)
 
+    def test_GivenSphereAndPointEqualToCenterPlusRadiusForX_When_point_is_on_surface_ThenReturnTrue(self):
+        CENTER = np.array([1, 2, 3], np.float_)
+        RADIUS = 7
+        SPHERE = Sphere(CENTER, RADIUS)
+        POINT = CENTER + np.array([RADIUS, 0, 0], np.float_)
+        self.assertTrue(SPHERE.point_is_on_surface(POINT))
+
+    def test_GivenSphereAndPointAlmostEqualToCenterPlusRadiusForX_When_point_is_on_surface_ThenReturnTrue(self):
+        CENTER = np.array([1, 2, 3], np.float_)
+        RADIUS = 7
+        SPHERE = Sphere(CENTER, RADIUS)
+        POINT = CENTER + np.array([RADIUS + epsilon_distance/2., 0, 0], np.float_)
+        self.assertTrue(SPHERE.point_is_on_surface(POINT))
+
+    def test_GivenSphereAndPointFarEnoughToCenterPlusRadiusForX_When_point_is_on_surface_ThenReturnFalse(self):
+        CENTER = np.array([1, 2, 3], np.float_)
+        RADIUS = 7
+        SPHERE = Sphere(CENTER, RADIUS)
+        POINT = CENTER + np.array([RADIUS + 2. * epsilon_distance, 0, 0], np.float_)
+        self.assertFalse(SPHERE.point_is_on_surface(POINT))
+
 class Test_get_sphere(unittest.TestCase):
 
     def test_GivenAPointP_When_get_sphere_WithP4x_and_get_radius_ThenExceptionIsRaised(self):
@@ -78,27 +105,6 @@ class Test_get_sphere(unittest.TestCase):
         SPHERE_FROM_SITE = Sphere(CENTER_FROM_SITE, RADIUS_FROM_SITE)
 
         self.assertEqual(SPHERE_39_136_10_106, SPHERE_FROM_SITE)
-
-    def test_GivenSphereAndPointEqualToCenterPlusRadiusForX_When_point_is_on_surface_ThenReturnTrue(self):
-        CENTER = np.array([1, 2, 3], np.float_)
-        RADIUS = 7
-        SPHERE = Sphere(CENTER, RADIUS)
-        POINT = CENTER + np.array([RADIUS, 0, 0], np.float_)
-        self.assertTrue(SPHERE.point_is_on_surface(POINT))
-
-    def test_GivenSphereAndPointAlmostEqualToCenterPlusRadiusForX_When_point_is_on_surface_ThenReturnTrue(self):
-        CENTER = np.array([1, 2, 3], np.float_)
-        RADIUS = 7
-        SPHERE = Sphere(CENTER, RADIUS)
-        POINT = CENTER + np.array([RADIUS + epsilon_distance/2., 0, 0], np.float_)
-        self.assertTrue(SPHERE.point_is_on_surface(POINT))
-
-    def test_GivenSphereAndPointFarEnoughToCenterPlusRadiusForX_When_point_is_on_surface_ThenReturnFalse(self):
-        CENTER = np.array([1, 2, 3], np.float_)
-        RADIUS = 7
-        SPHERE = Sphere(CENTER, RADIUS)
-        POINT = CENTER + np.array([RADIUS + 2. * epsilon_distance, 0, 0], np.float_)
-        self.assertFalse(SPHERE.point_is_on_surface(POINT))
 
 if __name__ == '__main__':
     unittest.main()
