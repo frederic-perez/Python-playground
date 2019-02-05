@@ -10,6 +10,12 @@ class Point (?). Perhaps in numpy? In scipy?
 
 epsilon_distance = 1e-12
 
+def zero_in_practice(float):
+    return abs(float) <= epsilon_distance
+
+def equal_in_practice(float_1, float_2):
+    return abs(float_1 - float_2) <= epsilon_distance
+
 class Sphere(object):
     def __init__(self, center, radius):
         if not hasattr(center, "__len__"):
@@ -24,10 +30,10 @@ class Sphere(object):
 
     def __eq__(self, other):
         return \
-            abs(self.center[0] - other.center[0]) < epsilon_distance \
-            and abs(self.center[1] - other.center[1]) < epsilon_distance \
-            and abs(self.center[2] - other.center[2]) < epsilon_distance \
-            and abs(self.radius - other.radius) < epsilon_distance
+            equal_in_practice(self.center[0], other.center[0]) \
+            and equal_in_practice(self.center[1], other.center[1]) \
+            and equal_in_practice(self.center[2], other.center[2]) \
+            and equal_in_practice(self.radius, other.radius)
 
     def __str__(self):
         return 'Sphere(center={0}, radius={1})'.format(self.center, self.radius)
@@ -41,7 +47,7 @@ class Sphere(object):
 
     def point_is_on_surface(self, point):
         DISTANCE = np.linalg.norm(self.center-point) - self.radius
-        return abs(DISTANCE) <= epsilon_distance
+        return zero_in_practice(DISTANCE)
 
 def get_sphere(points):
     """
@@ -56,7 +62,7 @@ def get_sphere(points):
         a[i][2] = points[i][2]
         a[i][3] = 1
     MINOR_11 = np.linalg.det(a)
-    if (MINOR_11 == 0):
+    if (zero_in_practice(MINOR_11)):
         raise ArithmeticError('It is impossible to divide by zero')
 
     for i in range(0, 4):
