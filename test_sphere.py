@@ -79,6 +79,28 @@ class Test_Sphere(unittest.TestCase):
         # SPHERE.spy("SPHERE")
         self.assertEqual(SPHERE.get_radius(), RADIUS)
 
+    def test_GivenSphereAndPointEqualToCenterPlusRadiusForZ_When_get_signed_distance_to_surface_ThenReturnZero(self):
+        CENTER = np.array([1, 2, 3], np.float_)
+        RADIUS = 8
+        SPHERE = Sphere(CENTER, RADIUS)
+        POINT = CENTER + np.array([0, 0, RADIUS], np.float_)
+        self.assertTrue(zero_in_practice(SPHERE.get_signed_distance_to_surface(POINT)))
+
+    def test_GivenSphereAndPointEqualToCenterPlus2RadiusForZ_When_get_signed_distance_to_surface_ThenReturnRadius(self):
+        CENTER = np.array([1, 2, 3], np.float_)
+        RADIUS = 8
+        SPHERE = Sphere(CENTER, RADIUS)
+        POINT = CENTER + np.array([0, 0, 2*RADIUS], np.float_)
+        self.assertTrue(equal_in_practice(SPHERE.get_signed_distance_to_surface(POINT), RADIUS))
+
+    def test_GivenSphereAndPointEqualToCenterPlusHalfRadiusForZ_When_get_signed_distance_to_surface_ThenReturnMinusHalfRadius(self):
+        CENTER = np.array([1, 2, 3], np.float_)
+        RADIUS = 8
+        HALF_RADIUS = RADIUS/2
+        SPHERE = Sphere(CENTER, RADIUS)
+        POINT = CENTER + np.array([0, 0, HALF_RADIUS], np.float_)
+        self.assertTrue(equal_in_practice(SPHERE.get_signed_distance_to_surface(POINT), -HALF_RADIUS))
+
     def test_GivenSphereAndPointEqualToCenterPlusRadiusForX_When_point_is_on_surface_ThenReturnTrue(self):
         CENTER = np.array([1, 2, 3], np.float_)
         RADIUS = 7

@@ -45,8 +45,11 @@ class Sphere(object):
         print '{0}: {1}'.format(message, self)
         return
 
+    def get_signed_distance_to_surface(self, point):
+        return np.linalg.norm(self.center-point) - self.radius
+  
     def point_is_on_surface(self, point):
-        DISTANCE = np.linalg.norm(self.center-point) - self.radius
+        DISTANCE = self.get_signed_distance_to_surface(point)
         return zero_in_practice(DISTANCE)
 
 def get_sphere(points):
