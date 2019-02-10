@@ -5,29 +5,40 @@ import numpy as np
 from sphere import Sphere
 
 class OpticalSphere(Sphere):
-    def __init__(self, radius, n):
+    def __init__(self, radius):
         CENTER = np.zeros(3)
         Sphere.__init__(self, CENTER, radius)
-        self.n = n
+        self.N = 1.53
         return
 
     def __str__(self):
-        return 'OpticalSphere(radius={0}, n={1})'.format(self.radius, self.n)
+        return 'OpticalSphere(radius: {0} mm, n: {1})'.format(self.radius, self.N)
 
     def get_n(self):
-        return self.n
+        return self.N
+        
+    def get_surface_power(self):
+        return 530/self.radius
 
     def get_base_curve(self):
         N_VACUUM = 1
-        return (self.n - N_VACUUM)/self.radius
+        return 1000*(self.N - N_VACUUM)/self.radius
 
     def spy(self, message):
         print '{0}: {1}'.format(message, self)
         return
 
-if __name__ == '__main__':
-    RADIUS = 0.1
-    N = 1.5
-    OPTICAL_SPHERE = OpticalSphere(RADIUS, N)
+def get_me_optical_info(radius):
+    OPTICAL_SPHERE = OpticalSphere(radius)
     print "OPTICAL_SPHERE:", OPTICAL_SPHERE
+    print "  |- surface power is", OPTICAL_SPHERE.get_surface_power(), "diopter(s)"
     print "  '- base curve is", OPTICAL_SPHERE.get_base_curve(), "diopters"
+    print
+
+if __name__ == '__main__':
+    
+    radius = 530 # 530 mm is the radius of a 1 diopter curve
+    get_me_optical_info(radius)
+
+    radius = 100
+    get_me_optical_info(radius)
