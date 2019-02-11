@@ -12,12 +12,10 @@ from optical_sphere import OpticalSphere
 class Test_OpticalSphere(unittest.TestCase):
 
     def test_Given2OpticalSpheresCreatedEqually_WhenComparision_ThenReturnTrue(self):
-        POINT = np.array([1, 3, 6], np.float_)
         RADIUS = 3.
-        N = 1.5
-        self.assertEqual(OpticalSphere(POINT, RADIUS, N), OpticalSphere(POINT, RADIUS, N))
-        OPTICAL_SPHERE = OpticalSphere(POINT, RADIUS, N)
-        self.assertEqual(OPTICAL_SPHERE, OpticalSphere(POINT, RADIUS, N))
+        self.assertEqual(OpticalSphere(RADIUS), OpticalSphere(RADIUS))
+        OPTICAL_SPHERE = OpticalSphere(RADIUS)
+        self.assertEqual(OPTICAL_SPHERE, OpticalSphere(RADIUS))
 
 if __name__ == '__main__':
     unittest.main()
