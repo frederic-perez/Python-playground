@@ -50,13 +50,23 @@ class Test_Sphere(unittest.TestCase):
         self.assertRaises(TypeError, Sphere, None, RADIUS)
 
     def test_GivenA2DCenterPoint_When_Sphere_ThenExceptionIsRaised(self):
-        CENTER = np.array([1, 3], np.float_)
+        CENTER_2D = np.array([1, 3], np.float_)
         RADIUS = 3.
-        self.assertRaises(TypeError, Sphere, CENTER, RADIUS)
+        self.assertRaises(TypeError, Sphere, CENTER_2D, RADIUS)
 
     def test_GivenAMissingRadius_When_Sphere_ThenExceptionIsRaised(self):
         CENTER = np.array([1, 3, 6], np.float_)
         self.assertRaises(TypeError, Sphere, CENTER)
+
+    def test_GivenAZeroRadius_When_Sphere_ThenExceptionIsRaised(self):
+        CENTER = np.array([1, 3, 6], np.float_)
+        ZERO_RADIUS = 0
+        self.assertRaises(ValueError, Sphere, CENTER, ZERO_RADIUS)
+
+    def test_GivenANegativeRadius_When_Sphere_ThenExceptionIsRaised(self):
+        CENTER = np.array([1, 3, 6], np.float_)
+        NEGATIVE_RADIUS = -7
+        self.assertRaises(ValueError, Sphere, CENTER, NEGATIVE_RADIUS)
 
     def test_Given2SpheresCreatedEqually_WhenComparision_ThenReturnTrue(self):
         CENTER = np.array([1, 3, 6], np.float_)

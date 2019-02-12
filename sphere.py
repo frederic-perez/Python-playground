@@ -22,8 +22,8 @@ class Sphere(object):
             raise TypeError('center should be an array')
         if center.__len__() != 3:
             raise TypeError('center should be an array of 3 elements')
-        if not radius:
-            raise ValueError('radius should not be empty')
+        if radius <= 0:
+            raise ValueError("Value %g is out of range" % radius)
         self.center = center
         self.radius = radius
         return
