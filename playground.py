@@ -49,31 +49,14 @@ def get_sphere_given4RotatedCrosshairPoints_From_46():
     SPHERE_46 = get_sphere(POINTS)
     print "SPHERE_46 given 4 rotated crosshair points", SPHERE_46
 
-def write_ply_header(file_ply_out, num_points):
-    file_ply_out.write("ply\n")
-    file_ply_out.write("format ascii 1.0\n")
-    file_ply_out.write("element vertex " + str(num_points) + "\n")
-    file_ply_out.write("property float x\n")
-    file_ply_out.write("property float y\n")
-    file_ply_out.write("property float z\n")
-    file_ply_out.write("end_header\n")
+def print_a_few_points(points):
+    print "point #", 0, "is", points[0]
+    print "..."
+    LAST_INDEX = len(points) - 1
+    print "point #", LAST_INDEX, "is", points[LAST_INDEX]
 
-def write_ply_body(file_ply_out, points):
-    for point in points:
-        x = str(point[0])
-        y = str(point[1])
-        z = str(point[2])
-        file_ply_out.write(x + ' ' + y + ' ' + z + '\n')
-
-def save_as_ply(filename_xyz_in, filename_ply_out):
-    if not filename_xyz_in:
-        raise ValueError('Input filename should not be empty')
-    if not os.path.exists(filename_xyz_in):
-        raise IOError('Input file does not exist')
-    if not filename_ply_out:
-        raise ValueError('Output filename should not be empty')
-
-    file_in = open(filename_xyz_in, 'r')
+def read_xyz_file(filename_xyz):
+    file_in = open(filename_xyz, 'r')
     num_points = 0
     for line in file_in:
         if line.strip():
@@ -87,18 +70,42 @@ def save_as_ply(filename_xyz_in, filename_ply_out):
         if line.strip():
             xyz = list(map(np.float, line.split()))
             point = np.zeros(3)
-            point[0] = xyz[0]
-            point[1] = xyz[1]
-            point[2] = xyz[2]
-            print "point #", i, "is", point
+            for idx in range(3):
+               point[idx] = xyz[idx]
             points[i] = point
             i += 1
     file_in.close()
 
-    file_out = open(filename_ply_out, 'w')
-    write_ply_header(file_out, num_points)
-    write_ply_body(file_out, points)
-    file_out.close()
+    print_a_few_points(points)
+
+    return points
+
+def save_ply_file(filename_ply, points):
+    file = open(filename_ply, 'w')
+
+    NUM_POINTS = len(points)
+    file.write("ply\n")
+    file.write("format ascii 1.0\n")
+    file.write("element vertex " + str(NUM_POINTS) + "\n")
+    file.write("property float x\n")
+    file.write("property float y\n")
+    file.write("property float z\n")
+    file.write("end_header\n")
+    for point in points:
+        LINE = str(point[0]) + ' ' + str(point[1]) + ' ' + str(point[2]) + '\n'
+        file.write(LINE)
+    file.close()
+
+def save_as_ply(filename_xyz_in, filename_ply_out):
+    if not filename_xyz_in:
+        raise ValueError('Input filename should not be empty')
+    if not os.path.exists(filename_xyz_in):
+        raise IOError('Input file does not exist')
+    if not filename_ply_out:
+        raise ValueError('Output filename should not be empty')
+
+    POINTS = read_xyz_file(filename_xyz_in)
+    save_ply_file(filename_ply_out, POINTS)
 
 if __name__ == '__main__':
 
