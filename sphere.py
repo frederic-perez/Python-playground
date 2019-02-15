@@ -41,6 +41,9 @@ class Sphere(object):
     def get_radius(self):
         return self.radius
 
+    def get_center(self):
+        return self.center
+  
     def spy(self, message):
         print '{0}: {1}'.format(message, self)
         return
