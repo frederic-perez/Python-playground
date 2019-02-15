@@ -25,10 +25,13 @@ def read_xyz_file(filename_xyz):
     i = 0
     for line in file_in:
         if line.strip():
-            xyz = list(map(np.float, line.split()))
+            try:
+                xyz = list(map(np.float, line.split()))
+            except ValueError as e:
+                raise ValueError('Exception caught when reading point #' + str(i) + ' | ' + str(e))
             point = np.zeros(3)
             for idx in range(3):
-               point[idx] = xyz[idx]
+                point[idx] = xyz[idx]
             points[i] = point
             i += 1
     file_in.close()
@@ -41,13 +44,14 @@ def save_ply_file(filename_ply, points):
     file = open(filename_ply, 'w')
 
     NUM_POINTS = len(points)
-    file.write("ply\n")
-    file.write("format ascii 1.0\n")
-    file.write("element vertex " + str(NUM_POINTS) + "\n")
-    file.write("property float x\n")
-    file.write("property float y\n")
-    file.write("property float z\n")
-    file.write("end_header\n")
+    HEADER = ("ply\n"
+              "format ascii 1.0\n"
+              "element vertex " + str(NUM_POINTS) + "\n"
+              "property float x\n"
+              "property float y\n"
+              "property float z\n"
+              "end_header\n")
+    file.write(HEADER)
     for point in points:
         LINE = str(point[0]) + ' ' + str(point[1]) + ' ' + str(point[2]) + '\n'
         file.write(LINE)
@@ -65,6 +69,6 @@ def save_as_ply(filename_xyz_in, filename_ply_out):
     save_ply_file(filename_ply_out, POINTS)
 
 if __name__ == '__main__':
-    FILENAME_IN = 'data/points_in.xyz'
-    FILENAME_OUT = 'data/points_out.ply'
+    FILENAME_IN = 'data/points-in.xyz'
+    FILENAME_OUT = 'data/points-out.ply'
     save_as_ply(FILENAME_IN, FILENAME_OUT)
