@@ -139,6 +139,15 @@ class Test_get_sphere(unittest.TestCase):
         POINTS = (POINT, POINT, POINT, POINT)
         self.assertRaises(ArithmeticError, get_sphere, POINTS)
 
+    def test_Given4CollinealPoints_When_get_sphere_WithP4x_and_get_radius_ThenExceptionIsRaised(self):
+        DELTA = 1.5
+        POINT_1 = np.array([1*DELTA, 0, 0], np.float_)
+        POINT_2 = np.array([2*DELTA, 0, 0], np.float_)
+        POINT_3 = np.array([3*DELTA, 0, 0], np.float_)
+        POINT_4 = np.array([4*DELTA, 0, 0], np.float_)
+        POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
+        self.assertRaises(ArithmeticError, get_sphere, POINTS)
+
     def test_Given4PointsFrom_31_136_12_106_When_get_sphere_ThenReturnTheSitesResult(self):
         POINT_1 = np.array([-34.1186,  1.389,   8.5034], np.float_)
         POINT_2 = np.array([-34.3179,  1.3719, -29.432], np.float_)
