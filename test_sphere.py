@@ -89,6 +89,16 @@ class Test_Sphere(unittest.TestCase):
         # SPHERE.spy("SPHERE")
         self.assertEqual(SPHERE.get_radius(), RADIUS)
 
+    def test_GivenCircleCreatedWithCenterC_When_get_center_ThenReturnC(self):
+        CENTER = np.array([1, 2, 3], np.float_)
+        RADIUS = 7
+        SPHERE = Sphere(CENTER, RADIUS)
+        RETURNED_CENTER = SPHERE.get_center()
+        EQUAL_CENTERS = equal_in_practice(CENTER[0], RETURNED_CENTER[0]) \
+            and equal_in_practice(CENTER[1], RETURNED_CENTER[1]) \
+            and equal_in_practice(CENTER[2], RETURNED_CENTER[2])
+        self.assertTrue(EQUAL_CENTERS)
+
     def test_GivenSphereAndPointEqualToCenterPlusRadiusForZ_When_get_signed_distance_to_surface_ThenReturnZero(self):
         CENTER = np.array([1, 2, 3], np.float_)
         RADIUS = 8
@@ -139,7 +149,7 @@ class Test_get_sphere(unittest.TestCase):
         POINTS = (POINT, POINT, POINT, POINT)
         self.assertRaises(ArithmeticError, get_sphere, POINTS)
 
-    def test_Given4CollinealPoints_When_get_sphere_WithP4x_and_get_radius_ThenExceptionIsRaised(self):
+    def test_Given4CollinealPoints_When_get_sphere_and_get_radius_ThenExceptionIsRaised(self):
         DELTA = 1.5
         POINT_1 = np.array([1*DELTA, 0, 0], np.float_)
         POINT_2 = np.array([2*DELTA, 0, 0], np.float_)
@@ -148,7 +158,7 @@ class Test_get_sphere(unittest.TestCase):
         POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
         self.assertRaises(ArithmeticError, get_sphere, POINTS)
 
-    def test_Given4CoplanarPoints_When_get_sphere_WithP4x_and_get_radius_ThenExceptionIsRaised(self):
+    def test_Given4CoplanarPoints_When_get_sphere_and_get_radius_ThenExceptionIsRaised(self):
         DELTA = 1.5
         POINT_1 = np.array([1*DELTA, 0, 0], np.float_)
         POINT_2 = np.array([2*DELTA, 0, 0], np.float_)
