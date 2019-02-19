@@ -144,12 +144,19 @@ class Test_Sphere(unittest.TestCase):
 
 class Test_get_sphere(unittest.TestCase):
 
-    def test_GivenAPointP_When_get_sphere_WithP4x_and_get_radius_ThenExceptionIsRaised(self):
+    def test_GivenNotExactly4Points_When_get_sphere_ThenExceptionIsRaised(self):
+        POINT = np.array([1, 3], np.float_)
+        self.assertRaises(ValueError, get_sphere, (POINT))
+        self.assertRaises(ValueError, get_sphere, (POINT, POINT))
+        self.assertRaises(ValueError, get_sphere, (POINT, POINT, POINT))
+        self.assertRaises(ValueError, get_sphere, (POINT, POINT, POINT, POINT, POINT))
+
+    def test_GivenAPointP_4x_When_get_sphere_ThenExceptionIsRaised(self):
         POINT = np.array([1, 3, 6], np.float_)
         POINTS = (POINT, POINT, POINT, POINT)
         self.assertRaises(ArithmeticError, get_sphere, POINTS)
 
-    def test_Given4CollinealPoints_When_get_sphere_and_get_radius_ThenExceptionIsRaised(self):
+    def test_Given4CollinealPoints_When_get_sphere_ThenExceptionIsRaised(self):
         DELTA = 1.5
         POINT_1 = np.array([1*DELTA, 0, 0], np.float_)
         POINT_2 = np.array([2*DELTA, 0, 0], np.float_)
@@ -158,7 +165,7 @@ class Test_get_sphere(unittest.TestCase):
         POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
         self.assertRaises(ArithmeticError, get_sphere, POINTS)
 
-    def test_Given4CoplanarPoints_When_get_sphere_and_get_radius_ThenExceptionIsRaised(self):
+    def test_Given4CoplanarPoints_When_get_sphere_ThenExceptionIsRaised(self):
         DELTA = 1.5
         POINT_1 = np.array([1*DELTA, 0, 0], np.float_)
         POINT_2 = np.array([2*DELTA, 0, 0], np.float_)

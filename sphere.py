@@ -60,7 +60,9 @@ def get_sphere(points):
     Translation of code from http://www.convertalot.com/sphere_solver.html
     on December 21, 2018, and then simplified
     """
-    assert len(points) == 4
+    if len(points) != 4:
+        raise ValueError('4 points are required')
+
     a = np.zeros((4, 4))
     for i in range(0, 4):
         a[i][0] = points[i][0]
