@@ -15,7 +15,7 @@ import math
 import numpy as np
 import unittest
 from circle import \
-    Circle, get_circle, epsilon_distance, equal_in_practice, zero_in_practice
+    Circle, get_circle, get_best_fit_circle, epsilon_distance, equal_in_practice, zero_in_practice
 
 class Test_zero_in_practice(unittest.TestCase):
 
@@ -143,12 +143,18 @@ class Test_Circle(unittest.TestCase):
 
 class Test_get_circle(unittest.TestCase):
 
-    def test_GivenAPointP_When_get_circle_WithP3x_and_get_radius_ThenExceptionIsRaised(self):
+    def test_GivenNotExactly3Points_When_get_circle_ThenExceptionIsRaised(self):
+        POINT = np.array([1, 3], np.float_)
+        self.assertRaises(ValueError, get_circle, (POINT))
+        self.assertRaises(ValueError, get_circle, (POINT, POINT))
+        self.assertRaises(ValueError, get_circle, (POINT, POINT, POINT, POINT))
+
+    def test_GivenAPointP_3x_When_get_circle_ThenExceptionIsRaised(self):
         POINT = np.array([1, 3], np.float_)
         POINTS = (POINT, POINT, POINT)
         self.assertRaises(ArithmeticError, get_circle, POINTS)
 
-    def test_Given3CollinealPoints_When_get_circle_and_get_radius_ThenExceptionIsRaised(self):
+    def test_Given3CollinealPoints_When_get_circle_ThenExceptionIsRaised(self):
         DELTA = 1.5
         POINT_1 = np.array([1*DELTA, 0], np.float_)
         POINT_2 = np.array([2*DELTA, 0], np.float_)
@@ -167,6 +173,101 @@ class Test_get_circle(unittest.TestCase):
         POINTS = (POINT_1, POINT_2, POINT_3)
 
         self.assertEqual(get_circle(POINTS), CIRCLE)
+
+class Test_get_MSE(unittest.TestCase):
+
+    def test_GivenACircleAndZeroPoints_When_get_MSE_ThenExceptionIsRaised(self):
+        CENTER = np.array([2.7, -1.3], np.float_)
+        RADIUS = 3.4
+        CIRCLE = Circle(CENTER, RADIUS)
+        self.assertRaises(ValueError, CIRCLE.get_MSE, ())
+
+    def test_GivenACircleAndPointsOnCircumference_When_get_MSE_ThenReturn0(self):
+        CENTER = np.array([2.7, -1.3], np.float_)
+        RADIUS = 3.4
+        CIRCLE = Circle(CENTER, RADIUS)
+
+        POINT_1 = np.array([CENTER[0] + RADIUS, CENTER[1]], np.float_)
+        POINT_2 = np.array([CENTER[0],          CENTER[1] + RADIUS], np.float_)
+        POINT_3 = np.array([CENTER[0] - RADIUS, CENTER[1]], np.float_)
+        POINT_4 = np.array([CENTER[0],          CENTER[1] - RADIUS], np.float_)
+        POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
+
+        self.assertTrue(zero_in_practice(CIRCLE.get_MSE(POINTS)))
+
+    def test_GivenACircleAndPointsOn2xRadius_When_get_MSE_ThenReturnRadiusSquared(self):
+        CENTER = np.array([2.7, -1.3], np.float_)
+        RADIUS = 3.4
+        CIRCLE = Circle(CENTER, RADIUS)
+
+        POINT_1 = np.array([CENTER[0] + 2*RADIUS, CENTER[1]], np.float_)
+        POINT_2 = np.array([CENTER[0],            CENTER[1] + 2*RADIUS], np.float_)
+        POINT_3 = np.array([CENTER[0] - 2*RADIUS, CENTER[1]], np.float_)
+        POINT_4 = np.array([CENTER[0],            CENTER[1] - 2*RADIUS], np.float_)
+        POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
+
+        self.assertTrue(equal_in_practice(CIRCLE.get_MSE(POINTS), RADIUS*RADIUS))
+
+class Test_get_best_fit_circle(unittest.TestCase):
+
+    def test_GivenLessThan4Points_When_get_best_fit_circle_ThenExceptionIsRaised(self):
+        POINT = np.array([1, 3], np.float_)
+        X_0 = 0
+        RADIUS = 3.4
+        self.assertRaises(ValueError, get_best_fit_circle, (POINT), X_0, RADIUS)
+        self.assertRaises(ValueError, get_best_fit_circle, (POINT, POINT), X_0, RADIUS)
+        self.assertRaises(ValueError, get_best_fit_circle, (POINT, POINT, POINT), X_0, RADIUS)
+
+    def test_Given4PointsInCircleC_When_get_best_fit_circle_ThenResultIsC(self):
+        CENTER = np.array([0, 0], np.float_)
+        RADIUS = 1
+        CIRCLE = Circle(CENTER, RADIUS)
+        X_0 = CENTER[0]
+
+        radians = math.radians(30)
+        POINT_1 = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
+        radians = math.radians(60)
+        POINT_2 = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
+        radians = math.radians(90 + 30)
+        POINT_3 = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
+        radians = math.radians(90 + 60)
+        POINT_4 = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
+        POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
+        print "POINTS is", POINTS
+
+        RESULT = get_best_fit_circle(POINTS, X_0, RADIUS)
+        self.assertEqual(CIRCLE, RESULT)
+
+    def test_Given8PointsAroundCircleC_When_get_best_fit_circle_ThenResultIsC(self):
+        CENTER = np.array([0, 0], np.float_)
+        RADIUS = 1
+        CIRCLE = Circle(CENTER, RADIUS)
+        X_0 = CENTER[0]
+        DELTA_Y = 0.1
+
+        radians = math.radians(30)
+        point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
+        POINT_1_A = np.array([point[0], point[1] + DELTA_Y], np.float_)
+        POINT_1_B = np.array([point[0], point[1] - DELTA_Y], np.float_)
+        radians = math.radians(60)
+        point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
+        POINT_2_A = np.array([point[0], point[1] + DELTA_Y], np.float_)
+        POINT_2_B = np.array([point[0], point[1] - DELTA_Y], np.float_)
+        radians = math.radians(90 + 30)
+        point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
+        POINT_3_A = np.array([point[0], point[1] + DELTA_Y], np.float_)
+        POINT_3_B = np.array([point[0], point[1] - DELTA_Y], np.float_)
+        radians = math.radians(90 + 60)
+        point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
+        POINT_4_A = np.array([point[0], point[1] + DELTA_Y], np.float_)
+        POINT_4_B = np.array([point[0], point[1] - DELTA_Y], np.float_)
+        POINTS = (POINT_1_A, POINT_1_B, POINT_2_A, POINT_2_B, POINT_3_A, POINT_3_B, POINT_4_A, POINT_4_B)
+        print "POINTS is", POINTS
+
+        RESULT = get_best_fit_circle(POINTS, X_0, RADIUS)
+        print "CIRCLE is", CIRCLE
+        print "RESULT is", RESULT
+        self.assertEqual(CIRCLE, RESULT)
 
 if __name__ == '__main__':
     unittest.main()
