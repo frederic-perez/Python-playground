@@ -10,11 +10,11 @@ class Point (?). Perhaps in numpy? In scipy?
 
 epsilon_distance = 1e-12
 
-def zero_in_practice(float):
-    return abs(float) <= epsilon_distance
+def zero_in_practice(float, epsilon = epsilon_distance):
+    return abs(float) <= epsilon
 
-def equal_in_practice(float_1, float_2):
-    return abs(float_1 - float_2) <= epsilon_distance
+def equal_in_practice(float_1, float_2, epsilon = epsilon_distance):
+    return abs(float_1 - float_2) <= epsilon
 
 class Circle(object):
     def __init__(self, center, radius):
@@ -99,7 +99,32 @@ def get_circle(points):
 
     return Circle(CENTER, RADIUS)
 
-def get_best_fit_circle(points, x_0, radius):
+def get_y_low_and_y_high(points, x_center, radius):
+    """
+    Solving these equations:
+      (x - x_p)^2 + (y - y_p)^2 = R^2, and
+      line x = x_center
+    we reach
+      y = y_p +- sqrt(R^2 - (x_center - x_p)^2)
+    Hence, we can establish
+      y_low  = min { y_p - sqrt(R^2 - (x_center - x_p)^2) } for all point p, and
+      y_high = max { y_p - sqrt(R^2 + (x_center - x_p)^2) } for all point p
+    """
+    y_low = float("inf")
+    y_high = -float("inf")
+    R_TIMES_R = radius * radius
+
+    for point in points:
+        DISCRIMINANT = R_TIMES_R - math.pow(x_center - point[0], 2)
+        if DISCRIMINANT < 0:
+            raise ValueError('The given radius is too small to reach point')
+        SQRT_DISCRIMINANT = math.sqrt(DISCRIMINANT)
+        y_low = min(y_low, point[1] - SQRT_DISCRIMINANT)
+        y_high = max(y_high, point[1] + SQRT_DISCRIMINANT)
+
+    return y_low, y_high
+
+def get_best_fit_circle(points, x_center, radius):
     if not hasattr(points, "__len__"):
         raise TypeError('points should be an array')
 
@@ -107,56 +132,39 @@ def get_best_fit_circle(points, x_0, radius):
     if NUM_POINTS <= 3:
         raise ValueError('points should have at least 4 elements')
 
-    y_min = float("inf")
-    y_max = -float("inf")
-    print "y_min initial is", y_min
-    print "y_max initial is", y_max
-    RADIUS_SQR = radius * radius
+    y_low, y_high = get_y_low_and_y_high(points, x_center, radius)
 
-    for point in points:
-        print "point is", point
-        DISCRIMINANT = RADIUS_SQR - math.pow(x_0 - point[0], 2)
-        SQR_DISCRIMINANT = math.sqrt(DISCRIMINANT)
-        CURRENT_POSSIBLE_Y_MIN = point[1] - SQR_DISCRIMINANT
-        CURRENT_POSSIBLE_Y_MAX = point[1] + SQR_DISCRIMINANT
-        print "CURRENT_POSSIBLE_Y_MIN is", CURRENT_POSSIBLE_Y_MIN
-        print "CURRENT_POSSIBLE_Y_MAX is", CURRENT_POSSIBLE_Y_MAX
-        if y_min > CURRENT_POSSIBLE_Y_MIN:
-            y_min = CURRENT_POSSIBLE_Y_MIN
-        if y_max < CURRENT_POSSIBLE_Y_MAX:
-            y_max = CURRENT_POSSIBLE_Y_MAX
-
-    print 'y_min is', y_min
-    print 'y_max is', y_max
-
-    bottom_circle = Circle((x_0, y_min), radius)
+    bottom_circle = Circle((x_center, y_low), radius)
     mse_for_bottom_circle = bottom_circle.get_MSE(points)
-    print 'mse_for_bottom_circle is', mse_for_bottom_circle
     if zero_in_practice(mse_for_bottom_circle):
         return bottom_circle
 
-    top_circle = Circle((x_0, y_max), radius)
+    top_circle = Circle((x_center, y_high), radius)
     mse_for_top_circle = top_circle.get_MSE(points)
-    print 'mse_for_top_circle is', mse_for_top_circle
+    if zero_in_practice(mse_for_top_circle):
+        return top_circle
 
     done = False
     i = 0
+    y_cut = y_low + (y_high - y_low)/2
     while not done:
-        y_middle = y_min + (y_max - y_min)/2
-        mse_for_middle_circle = Circle((x_0, y_middle), radius).get_MSE(points)
-        print "iteration #", i, "| y_middle is", y_middle, 'and mse_for_middle_circle is', mse_for_middle_circle
+        cut_circle = Circle((x_center, y_cut), radius)
+        mse_for_cut_circle = cut_circle.get_MSE(points)
+        # print "iteration #", i, "| y_cut is", y_cut, 'and mse_for_cut_circle is', mse_for_cut_circle
+        if zero_in_practice(mse_for_cut_circle):
+            return cut_circle
 
-        done = mse_for_middle_circle < epsilon_distance
+        done = mse_for_cut_circle < epsilon_distance
         if not done:
-            if mse_for_top_circle > mse_for_bottom_circle: # reset top
-                print "resetting top"
-                y_max = y_middle
-                mse_for_top_circle = mse_for_middle_circle
-            else: # reset bottom
-                print "resetting bottom"
-                y_min = y_middle
-                mse_for_bottom_circle = mse_for_middle_circle 
+            if mse_for_top_circle > mse_for_bottom_circle:
+                # print "resetting top"
+                y_high, mse_for_top_circle = y_cut, mse_for_cut_circle
+            else:
+                # print "resetting bottom"
+                y_low, mse_for_bottom_circle = y_cut, mse_for_cut_circle
+        previous_y_cut = y_cut
+        y_cut = y_low + .5*(y_high - y_low)
         i = i + 1
-        done = i == 20
+        done = equal_in_practice(y_cut, previous_y_cut) or i == 50
 
-    return Circle((x_0, y_middle), radius)
+    return Circle((x_center, y_cut), radius)

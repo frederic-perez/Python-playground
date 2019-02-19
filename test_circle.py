@@ -212,62 +212,86 @@ class Test_get_best_fit_circle(unittest.TestCase):
 
     def test_GivenLessThan4Points_When_get_best_fit_circle_ThenExceptionIsRaised(self):
         POINT = np.array([1, 3], np.float_)
-        X_0 = 0
+        X_CENTER = 0
         RADIUS = 3.4
-        self.assertRaises(ValueError, get_best_fit_circle, (POINT), X_0, RADIUS)
-        self.assertRaises(ValueError, get_best_fit_circle, (POINT, POINT), X_0, RADIUS)
-        self.assertRaises(ValueError, get_best_fit_circle, (POINT, POINT, POINT), X_0, RADIUS)
+        points = []
+        for i in range(3):
+            points.append(POINT)
+            self.assertRaises(ValueError, get_best_fit_circle, points, X_CENTER, RADIUS)
 
-    def test_Given4PointsInCircleC_When_get_best_fit_circle_ThenResultIsC(self):
+    def test_Given4PointsInTopOfCircleC_When_get_best_fit_circle_ThenResultIsC(self):
         CENTER = np.array([0, 0], np.float_)
         RADIUS = 1
         CIRCLE = Circle(CENTER, RADIUS)
-        X_0 = CENTER[0]
+        X_CENTER = CENTER[0]
 
-        radians = math.radians(30)
-        POINT_1 = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
-        radians = math.radians(60)
-        POINT_2 = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
-        radians = math.radians(90 + 30)
-        POINT_3 = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
-        radians = math.radians(90 + 60)
-        POINT_4 = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
-        POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
-        print "POINTS is", POINTS
+        ANGLES = [30, 60, 120, 150]
+        points = []
+        for angle in ANGLES:
+            radians = math.radians(angle)
+            point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
+            points.append(point)
+        print "points is", points
 
-        RESULT = get_best_fit_circle(POINTS, X_0, RADIUS)
+        RESULT = get_best_fit_circle(points, X_CENTER, RADIUS)
         self.assertEqual(CIRCLE, RESULT)
 
-    def test_Given8PointsAroundCircleC_When_get_best_fit_circle_ThenResultIsC(self):
+    def test_Given4PointsInBottomOfCircleC_When_get_best_fit_circle_ThenResultIsC(self):
         CENTER = np.array([0, 0], np.float_)
         RADIUS = 1
         CIRCLE = Circle(CENTER, RADIUS)
-        X_0 = CENTER[0]
-        DELTA_Y = 0.1
+        X_CENTER = CENTER[0]
 
-        radians = math.radians(30)
-        point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
-        POINT_1_A = np.array([point[0], point[1] + DELTA_Y], np.float_)
-        POINT_1_B = np.array([point[0], point[1] - DELTA_Y], np.float_)
-        radians = math.radians(60)
-        point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
-        POINT_2_A = np.array([point[0], point[1] + DELTA_Y], np.float_)
-        POINT_2_B = np.array([point[0], point[1] - DELTA_Y], np.float_)
-        radians = math.radians(90 + 30)
-        point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
-        POINT_3_A = np.array([point[0], point[1] + DELTA_Y], np.float_)
-        POINT_3_B = np.array([point[0], point[1] - DELTA_Y], np.float_)
-        radians = math.radians(90 + 60)
-        point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
-        POINT_4_A = np.array([point[0], point[1] + DELTA_Y], np.float_)
-        POINT_4_B = np.array([point[0], point[1] - DELTA_Y], np.float_)
-        POINTS = (POINT_1_A, POINT_1_B, POINT_2_A, POINT_2_B, POINT_3_A, POINT_3_B, POINT_4_A, POINT_4_B)
-        print "POINTS is", POINTS
+        ANGLES = [-30, -60, -120, -150]
+        points = []
+        for angle in ANGLES:
+            radians = math.radians(angle)
+            point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
+            points.append(point)
+        print "points is", points
 
-        RESULT = get_best_fit_circle(POINTS, X_0, RADIUS)
+        RESULT = get_best_fit_circle(points, X_CENTER, RADIUS)
+        self.assertEqual(CIRCLE, RESULT)
+
+    def test_Given8PointAroundCircleC_When_get_best_fit_circle_ThenResultIsC(self):
+        CENTER = np.array([0, 0], np.float_)
+        RADIUS = 1
+        CIRCLE = Circle(CENTER, RADIUS)
+        X_CENTER = CENTER[0]
+
+        ANGLES = [30, 60, 120, 150, -30, -60, -120, -150]
+        points = []
+        for angle in ANGLES:
+            radians = math.radians(angle)
+            point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
+            points.append(point)
+        print "points is", points
+
+        RESULT = get_best_fit_circle(points, X_CENTER, RADIUS)
+        self.assertEqual(CIRCLE, RESULT)
+
+    def test_Given8PointsAroundTopOfCircleC_When_get_best_fit_circle_ThenResultIsC(self):
+        CENTER = np.array([3, 6], np.float_)
+        RADIUS = 1
+        CIRCLE = Circle(CENTER, RADIUS)
+        X_CENTER = CENTER[0]
+        DELTA_Y = 0.001
+
+        ANGLES = [30, 60, 120, 150]
+        points = []
+        for angle in ANGLES:
+            radians = math.radians(angle)
+            point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians) + DELTA_Y], np.float_)
+            points.append(point)
+            point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians) - DELTA_Y], np.float_)
+            points.append(point)
+        print "points is", points
+
+        RESULT = get_best_fit_circle(points, X_CENTER, RADIUS)
         print "CIRCLE is", CIRCLE
         print "RESULT is", RESULT
-        self.assertEqual(CIRCLE, RESULT)
+        EPSILON = 1e-6
+        self.assertTrue(equal_in_practice(CENTER[1], RESULT.get_center()[1], EPSILON))
 
 if __name__ == '__main__':
     unittest.main()
