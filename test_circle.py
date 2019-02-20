@@ -145,34 +145,33 @@ class Test_get_circle(unittest.TestCase):
 
     def test_GivenNotExactly3Points_When_get_circle_ThenExceptionIsRaised(self):
         POINT = np.array([1, 3], np.float_)
-        self.assertRaises(ValueError, get_circle, (POINT))
-        self.assertRaises(ValueError, get_circle, (POINT, POINT))
-        self.assertRaises(ValueError, get_circle, (POINT, POINT, POINT, POINT))
+        self.assertRaises(ValueError, get_circle, [POINT])
+        self.assertRaises(ValueError, get_circle, [POINT, POINT])
+        self.assertRaises(ValueError, get_circle, [POINT, POINT, POINT, POINT])
 
     def test_GivenAPointP_3x_When_get_circle_ThenExceptionIsRaised(self):
         POINT = np.array([1, 3], np.float_)
-        POINTS = (POINT, POINT, POINT)
+        POINTS = [POINT, POINT, POINT]
         self.assertRaises(ArithmeticError, get_circle, POINTS)
 
     def test_Given3CollinealPoints_When_get_circle_ThenExceptionIsRaised(self):
         DELTA = 1.5
-        POINT_1 = np.array([1*DELTA, 0], np.float_)
-        POINT_2 = np.array([2*DELTA, 0], np.float_)
-        POINT_3 = np.array([3*DELTA, 0], np.float_)
-        POINTS = (POINT_1, POINT_2, POINT_3)
-        self.assertRaises(ArithmeticError, get_circle, POINTS)
+        points = []
+        for i in [1, 2, 3]:
+            points.append(np.array([i*DELTA, 0], np.float_))
+        self.assertRaises(ArithmeticError, get_circle, points)
 
     def test_Given3ChosenPoints_When_get_circle_ThenReturnExpectedResult(self):
         CENTER = np.array([2.7, -1.3], np.float_)
         RADIUS = 3.4
         CIRCLE = Circle(CENTER, RADIUS)
 
-        POINT_1 = np.array([CENTER[0] + RADIUS, CENTER[1]], np.float_)
-        POINT_2 = np.array([CENTER[0],          CENTER[1] + RADIUS], np.float_)
-        POINT_3 = np.array([CENTER[0] - RADIUS, CENTER[1]], np.float_)
-        POINTS = (POINT_1, POINT_2, POINT_3)
+        points = []
+        for angle in [30, 45, 60]:
+            radians = math.radians(angle)
+            points.append(np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_))
 
-        self.assertEqual(get_circle(POINTS), CIRCLE)
+        self.assertEqual(get_circle(points), CIRCLE)
 
 class Test_get_MSE(unittest.TestCase):
 
@@ -187,26 +186,25 @@ class Test_get_MSE(unittest.TestCase):
         RADIUS = 3.4
         CIRCLE = Circle(CENTER, RADIUS)
 
-        POINT_1 = np.array([CENTER[0] + RADIUS, CENTER[1]], np.float_)
-        POINT_2 = np.array([CENTER[0],          CENTER[1] + RADIUS], np.float_)
-        POINT_3 = np.array([CENTER[0] - RADIUS, CENTER[1]], np.float_)
-        POINT_4 = np.array([CENTER[0],          CENTER[1] - RADIUS], np.float_)
-        POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
+        points = []
+        for angle in [0, 90, 180, 270]:
+            radians = math.radians(angle)
+            points.append(np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_))
 
-        self.assertTrue(zero_in_practice(CIRCLE.get_MSE(POINTS)))
+        self.assertTrue(zero_in_practice(CIRCLE.get_MSE(points)))
 
     def test_GivenACircleAndPointsOn2xRadius_When_get_MSE_ThenReturnRadiusSquared(self):
         CENTER = np.array([2.7, -1.3], np.float_)
         RADIUS = 3.4
         CIRCLE = Circle(CENTER, RADIUS)
+        TWO_RADIUS = 2*RADIUS
 
-        POINT_1 = np.array([CENTER[0] + 2*RADIUS, CENTER[1]], np.float_)
-        POINT_2 = np.array([CENTER[0],            CENTER[1] + 2*RADIUS], np.float_)
-        POINT_3 = np.array([CENTER[0] - 2*RADIUS, CENTER[1]], np.float_)
-        POINT_4 = np.array([CENTER[0],            CENTER[1] - 2*RADIUS], np.float_)
-        POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
+        points = []
+        for angle in [0, 90, 180, 270]:
+            radians = math.radians(angle)
+            points.append(np.array([CENTER[0] + TWO_RADIUS*math.cos(radians), CENTER[1] + TWO_RADIUS*math.sin(radians)], np.float_))
 
-        self.assertTrue(equal_in_practice(CIRCLE.get_MSE(POINTS), RADIUS*RADIUS))
+        self.assertTrue(equal_in_practice(CIRCLE.get_MSE(points), RADIUS*RADIUS))
 
 class Test_get_mean_signed_distance(unittest.TestCase):
 
@@ -221,39 +219,38 @@ class Test_get_mean_signed_distance(unittest.TestCase):
         RADIUS = 3.4
         CIRCLE = Circle(CENTER, RADIUS)
 
-        POINT_1 = np.array([CENTER[0] + RADIUS, CENTER[1]], np.float_)
-        POINT_2 = np.array([CENTER[0],          CENTER[1] + RADIUS], np.float_)
-        POINT_3 = np.array([CENTER[0] - RADIUS, CENTER[1]], np.float_)
-        POINT_4 = np.array([CENTER[0],          CENTER[1] - RADIUS], np.float_)
-        POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
+        points = []
+        for angle in [0, 90, 180, 270]:
+            radians = math.radians(angle)
+            points.append(np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_))
 
-        self.assertTrue(zero_in_practice(CIRCLE.get_mean_signed_distance(POINTS)))
+        self.assertTrue(zero_in_practice(CIRCLE.get_mean_signed_distance(points)))
 
     def test_GivenACircleAndPointsOn2xRadius_When_get_mean_signed_distance_ThenReturnRadius(self):
         CENTER = np.array([2.7, -1.3], np.float_)
         RADIUS = 3.4
         CIRCLE = Circle(CENTER, RADIUS)
+        TWO_RADIUS = 2*RADIUS
 
-        POINT_1 = np.array([CENTER[0] + 2*RADIUS, CENTER[1]], np.float_)
-        POINT_2 = np.array([CENTER[0],            CENTER[1] + 2*RADIUS], np.float_)
-        POINT_3 = np.array([CENTER[0] - 2*RADIUS, CENTER[1]], np.float_)
-        POINT_4 = np.array([CENTER[0],            CENTER[1] - 2*RADIUS], np.float_)
-        POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
+        points = []
+        for angle in [0, 90, 180, 270]:
+            radians = math.radians(angle)
+            points.append(np.array([CENTER[0] + TWO_RADIUS*math.cos(radians), CENTER[1] + TWO_RADIUS*math.sin(radians)], np.float_))
 
-        self.assertTrue(equal_in_practice(CIRCLE.get_mean_signed_distance(POINTS), RADIUS))
+        self.assertTrue(equal_in_practice(CIRCLE.get_mean_signed_distance(points), RADIUS))
 
     def test_GivenACircleAndPointsOnHalfRadius_When_get_mean_signed_distance_ThenReturnMinusHalfRadius(self):
         CENTER = np.array([2.7, -1.3], np.float_)
         RADIUS = 3.4
         CIRCLE = Circle(CENTER, RADIUS)
+        HALF_RADIUS = .5*RADIUS
 
-        POINT_1 = np.array([CENTER[0] + .5*RADIUS, CENTER[1]], np.float_)
-        POINT_2 = np.array([CENTER[0],             CENTER[1] + .5*RADIUS], np.float_)
-        POINT_3 = np.array([CENTER[0] - .5*RADIUS, CENTER[1]], np.float_)
-        POINT_4 = np.array([CENTER[0],             CENTER[1] - .5*RADIUS], np.float_)
-        POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
+        points = []
+        for angle in [0, 90, 180, 270]:
+            radians = math.radians(angle)
+            points.append(np.array([CENTER[0] + HALF_RADIUS*math.cos(radians), CENTER[1] + HALF_RADIUS*math.sin(radians)], np.float_))
 
-        self.assertTrue(equal_in_practice(CIRCLE.get_mean_signed_distance(POINTS), -.5*RADIUS))
+        self.assertTrue(equal_in_practice(CIRCLE.get_mean_signed_distance(points), -HALF_RADIUS))
 
 class Test_get_best_fit_circle(unittest.TestCase):
 
@@ -262,7 +259,7 @@ class Test_get_best_fit_circle(unittest.TestCase):
         X_CENTER = 0
         RADIUS = 3.4
         points = []
-        for i in range(3):
+        for _ in range(3):
             points.append(POINT)
             self.assertRaises(ValueError, get_best_fit_circle, points, X_CENTER, RADIUS)
 
@@ -272,13 +269,10 @@ class Test_get_best_fit_circle(unittest.TestCase):
         CIRCLE = Circle(CENTER, RADIUS)
         X_CENTER = CENTER[0]
 
-        ANGLES = [30, 60, 120, 150]
         points = []
-        for angle in ANGLES:
+        for angle in [30, 60, 120, 150]:
             radians = math.radians(angle)
-            point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
-            points.append(point)
-        # print "points is", points
+            points.append(np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_))
 
         RESULT = get_best_fit_circle(points, X_CENTER, RADIUS)
         self.assertEqual(CIRCLE, RESULT)
@@ -289,13 +283,10 @@ class Test_get_best_fit_circle(unittest.TestCase):
         CIRCLE = Circle(CENTER, RADIUS)
         X_CENTER = CENTER[0]
 
-        ANGLES = [-30, -60, -120, -150]
         points = []
-        for angle in ANGLES:
+        for angle in [-30, -60, -120, -150]:
             radians = math.radians(angle)
-            point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
-            points.append(point)
-        # print "points is", points
+            points.append(np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_))
 
         RESULT = get_best_fit_circle(points, X_CENTER, RADIUS)
         self.assertEqual(CIRCLE, RESULT)
@@ -306,13 +297,10 @@ class Test_get_best_fit_circle(unittest.TestCase):
         CIRCLE = Circle(CENTER, RADIUS)
         X_CENTER = CENTER[0]
 
-        ANGLES = [30, 60, 120, 150, -30, -60, -120, -150]
         points = []
-        for angle in ANGLES:
+        for angle in [30, 60, 120, 150, -30, -60, -120, -150]:
             radians = math.radians(angle)
-            point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
-            points.append(point)
-        # print "points is", points
+            points.append(np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_))
 
         RESULT = get_best_fit_circle(points, X_CENTER, RADIUS)
         self.assertEqual(CIRCLE, RESULT)
@@ -324,19 +312,15 @@ class Test_get_best_fit_circle(unittest.TestCase):
         X_CENTER = CENTER[0]
         DELTA_Y = 0.001
 
-        ANGLES = [30, 60, 120, 150]
         points = []
-        for angle in ANGLES:
+        for angle in [30, 60, 120, 150]:
             radians = math.radians(angle)
-            point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians) + DELTA_Y], np.float_)
-            points.append(point)
-            point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians) - DELTA_Y], np.float_)
-            points.append(point)
-        # print "points is", points
+            points.append(np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians) + DELTA_Y], np.float_))
+            points.append(np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians) - DELTA_Y], np.float_))
 
         print "CIRCLE is", CIRCLE
         EPSILON = 1e-6
-        for use_MSE in [ True, False ]:
+        for use_MSE in [True, False]:
             RESULT = get_best_fit_circle(points, X_CENTER, RADIUS, use_MSE)
             print "RESULT when use_MSE is", use_MSE, "is", RESULT
             self.assertTrue(equal_in_practice(CENTER[1], RESULT.get_center()[1], EPSILON))
