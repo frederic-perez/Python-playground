@@ -278,7 +278,7 @@ class Test_get_best_fit_circle(unittest.TestCase):
             radians = math.radians(angle)
             point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
             points.append(point)
-        print "points is", points
+        # print "points is", points
 
         RESULT = get_best_fit_circle(points, X_CENTER, RADIUS)
         self.assertEqual(CIRCLE, RESULT)
@@ -295,7 +295,7 @@ class Test_get_best_fit_circle(unittest.TestCase):
             radians = math.radians(angle)
             point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
             points.append(point)
-        print "points is", points
+        # print "points is", points
 
         RESULT = get_best_fit_circle(points, X_CENTER, RADIUS)
         self.assertEqual(CIRCLE, RESULT)
@@ -312,7 +312,7 @@ class Test_get_best_fit_circle(unittest.TestCase):
             radians = math.radians(angle)
             point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)], np.float_)
             points.append(point)
-        print "points is", points
+        # print "points is", points
 
         RESULT = get_best_fit_circle(points, X_CENTER, RADIUS)
         self.assertEqual(CIRCLE, RESULT)
@@ -332,13 +332,14 @@ class Test_get_best_fit_circle(unittest.TestCase):
             points.append(point)
             point = np.array([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians) - DELTA_Y], np.float_)
             points.append(point)
-        print "points is", points
+        # print "points is", points
 
-        RESULT = get_best_fit_circle(points, X_CENTER, RADIUS)
         print "CIRCLE is", CIRCLE
-        print "RESULT is", RESULT
         EPSILON = 1e-6
-        self.assertTrue(equal_in_practice(CENTER[1], RESULT.get_center()[1], EPSILON))
+        for use_MSE in [ True, False ]:
+            RESULT = get_best_fit_circle(points, X_CENTER, RADIUS, use_MSE)
+            print "RESULT when use_MSE is", use_MSE, "is", RESULT
+            self.assertTrue(equal_in_practice(CENTER[1], RESULT.get_center()[1], EPSILON))
 
 if __name__ == '__main__':
     unittest.main()

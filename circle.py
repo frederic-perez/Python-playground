@@ -137,7 +137,7 @@ def get_y_low_and_y_high(points, x_center, radius):
 
     return y_low, y_high
 
-def get_best_fit_circle(points, x_center, radius):
+def get_best_fit_circle(points, x_center, radius, use_MSE = False):
     if not hasattr(points, "__len__"):
         raise TypeError('points should be an array')
 
@@ -148,13 +148,13 @@ def get_best_fit_circle(points, x_center, radius):
     y_low, y_high = get_y_low_and_y_high(points, x_center, radius)
 
     bottom_circle = Circle((x_center, y_low), radius)
-    mse_for_bottom_circle = bottom_circle.get_MSE(points)
-    if zero_in_practice(mse_for_bottom_circle):
+    error_for_bottom_circle = bottom_circle.get_MSE(points) if use_MSE else bottom_circle.get_mean_signed_distance(points)
+    if zero_in_practice(error_for_bottom_circle):
         return bottom_circle
 
     top_circle = Circle((x_center, y_high), radius)
-    mse_for_top_circle = top_circle.get_MSE(points)
-    if zero_in_practice(mse_for_top_circle):
+    error_for_top_circle = top_circle.get_MSE(points) if use_MSE else top_circle.get_mean_signed_distance(points)
+    if zero_in_practice(error_for_top_circle):
         return top_circle
 
     done = False
@@ -162,19 +162,19 @@ def get_best_fit_circle(points, x_center, radius):
     y_cut = y_low + (y_high - y_low)/2
     while not done:
         cut_circle = Circle((x_center, y_cut), radius)
-        mse_for_cut_circle = cut_circle.get_MSE(points)
-        # print "iteration #", i, "| y_cut is", y_cut, 'and mse_for_cut_circle is', mse_for_cut_circle
-        if zero_in_practice(mse_for_cut_circle):
+        error_for_cut_circle = cut_circle.get_MSE(points) if use_MSE else cut_circle.get_mean_signed_distance(points)
+        # print "iteration #", i, "| y_cut is", y_cut, 'and error_for_cut_circle is', error_for_cut_circle
+        if zero_in_practice(error_for_cut_circle):
             return cut_circle
 
-        done = mse_for_cut_circle < epsilon_distance
+        done = abs(error_for_cut_circle) < epsilon_distance
         if not done:
-            if mse_for_top_circle > mse_for_bottom_circle:
+            if abs(error_for_top_circle) > abs(error_for_bottom_circle):
                 # print "resetting top"
-                y_high, mse_for_top_circle = y_cut, mse_for_cut_circle
+                y_high, error_for_top_circle = y_cut, error_for_cut_circle
             else:
                 # print "resetting bottom"
-                y_low, mse_for_bottom_circle = y_cut, mse_for_cut_circle
+                y_low, error_for_bottom_circle = y_cut, error_for_cut_circle
         previous_y_cut = y_cut
         y_cut = y_low + .5*(y_high - y_low)
         i = i + 1
