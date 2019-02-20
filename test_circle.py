@@ -208,6 +208,53 @@ class Test_get_MSE(unittest.TestCase):
 
         self.assertTrue(equal_in_practice(CIRCLE.get_MSE(POINTS), RADIUS*RADIUS))
 
+class Test_get_mean_signed_distance(unittest.TestCase):
+
+    def test_GivenACircleAndZeroPoints_When_get_mean_signed_distance_ThenExceptionIsRaised(self):
+        CENTER = np.array([2.7, -1.3], np.float_)
+        RADIUS = 3.4
+        CIRCLE = Circle(CENTER, RADIUS)
+        self.assertRaises(ValueError, CIRCLE.get_mean_signed_distance, ())
+
+    def test_GivenACircleAndPointsOnCircumference_When_get_mean_signed_distance_ThenReturn0(self):
+        CENTER = np.array([2.7, -1.3], np.float_)
+        RADIUS = 3.4
+        CIRCLE = Circle(CENTER, RADIUS)
+
+        POINT_1 = np.array([CENTER[0] + RADIUS, CENTER[1]], np.float_)
+        POINT_2 = np.array([CENTER[0],          CENTER[1] + RADIUS], np.float_)
+        POINT_3 = np.array([CENTER[0] - RADIUS, CENTER[1]], np.float_)
+        POINT_4 = np.array([CENTER[0],          CENTER[1] - RADIUS], np.float_)
+        POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
+
+        self.assertTrue(zero_in_practice(CIRCLE.get_mean_signed_distance(POINTS)))
+
+    def test_GivenACircleAndPointsOn2xRadius_When_get_mean_signed_distance_ThenReturnRadius(self):
+        CENTER = np.array([2.7, -1.3], np.float_)
+        RADIUS = 3.4
+        CIRCLE = Circle(CENTER, RADIUS)
+
+        POINT_1 = np.array([CENTER[0] + 2*RADIUS, CENTER[1]], np.float_)
+        POINT_2 = np.array([CENTER[0],            CENTER[1] + 2*RADIUS], np.float_)
+        POINT_3 = np.array([CENTER[0] - 2*RADIUS, CENTER[1]], np.float_)
+        POINT_4 = np.array([CENTER[0],            CENTER[1] - 2*RADIUS], np.float_)
+        POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
+
+        self.assertTrue(equal_in_practice(CIRCLE.get_mean_signed_distance(POINTS), RADIUS))
+
+    def test_GivenACircleAndPointsOnHalfRadius_When_get_mean_signed_distance_ThenReturnMinusHalfRadius(self):
+        CENTER = np.array([2.7, -1.3], np.float_)
+        RADIUS = 3.4
+        CIRCLE = Circle(CENTER, RADIUS)
+
+        POINT_1 = np.array([CENTER[0] + .5*RADIUS, CENTER[1]], np.float_)
+        POINT_2 = np.array([CENTER[0],             CENTER[1] + .5*RADIUS], np.float_)
+        POINT_3 = np.array([CENTER[0] - .5*RADIUS, CENTER[1]], np.float_)
+        POINT_4 = np.array([CENTER[0],             CENTER[1] - .5*RADIUS], np.float_)
+        POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
+
+        self.assertTrue(equal_in_practice(CIRCLE.get_mean_signed_distance(POINTS), -.5*RADIUS))
+
 class Test_get_best_fit_circle(unittest.TestCase):
 
     def test_GivenLessThan4Points_When_get_best_fit_circle_ThenExceptionIsRaised(self):

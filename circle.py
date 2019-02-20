@@ -69,6 +69,19 @@ class Circle(object):
             acc_squared_error += squared_error
         return acc_squared_error / NUM_POINTS
 
+    def get_mean_signed_distance(self, points):
+        if not hasattr(points, "__len__"):
+            raise TypeError('points should be an array')
+
+        NUM_POINTS = len(points)
+        if NUM_POINTS < 1:
+            raise ValueError('points should not be empty')
+
+        acc_signed_distance = 0
+        for point in points:
+            acc_signed_distance += self.get_signed_distance_to_circumference(point)
+        return acc_signed_distance / NUM_POINTS
+
 def get_circle(points):
     """
     Code adapted from https://stackoverflow.com/questions/52990094
