@@ -24,7 +24,7 @@ class Sphere(object):
             raise TypeError('center should be an array of 3 elements')
         if radius <= 0:
             raise ValueError("Value %g is out of range" % radius)
-        self.center = center
+        self.center = np.array(center, np.float_)
         self.radius = radius
         return
 
@@ -49,7 +49,8 @@ class Sphere(object):
         return
 
     def get_signed_distance_to_surface(self, point):
-        return np.linalg.norm(self.center-point) - self.radius
+        point_in_np = np.array(point, np.float_)
+        return np.linalg.norm(self.center - point_in_np) - self.radius
   
     def point_is_on_surface(self, point):
         DISTANCE = self.get_signed_distance_to_surface(point)
@@ -92,6 +93,6 @@ def get_sphere(points):
     X = .5 * MINOR_12 / MINOR_11
     Y = -.5 * MINOR_13 / MINOR_11
     Z = .5 * MINOR_14 / MINOR_11
-    CENTER = np.array([X, Y, Z], np.float_)
+    CENTER = [X, Y, Z]
     RADIUS = math.sqrt(X*X + Y*Y + Z*Z - MINOR_15/MINOR_11)
     return Sphere(CENTER, RADIUS)

@@ -24,7 +24,7 @@ class Circle(object):
             raise TypeError('center should be an array of 2 elements')
         if radius <= 0:
             raise ValueError("Value %g is out of range" % radius)
-        self.center = center
+        self.center = np.array(center, np.float_)
         self.radius = radius
         return
 
@@ -48,7 +48,8 @@ class Circle(object):
         return
 
     def get_signed_distance_to_circumference(self, point):
-        return np.linalg.norm(self.center-point) - self.radius
+        point_in_np = np.array(point, np.float_)
+        return np.linalg.norm(self.center - point_in_np) - self.radius
   
     def point_is_on_circumference(self, point):
         DISTANCE = self.get_signed_distance_to_circumference(point)
@@ -107,7 +108,7 @@ def get_circle(points):
     X = (bc*(points[1][1] - points[2][1]) - cd*(points[0][1] - points[1][1])) / DETERMINANT
     Y = ((points[0][0] - points[1][0]) * cd - (points[1][0] - points[2][0]) * bc) / DETERMINANT
 
-    CENTER = np.array([X, Y], np.float_)
+    CENTER = [X, Y]
     RADIUS = math.sqrt((X - points[0][0])**2 + (Y - points[0][1])**2)
 
     return Circle(CENTER, RADIUS)
@@ -147,12 +148,12 @@ def get_best_fit_circle(points, x_center, radius, use_MSE = False):
 
     y_low, y_high = get_y_low_and_y_high(points, x_center, radius)
 
-    bottom_circle = Circle((x_center, y_low), radius)
+    bottom_circle = Circle([x_center, y_low], radius)
     error_for_bottom_circle = bottom_circle.get_MSE(points) if use_MSE else bottom_circle.get_mean_signed_distance(points)
     if zero_in_practice(error_for_bottom_circle):
         return bottom_circle
 
-    top_circle = Circle((x_center, y_high), radius)
+    top_circle = Circle([x_center, y_high], radius)
     error_for_top_circle = top_circle.get_MSE(points) if use_MSE else top_circle.get_mean_signed_distance(points)
     if zero_in_practice(error_for_top_circle):
         return top_circle
@@ -161,7 +162,7 @@ def get_best_fit_circle(points, x_center, radius, use_MSE = False):
     i = 0
     y_cut = y_low + (y_high - y_low)/2
     while not done:
-        cut_circle = Circle((x_center, y_cut), radius)
+        cut_circle = Circle([x_center, y_cut], radius)
         error_for_cut_circle = cut_circle.get_MSE(points) if use_MSE else cut_circle.get_mean_signed_distance(points)
         # print "iteration #", i, "| y_cut is", y_cut, 'and error_for_cut_circle is', error_for_cut_circle
         if zero_in_practice(error_for_cut_circle):
@@ -180,4 +181,4 @@ def get_best_fit_circle(points, x_center, radius, use_MSE = False):
         i = i + 1
         done = equal_in_practice(y_cut, previous_y_cut) or i == 50
 
-    return Circle((x_center, y_cut), radius)
+    return Circle([x_center, y_cut], radius)
