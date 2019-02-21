@@ -146,10 +146,10 @@ class Test_get_sphere(unittest.TestCase):
 
     def test_GivenNotExactly4Points_When_get_sphere_ThenExceptionIsRaised(self):
         POINT = np.array([1, 3], np.float_)
-        self.assertRaises(ValueError, get_sphere, (POINT))
-        self.assertRaises(ValueError, get_sphere, (POINT, POINT))
-        self.assertRaises(ValueError, get_sphere, (POINT, POINT, POINT))
-        self.assertRaises(ValueError, get_sphere, (POINT, POINT, POINT, POINT, POINT))
+        self.assertRaises(ValueError, get_sphere, [POINT])
+        self.assertRaises(ValueError, get_sphere, [POINT, POINT])
+        self.assertRaises(ValueError, get_sphere, [POINT, POINT, POINT])
+        self.assertRaises(ValueError, get_sphere, [POINT, POINT, POINT, POINT, POINT])
 
     def test_GivenAPointP_4x_When_get_sphere_ThenExceptionIsRaised(self):
         POINT = np.array([1, 3, 6], np.float_)
@@ -158,28 +158,25 @@ class Test_get_sphere(unittest.TestCase):
 
     def test_Given4CollinealPoints_When_get_sphere_ThenExceptionIsRaised(self):
         DELTA = 1.5
-        POINT_1 = np.array([1*DELTA, 0, 0], np.float_)
-        POINT_2 = np.array([2*DELTA, 0, 0], np.float_)
-        POINT_3 = np.array([3*DELTA, 0, 0], np.float_)
-        POINT_4 = np.array([4*DELTA, 0, 0], np.float_)
-        POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
-        self.assertRaises(ArithmeticError, get_sphere, POINTS)
+        points = []
+        for i in [1, 2, 3, 4]:
+            points.append(np.array([i*DELTA, 0, 0], np.float_))
+        self.assertRaises(ArithmeticError, get_sphere, points)
 
     def test_Given4CoplanarPoints_When_get_sphere_ThenExceptionIsRaised(self):
         DELTA = 1.5
-        POINT_1 = np.array([1*DELTA, 0, 0], np.float_)
-        POINT_2 = np.array([2*DELTA, 0, 0], np.float_)
-        POINT_3 = np.array([1*DELTA, 1, 0], np.float_)
-        POINT_4 = np.array([2*DELTA, 1, 0], np.float_)
-        POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
-        self.assertRaises(ArithmeticError, get_sphere, POINTS)
+        points = []
+        for i in [1, 2]:
+            points.append(np.array([i*DELTA, i, 0], np.float_))
+            points.append(np.array([i*DELTA, i + 1., 0], np.float_))
+        self.assertRaises(ArithmeticError, get_sphere, points)
 
     def test_Given4PointsFrom_31_136_12_106_When_get_sphere_ThenReturnTheSitesResult(self):
         POINT_1 = np.array([-34.1186,  1.389,   8.5034], np.float_)
         POINT_2 = np.array([-34.3179,  1.3719, -29.432], np.float_)
         POINT_3 = np.array([-8.7948,  -0.1148, -10.462], np.float_)
         POINT_4 = np.array([-60.527,   5.8305, -10.423], np.float_)
-        POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
+        POINTS = [POINT_1, POINT_2, POINT_3, POINT_4]
         SPHERE_31_136_12_106 = get_sphere(POINTS)
 
         CENTER_FROM_SITE = np.array([-21.942809924607257, 113.52343730620188,-10.579341367428881], np.float_)
@@ -193,7 +190,7 @@ class Test_get_sphere(unittest.TestCase):
         POINT_2 = np.array([-34.4944, 0.4966, -22.06], np.float_)
         POINT_3 = np.array([-8.2244,  0.5713,  -5.6182], np.float_)
         POINT_4 = np.array([-60.996,  4.412,   -5.7822], np.float_)
-        POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
+        POINTS = [POINT_1, POINT_2, POINT_3, POINT_4]
         SPHERE_39_136_10_106 = get_sphere(POINTS)
 
         CENTER_FROM_SITE = np.array([-26.681763623168056, 111.42322500511179, -5.8390596432420425], np.float_)
