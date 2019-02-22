@@ -11,7 +11,6 @@ or, for individual test classes:
   $ python -m unittest -v test_sphere.Test_zero_in_practice
 """
 
-import math
 import numpy as np
 import unittest
 from sphere import \
