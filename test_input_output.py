@@ -4,7 +4,6 @@ Run the tests by executing, for all test classes:
   $ python -m unittest -v test_input_output
 """
 
-import numpy as np
 import unittest
 from input_output import save_as_ply
 
