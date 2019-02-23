@@ -3,8 +3,7 @@
 import math
 import numpy as np
 import os.path
-from sphere import \
-    Sphere, get_sphere, epsilon_distance, equal_in_practice, zero_in_practice
+from sphere import Sphere
 
 def get_pringle_points(num_points, a, b, radius, z_offset):
     points = np.random.rand(num_points, 3)
