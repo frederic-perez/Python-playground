@@ -3,12 +3,15 @@ Run the tests by executing, for all test classes:
 
   $ python -m unittest -v test_circle
 
-or, for individual test classes:
+or, for individual test classes (sorted as appearing in this file):
 
-  $ python -m unittest -v test_circle.Test_Circle
-  $ python -m unittest -v test_circle.Test_equal_in_practice
-  $ python -m unittest -v test_circle.Test_get_circle
   $ python -m unittest -v test_circle.Test_zero_in_practice
+  $ python -m unittest -v test_circle.Test_equal_in_practice
+  $ python -m unittest -v test_circle.Test_Circle
+  $ python -m unittest -v test_circle.Test_get_circle
+  $ python -m unittest -v test_circle.Test_get_MSE
+  $ python -m unittest -v test_circle.Test_get_mean_signed_distance
+  $ python -m unittest -v test_circle.Test_get_best_fit_circle
 """
 
 import math
