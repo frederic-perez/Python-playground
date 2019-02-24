@@ -3,12 +3,12 @@ Run the tests by executing, for all test classes:
 
   $ python -m unittest -v test_sphere
 
-or, for individual test classes:
+or, for individual test classes (sorted as appearing in this file):
 
-  $ python -m unittest -v test_sphere.Test_Sphere
-  $ python -m unittest -v test_sphere.Test_equal_in_practice
-  $ python -m unittest -v test_sphere.Test_get_sphere
   $ python -m unittest -v test_sphere.Test_zero_in_practice
+  $ python -m unittest -v test_sphere.Test_equal_in_practice
+  $ python -m unittest -v test_sphere.Test_Sphere
+  $ python -m unittest -v test_sphere.Test_get_sphere
 """
 
 import numpy as np
