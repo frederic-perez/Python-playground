@@ -2,19 +2,12 @@
 
 import math
 import numpy as np
+from epsilon import epsilon_distance, zero_in_practice, equal_in_practice
 
 """
 TODO
 class Point (?). Perhaps in numpy? In scipy?
 """
-
-epsilon_distance = 1e-12
-
-def zero_in_practice(float):
-    return abs(float) <= epsilon_distance
-
-def equal_in_practice(float_1, float_2):
-    return abs(float_1 - float_2) <= epsilon_distance
 
 class Sphere(object):
     def __init__(self, center, radius):

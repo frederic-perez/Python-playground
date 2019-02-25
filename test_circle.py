@@ -5,8 +5,6 @@ Run the tests by executing, for all test classes:
 
 or, for individual test classes (sorted as appearing in this file):
 
-  $ python -m unittest -v test_circle.Test_zero_in_practice
-  $ python -m unittest -v test_circle.Test_equal_in_practice
   $ python -m unittest -v test_circle.Test_Circle
   $ python -m unittest -v test_circle.Test_get_circle
   $ python -m unittest -v test_circle.Test_get_MSE
@@ -17,34 +15,8 @@ or, for individual test classes (sorted as appearing in this file):
 import math
 import numpy as np
 import unittest
-from circle import \
-    Circle, get_circle, get_best_fit_circle, epsilon_distance, equal_in_practice, zero_in_practice
-
-class Test_zero_in_practice(unittest.TestCase):
-
-    def test_GivenAFloatVeryCloseToZero_When_zero_in_practice_ThenReturnTrue(self):
-        F = epsilon_distance/2.
-        self.assertTrue(zero_in_practice(F))
- 
-    def test_GivenAFarEnoughFromZero_When_zero_in_practice_ThenReturnFalse(self):
-        F = 2.*epsilon_distance
-        self.assertFalse(zero_in_practice(F))
-
-class Test_equal_in_practice(unittest.TestCase):
-
-    def test_GivenAFloat_When_test_equal_in_practice_ThenReturnTrue(self):
-        F = 3.
-        self.assertTrue(equal_in_practice(F, F))
-
-    def test_GivenAFloatAndA2ndVeryClose_When_test_equal_in_practice_ThenReturnTrue(self):
-        F_1 = 3.
-        F_2 = F_1 + epsilon_distance/2.
-        self.assertTrue(equal_in_practice(F_1, F_2))
- 
-    def test_GivenAFloatAndA2ndFarEnough_When_test_equal_in_practice_ThenReturnFalse(self):
-        F_1 = 3.
-        F_2 = F_1 + 2.*epsilon_distance
-        self.assertFalse(equal_in_practice(F_1, F_2))
+from circle import Circle, get_circle, get_best_fit_circle
+from epsilon import epsilon_distance, equal_in_practice, zero_in_practice
 
 class Test_Circle(unittest.TestCase):
 
