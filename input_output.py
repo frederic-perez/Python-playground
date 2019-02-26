@@ -5,16 +5,16 @@ import numpy as np
 import os.path
 from sphere import Sphere
 
-def get_pringle_points(num_points, a, b, radius, z_offset):
+def get_pringle_points(num_points, a, b, radius, offset_xyz):
     points = np.random.rand(num_points, 3)
     A_SQR = a*a
     B_SQR = b*b
     for i in range(num_points):
         print "i is", i
         alpha = i * 2*math.pi/num_points
-        x = radius * math.cos(alpha)
-        y = radius * math.sin(alpha)
-        z = z_offset + y*y/B_SQR - x*x/A_SQR # https://en.wikipedia.org/wiki/Paraboloid
+        x = offset_xyz[0] + radius * math.cos(alpha)
+        y = offset_xyz[1] + radius * math.sin(alpha)
+        z = offset_xyz[2] + y*y/B_SQR - x*x/A_SQR # https://en.wikipedia.org/wiki/Paraboloid
         point = np.zeros(3)
         point[0] = x
         point[1] = y
@@ -174,13 +174,13 @@ def play_with_a_pringle():
     PRINGLE_A = 8
     PRINGLE_B = 4
     PRINGLE_RADIUS = 5
-    PRINGLE_Z_OFFSET = 4
+    PRINGLE_OFFSET = [0, 0, 4]
     PRINGLE_POINTS = get_pringle_points(
         NUM_PRINGLE_POINTS,
         PRINGLE_A,
         PRINGLE_B,
         PRINGLE_RADIUS,
-        PRINGLE_Z_OFFSET)
+        PRINGLE_OFFSET)
     save_xyz_file(PRINGLE_FILENAME_XYZ, PRINGLE_POINTS)
     PRINGLE_FILENAME_PLY = 'data/pringle.ply'
     SPHERE_CENTER = np.array([0, 0, 0], np.float_)
