@@ -4,11 +4,6 @@ import math
 import numpy as np
 from epsilon import epsilon_distance, zero_in_practice, equal_in_practice
 
-"""
-TODO
-class Point (?). Perhaps in numpy? In scipy?
-"""
-
 class Sphere(object):
     def __init__(self, center, radius):
         if not hasattr(center, "__len__"):

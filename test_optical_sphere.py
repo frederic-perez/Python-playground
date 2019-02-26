@@ -3,19 +3,23 @@ Run the tests by executing:
 $ python -m unittest -v test_optical_sphere
 """
 
-import math
-import numpy as np
 import unittest
-from sphere import Sphere, get_sphere, epsilon_distance
+from epsilon import equal_in_practice
 from optical_sphere import OpticalSphere
 
 class Test_OpticalSphere(unittest.TestCase):
 
     def test_Given2OpticalSpheresCreatedEqually_WhenComparision_ThenReturnTrue(self):
-        RADIUS = 3.
-        self.assertEqual(OpticalSphere(RADIUS), OpticalSphere(RADIUS))
-        OPTICAL_SPHERE = OpticalSphere(RADIUS)
-        self.assertEqual(OPTICAL_SPHERE, OpticalSphere(RADIUS))
+        BASE = 1.
+        self.assertEqual(OpticalSphere(BASE), OpticalSphere(BASE))
+        OPTICAL_SPHERE = OpticalSphere(BASE)
+        self.assertEqual(OPTICAL_SPHERE, OpticalSphere(BASE))
+
+    def test_GivenOpticalSphereWithBase1_When_get_radius_ThenReturn530(self):
+        # 530 mm is the radius of a 1 diopter curve
+        BASE = 1.
+        OPTICAL_SPHERE = OpticalSphere(BASE)
+        self.assertTrue(equal_in_practice(OPTICAL_SPHERE.get_radius(), 530))
 
 if __name__ == '__main__':
     unittest.main()
