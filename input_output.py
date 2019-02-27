@@ -5,7 +5,7 @@ import numpy as np
 import os.path
 from sphere import Sphere
 
-def get_pringle_points(num_points, a, b, radius, offset_xyz):
+def get_pringle_points(num_points, a, b, radius, offset_xyz, max_noise = 0.):
     points = np.random.rand(num_points, 3)
     A_SQR = a*a
     B_SQR = b*b
@@ -15,6 +15,10 @@ def get_pringle_points(num_points, a, b, radius, offset_xyz):
         x = offset_xyz[0] + radius * math.cos(alpha)
         y = offset_xyz[1] + radius * math.sin(alpha)
         z = offset_xyz[2] + y*y/B_SQR - x*x/A_SQR # https://en.wikipedia.org/wiki/Paraboloid
+        if (max_noise > 0.):
+            x += max_noise * (np.random.random_sample() - .5)
+            y += max_noise * (np.random.random_sample() - .5)
+            z += max_noise * (np.random.random_sample() - .5)
         point = np.zeros(3)
         point[0] = x
         point[1] = y
@@ -188,6 +192,28 @@ def play_with_a_pringle():
     SPHERE = Sphere(SPHERE_CENTER, SPHERE_RADIUS)
     save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(PRINGLE_FILENAME_XYZ, SPHERE, PRINGLE_FILENAME_PLY)
 
+def play_with_a_pringle_with_noise():
+    PRINGLE_FILENAME_XYZ = 'data/pringle-with-noise.xyz'
+    NUM_PRINGLE_POINTS = 10 # 100
+    PRINGLE_A = 8
+    PRINGLE_B = 4
+    PRINGLE_RADIUS = 5
+    PRINGLE_OFFSET = [0, 0, 4]
+    PRINGLE_MAX_NOISE = .15
+    PRINGLE_POINTS = get_pringle_points(
+        NUM_PRINGLE_POINTS,
+        PRINGLE_A,
+        PRINGLE_B,
+        PRINGLE_RADIUS,
+        PRINGLE_OFFSET,
+        PRINGLE_MAX_NOISE)
+    save_xyz_file(PRINGLE_FILENAME_XYZ, PRINGLE_POINTS)
+    PRINGLE_FILENAME_PLY = 'data/pringle-with-noise.ply'
+    SPHERE_CENTER = np.array([0, 0, 0], np.float_)
+    SPHERE_RADIUS = 6.8
+    SPHERE = Sphere(SPHERE_CENTER, SPHERE_RADIUS)
+    save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(PRINGLE_FILENAME_XYZ, SPHERE, PRINGLE_FILENAME_PLY)
+
 if __name__ == '__main__':
     FILENAME_IN = 'data/points-in.xyz'
     FILENAME_OUT = 'data/points-out.ply'
@@ -196,3 +222,7 @@ if __name__ == '__main__':
     print
 
     play_with_a_pringle()
+
+    print
+
+    play_with_a_pringle_with_noise()
