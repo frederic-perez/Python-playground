@@ -114,10 +114,12 @@ def get_y_low_and_y_high(points, x_center, radius):
     """
     y_low = float("inf")
     y_high = -float("inf")
-    R_TIMES_R = radius * radius
+    R_TIMES_R = radius**2
 
     for point in points:
-        DISCRIMINANT = R_TIMES_R - math.pow(x_center - point[0], 2)
+        DISCRIMINANT = R_TIMES_R - (x_center - point[0])**2
+        if zero_in_practice(DISCRIMINANT):
+            continue
         if DISCRIMINANT < 0:
             raise ValueError('The given radius is too small to reach point')
         SQRT_DISCRIMINANT = math.sqrt(DISCRIMINANT)
