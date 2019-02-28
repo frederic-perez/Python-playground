@@ -3,26 +3,25 @@
 import math
 import numpy as np
 import os.path
-from sphere import Sphere
+from sphere import Sphere, get_best_fit_sphere
 
-def get_pringle_points(num_points, a, b, radius, offset_xyz, max_noise = 0.):
+def get_pringle_points(num_points, a, b, radius_x, radius_z, offset_xyz, max_noise = 0.):
     points = np.random.rand(num_points, 3)
-    A_SQR = a*a
-    B_SQR = b*b
+    A_SQR = a**2
+    B_SQR = b**2
     for i in range(num_points):
         print "i is", i
         alpha = i * 2*math.pi/num_points
-        x = offset_xyz[0] + radius * math.cos(alpha)
-        y = offset_xyz[1] + radius * math.sin(alpha)
-        z = offset_xyz[2] + y*y/B_SQR - x*x/A_SQR # https://en.wikipedia.org/wiki/Paraboloid
-        if (max_noise > 0.):
-            x += max_noise * (np.random.random_sample() - .5)
-            y += max_noise * (np.random.random_sample() - .5)
-            z += max_noise * (np.random.random_sample() - .5)
+        x = radius_x * math.sin(alpha)
+        z = radius_z * math.cos(alpha)
+        y = z*z/B_SQR - x*x/A_SQR # https://en.wikipedia.org/wiki/Paraboloid
         point = np.zeros(3)
-        point[0] = x
-        point[1] = y
-        point[2] = z
+        point[0] = x + offset_xyz[0]
+        point[1] = y + offset_xyz[1]
+        point[2] = z + offset_xyz[2]
+        if (max_noise > 0.):
+            for j in range(3):
+                point[j] += max_noise * (np.random.random_sample() - .5)
         points[i] = point
     return points
 
@@ -177,13 +176,15 @@ def play_with_a_pringle():
     NUM_PRINGLE_POINTS = 10 # 100
     PRINGLE_A = 8
     PRINGLE_B = 4
-    PRINGLE_RADIUS = 5
-    PRINGLE_OFFSET = [0, 0, 4]
+    PRINGLE_RADIUS_X = 5
+    PRINGLE_RADIUS_Z = 5
+    PRINGLE_OFFSET = [0, 4, 0]
     PRINGLE_POINTS = get_pringle_points(
         NUM_PRINGLE_POINTS,
         PRINGLE_A,
         PRINGLE_B,
-        PRINGLE_RADIUS,
+        PRINGLE_RADIUS_X,
+        PRINGLE_RADIUS_Z,
         PRINGLE_OFFSET)
     save_xyz_file(PRINGLE_FILENAME_XYZ, PRINGLE_POINTS)
     PRINGLE_FILENAME_PLY = 'data/pringle.ply'
@@ -197,21 +198,49 @@ def play_with_a_pringle_with_noise():
     NUM_PRINGLE_POINTS = 10 # 100
     PRINGLE_A = 8
     PRINGLE_B = 4
-    PRINGLE_RADIUS = 5
+    PRINGLE_RADIUS_X = 5
+    PRINGLE_RADIUS_Z = 5
     PRINGLE_OFFSET = [0, 0, 4]
     PRINGLE_MAX_NOISE = .15
     PRINGLE_POINTS = get_pringle_points(
         NUM_PRINGLE_POINTS,
         PRINGLE_A,
         PRINGLE_B,
-        PRINGLE_RADIUS,
+        PRINGLE_RADIUS_X,
+        PRINGLE_RADIUS_Z,
         PRINGLE_OFFSET,
         PRINGLE_MAX_NOISE)
     save_xyz_file(PRINGLE_FILENAME_XYZ, PRINGLE_POINTS)
     PRINGLE_FILENAME_PLY = 'data/pringle-with-noise.ply'
-    SPHERE_CENTER = np.array([0, 0, 0], np.float_)
+    SPHERE_CENTER = [0, 0, 0]
     SPHERE_RADIUS = 6.8
     SPHERE = Sphere(SPHERE_CENTER, SPHERE_RADIUS)
+    save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(PRINGLE_FILENAME_XYZ, SPHERE, PRINGLE_FILENAME_PLY)
+
+def play_with_a_pringle_like_whatnot_42_with_noise():
+    PRINGLE_FILENAME_XYZ = 'data/pringle-like-whatnot-42-with-noise.xyz'
+    NUM_PRINGLE_POINTS = 10 # 100
+    PRINGLE_A = 15 # 20
+    PRINGLE_B = 20 # 15
+    PRINGLE_RADIUS_X = 22 # 26
+    PRINGLE_RADIUS_Z = 26 # 22
+    PRINGLE_OFFSET = [-35, 0, -20]
+    PRINGLE_MAX_NOISE = .5
+    PRINGLE_POINTS = get_pringle_points(
+        NUM_PRINGLE_POINTS,
+        PRINGLE_A,
+        PRINGLE_B,
+        PRINGLE_RADIUS_X,
+        PRINGLE_RADIUS_Z,
+        PRINGLE_OFFSET,
+        PRINGLE_MAX_NOISE)
+    save_xyz_file(PRINGLE_FILENAME_XYZ, PRINGLE_POINTS)
+    PRINGLE_FILENAME_PLY = 'data/pringle-like-whatnot-42-with-noise.ply'
+    # SPHERE_CENTER = [PRINGLE_OFFSET[0], 0, PRINGLE_OFFSET[2]]
+    SPHERE_RADIUS = 106 # 6.8
+    # SPHERE = Sphere(SPHERE_CENTER, SPHERE_RADIUS)
+    SPHERE = get_best_fit_sphere(PRINGLE_POINTS, PRINGLE_OFFSET[0], PRINGLE_OFFSET[2], SPHERE_RADIUS)
+    print "Best fit sphere for the pringle like whatnot-42 is", SPHERE
     save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(PRINGLE_FILENAME_XYZ, SPHERE, PRINGLE_FILENAME_PLY)
 
 if __name__ == '__main__':
@@ -220,9 +249,10 @@ if __name__ == '__main__':
     save_as_ply(FILENAME_IN, FILENAME_OUT)
 
     print
-
     play_with_a_pringle()
 
     print
-
     play_with_a_pringle_with_noise()
+
+    print
+    play_with_a_pringle_like_whatnot_42_with_noise()
