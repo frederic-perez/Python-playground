@@ -44,6 +44,34 @@ class Sphere(object):
         DISTANCE = self.get_signed_distance_to_surface(point)
         return zero_in_practice(DISTANCE)
 
+    def get_MSE(self, points):
+        if not hasattr(points, "__len__"):
+            raise TypeError('points should be an array')
+
+        NUM_POINTS = len(points)
+        if NUM_POINTS < 1:
+            raise ValueError('points should not be empty')
+
+        acc_squared_error = 0
+        for point in points:
+            error = self.get_signed_distance_to_surface(point)
+            squared_error = error*error
+            acc_squared_error += squared_error
+        return acc_squared_error / NUM_POINTS
+
+    def get_mean_signed_distance(self, points):
+        if not hasattr(points, "__len__"):
+            raise TypeError('points should be an array')
+
+        NUM_POINTS = len(points)
+        if NUM_POINTS < 1:
+            raise ValueError('points should not be empty')
+
+        acc_signed_distance = 0
+        for point in points:
+            acc_signed_distance += self.get_signed_distance_to_surface(point)
+        return acc_signed_distance / NUM_POINTS
+
 def get_sphere(points):
     """
     Translation of code from http://www.convertalot.com/sphere_solver.html
@@ -84,3 +112,75 @@ def get_sphere(points):
     CENTER = [X, Y, Z]
     RADIUS = math.sqrt(X*X + Y*Y + Z*Z - MINOR_15/MINOR_11)
     return Sphere(CENTER, RADIUS)
+
+def get_y_low_and_y_high(points, x_center, z_center, radius):
+    """
+    Solving these equations:
+      (x - x_p)^2 + (y - y_p)^2 + (z - z_p)^2 = R^2, and
+      line x, z = x_center, z_center
+    we reach
+      y = y_p +- sqrt(R^2 - (x_center - x_p)^2 - (z_center - z_p)^2)
+    Hence, we can establish
+      y_low  = min { y_p - sqrt(R^2 - (x_center - x_p)^2 - (z_center - z_p)^2) } for all point p, and
+      y_high = max { y_p - sqrt(R^2 + (x_center - x_p)^2 - (z_center - z_p)^2) } for all point p
+    """
+    y_low = float("inf")
+    y_high = -float("inf")
+    R_TIMES_R = radius**2
+
+    for point in points:
+        DISCRIMINANT = R_TIMES_R - (x_center - point[0])**2 - (z_center - point[2])**2
+        if zero_in_practice(DISCRIMINANT):
+            continue
+        if DISCRIMINANT < 0:
+            raise ValueError('The given radius is too small to reach point')
+        SQRT_DISCRIMINANT = math.sqrt(DISCRIMINANT)
+        y_low = min(y_low, point[1] - SQRT_DISCRIMINANT)
+        y_high = max(y_high, point[1] + SQRT_DISCRIMINANT)
+
+    return y_low, y_high
+
+def get_best_fit_sphere(points, x_center, z_center, radius, use_MSE = False):
+    if not hasattr(points, "__len__"):
+        raise TypeError('points should be an array')
+
+    NUM_POINTS = len(points)
+    if NUM_POINTS <= 4:
+        raise ValueError('points should have at least 5 elements')
+
+    y_low, y_high = get_y_low_and_y_high(points, x_center, z_center, radius)
+
+    bottom_sphere = Sphere([x_center, y_low, z_center], radius)
+    error_for_bottom_sphere = bottom_sphere.get_MSE(points) if use_MSE else bottom_sphere.get_mean_signed_distance(points)
+    if zero_in_practice(error_for_bottom_sphere):
+        return bottom_sphere
+
+    top_sphere = Sphere([x_center, y_high, z_center], radius)
+    error_for_top_sphere = top_sphere.get_MSE(points) if use_MSE else top_sphere.get_mean_signed_distance(points)
+    if zero_in_practice(error_for_top_sphere):
+        return top_sphere
+
+    done = False
+    i = 0
+    y_cut = y_low + (y_high - y_low)/2
+    while not done:
+        cut_sphere = Sphere([x_center, y_cut, z_center], radius)
+        error_for_cut_sphere = cut_sphere.get_MSE(points) if use_MSE else cut_sphere.get_mean_signed_distance(points)
+        # print "iteration #", i, "| y_cut is", y_cut, 'and error_for_cut_circle is', error_for_cut_circle
+        if zero_in_practice(error_for_cut_sphere):
+            return cut_sphere
+
+        done = abs(error_for_cut_sphere) < epsilon_distance
+        if not done:
+            if abs(error_for_top_sphere) > abs(error_for_bottom_sphere):
+                # print "resetting top"
+                y_high, error_for_top_sphere = y_cut, error_for_cut_sphere
+            else:
+                # print "resetting bottom"
+                y_low, error_for_bottom_sphere = y_cut, error_for_cut_sphere
+        previous_y_cut = y_cut
+        y_cut = y_low + .5*(y_high - y_low)
+        i = i + 1
+        done = equal_in_practice(y_cut, previous_y_cut) or i == 50
+
+    return Sphere([x_center, y_cut, z_center], radius)

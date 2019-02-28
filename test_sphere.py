@@ -9,10 +9,11 @@ or, for individual test classes (sorted as appearing in this file):
   $ python -m unittest -v test_sphere.Test_get_sphere
 """
 
+import math
 import numpy as np
 import unittest
 from epsilon import epsilon_distance, equal_in_practice, zero_in_practice
-from sphere import Sphere, get_sphere
+from sphere import Sphere, get_sphere, get_best_fit_sphere
 
 class Test_Sphere(unittest.TestCase):
 
@@ -113,6 +114,76 @@ class Test_Sphere(unittest.TestCase):
         POINT = CENTER + np.array([RADIUS + 2. * epsilon_distance, 0, 0])
         self.assertFalse(SPHERE.point_is_on_surface(POINT))
 
+def get_sample_points_on_the_surface(sphere):
+    # https://en.wikipedia.org/wiki/List_of_common_coordinate_transformations#From_spherical_coordinates
+    CENTER = sphere.get_center()
+    RADIUS = sphere.get_radius()
+    points = []
+    ANGLES_IN_DEGREES = [0, 45, 90, 135, 180, 225, 270, 315]
+    for theta_in_degrees in ANGLES_IN_DEGREES:
+        theta = math.radians(theta_in_degrees)
+        for phi_in_degrees in ANGLES_IN_DEGREES:
+            phi = math.radians(phi_in_degrees)
+            points.append([
+                CENTER[0] + RADIUS*math.sin(theta)*math.cos(phi),
+                CENTER[1] + RADIUS*math.sin(theta)*math.sin(phi),
+                CENTER[2] + RADIUS*math.cos(theta)])
+    return points
+
+class Test_Sphere_get_MSE(unittest.TestCase):
+
+    def test_GivenASphereAndZeroPoints_When_get_MSE_ThenExceptionIsRaised(self):
+        CENTER = [1, 2, 3]
+        RADIUS = 7
+        SPHERE = Sphere(CENTER, RADIUS)
+        self.assertRaises(ValueError, SPHERE.get_MSE, ())
+
+    def test_GivenASphereAndPointsOnSurface_When_get_MSE_ThenReturn0(self):
+        CENTER = [1, 2, 3]
+        RADIUS = 7
+        SPHERE = Sphere(CENTER, RADIUS)
+        POINTS = get_sample_points_on_the_surface(SPHERE)
+        self.assertTrue(zero_in_practice(SPHERE.get_MSE(POINTS)))
+
+    def test_GivenASphereAndPointsOn2xRadius_When_get_MSE_ThenReturnRadiusSquared(self):
+        CENTER = [1, 2, 3]
+        RADIUS = 7
+        SPHERE = Sphere(CENTER, RADIUS)
+        TWO_RADIUS = 2*RADIUS
+        POINTS = get_sample_points_on_the_surface(Sphere(CENTER, TWO_RADIUS))
+        self.assertTrue(equal_in_practice(SPHERE.get_MSE(POINTS), RADIUS*RADIUS))
+
+class Test_Sphere_get_mean_signed_distance(unittest.TestCase):
+
+    def test_GivenASphereAndZeroPoints_When_get_mean_signed_distance_ThenExceptionIsRaised(self):
+        CENTER = [1, 2, 3]
+        RADIUS = 7
+        SPHERE = Sphere(CENTER, RADIUS)
+        self.assertRaises(ValueError, SPHERE.get_mean_signed_distance, ())
+
+    def test_GivenASphereAndPointsOnSurface_When_get_mean_signed_distance_ThenReturn0(self):
+        CENTER = [1, 2, 3]
+        RADIUS = 7
+        SPHERE = Sphere(CENTER, RADIUS)
+        POINTS = get_sample_points_on_the_surface(SPHERE)
+        self.assertTrue(zero_in_practice(SPHERE.get_mean_signed_distance(POINTS)))
+
+    def test_GivenASphereAndPointsOn2xRadius_When_get_mean_signed_distance_ThenReturnRadius(self):
+        CENTER = [1, 2, 3]
+        RADIUS = 7
+        SPHERE = Sphere(CENTER, RADIUS)
+        TWO_RADIUS = 2*RADIUS
+        POINTS = get_sample_points_on_the_surface(Sphere(CENTER, TWO_RADIUS))
+        self.assertTrue(equal_in_practice(SPHERE.get_mean_signed_distance(POINTS), RADIUS))
+
+    def test_GivenASphereAndPointsOnHalfRadius_When_get_mean_signed_distance_ThenReturnMinusHalfRadius(self):
+        CENTER = [1, 2, 3]
+        RADIUS = 7
+        SPHERE = Sphere(CENTER, RADIUS)
+        HALF_RADIUS = .5*RADIUS
+        POINTS = get_sample_points_on_the_surface(Sphere(CENTER, HALF_RADIUS))
+        self.assertTrue(equal_in_practice(SPHERE.get_mean_signed_distance(POINTS), -HALF_RADIUS))
+
 class Test_get_sphere(unittest.TestCase):
 
     def test_GivenNotExactly4Points_When_get_sphere_ThenExceptionIsRaised(self):
@@ -169,6 +240,68 @@ class Test_get_sphere(unittest.TestCase):
         SPHERE_FROM_SITE = Sphere(CENTER_FROM_SITE, RADIUS_FROM_SITE)
 
         self.assertEqual(SPHERE_39_136_10_106, SPHERE_FROM_SITE)
+
+class Test_get_best_fit_sphere(unittest.TestCase):
+
+    def test_GivenLessThan5Points_When_get_best_fit_sphere_ThenExceptionIsRaised(self):
+        POINT = [1, 3]
+        X_CENTER = 0
+        Z_CENTER = 0
+        RADIUS = 3.4
+        points = []
+        for _ in range(4):
+            points.append(POINT)
+            self.assertRaises(ValueError, get_best_fit_sphere, points, X_CENTER, Z_CENTER, RADIUS)
+
+    def test_Given4PointsInTopOfSphereS_When_get_best_fit_sphere_ThenResultIsS(self):
+        CENTER = [0, 0, 0]
+        RADIUS = 3.4
+        SPHERE = Sphere(CENTER, RADIUS)
+        X_CENTER = CENTER[0]
+        Z_CENTER = CENTER[2]
+
+        points = []
+        for theta_in_degrees in [30, 60]:
+            theta = math.radians(theta_in_degrees)
+            for phi_in_degrees in [0, 45, 90, 135, 180, 225, 270, 315]:
+                phi = math.radians(phi_in_degrees)
+                points.append([
+                    CENTER[0] + RADIUS*math.sin(theta)*math.cos(phi),
+                    CENTER[1] + RADIUS*math.cos(theta),
+                    CENTER[2] + RADIUS*math.sin(theta)*math.sin(phi)])
+
+        RESULT = get_best_fit_sphere(points, X_CENTER, Z_CENTER, RADIUS)
+        self.assertEqual(SPHERE, RESULT)
+
+    def test_Given4PointsInBottomOfSphereS_When_get_best_fit_sphere_ThenResultIsS(self):
+        CENTER = [0, 0, 0]
+        RADIUS = 3.4
+        SPHERE = Sphere(CENTER, RADIUS)
+        X_CENTER = CENTER[0]
+        Z_CENTER = CENTER[2]
+
+        points = []
+        for theta_in_degrees in [120, 160]:
+            theta = math.radians(theta_in_degrees)
+            for phi_in_degrees in [0, 45, 90, 135, 180, 225, 270, 315]:
+                phi = math.radians(phi_in_degrees)
+                points.append([
+                    CENTER[0] + RADIUS*math.sin(theta)*math.cos(phi),
+                    CENTER[1] + RADIUS*math.cos(theta),
+                    CENTER[2] + RADIUS*math.sin(theta)*math.sin(phi)])
+
+        RESULT = get_best_fit_sphere(points, X_CENTER, Z_CENTER, RADIUS)
+        self.assertEqual(SPHERE, RESULT)
+
+    def test_GivenNPointsAroundSphereS_When_get_best_fit_sphere_ThenResultIsS(self):
+        CENTER = [0, 0, 0]
+        RADIUS = 3.4
+        SPHERE = Sphere(CENTER, RADIUS)
+        X_CENTER = CENTER[0]
+        Z_CENTER = CENTER[2]
+        POINTS = get_sample_points_on_the_surface(SPHERE)
+        RESULT = get_best_fit_sphere(POINTS, X_CENTER, Z_CENTER, RADIUS)
+        self.assertEqual(SPHERE, RESULT)
 
 if __name__ == '__main__':
     unittest.main()
