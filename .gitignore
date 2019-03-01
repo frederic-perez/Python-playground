@@ -1,2 +1,3 @@
 *.pyc
---wip.py
+_wip.py
+data/_*

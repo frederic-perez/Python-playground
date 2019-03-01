@@ -148,7 +148,10 @@ def get_best_fit_sphere(points, x_center, z_center, radius, use_MSE = False):
     if NUM_POINTS <= 4:
         raise ValueError('points should have at least 5 elements')
 
-    y_low, y_high = get_y_low_and_y_high(points, x_center, z_center, radius)
+    # HACK y_low, y_high = get_y_low_and_y_high(points, x_center, z_center, radius)
+    y_low = 0. # HACK
+    y_high = 500. # HACK
+    # print "y_low is", y_low, "| y_high is", y_high
 
     bottom_sphere = Sphere([x_center, y_low, z_center], radius)
     error_for_bottom_sphere = bottom_sphere.get_MSE(points) if use_MSE else bottom_sphere.get_mean_signed_distance(points)
@@ -184,3 +187,52 @@ def get_best_fit_sphere(points, x_center, z_center, radius, use_MSE = False):
         done = equal_in_practice(y_cut, previous_y_cut) or i == 50
 
     return Sphere([x_center, y_cut, z_center], radius)
+
+def get_best_fit_sphere_for_radius_range(points, x_center, z_center, radius_range, use_MSE = False):
+    if not hasattr(points, "__len__"):
+        raise TypeError('points should be an array')
+
+    NUM_POINTS = len(points)
+    if NUM_POINTS <= 4:
+        raise ValueError('points should have at least 5 elements')
+
+    if len(radius_range) != 2:
+        raise ValueError('radius_range should have 2 elements')
+
+    MIN_RADIUS = radius_range[0]
+    MAX_RADIUS = radius_range[1]
+
+    min_radius_sphere = get_best_fit_sphere(points, x_center, z_center, MIN_RADIUS)
+    error_for_min_radius_sphere = min_radius_sphere.get_MSE(points) if use_MSE else min_radius_sphere.get_mean_signed_distance(points)
+    if zero_in_practice(error_for_min_radius_sphere):
+        return min_radius_sphere
+
+    max_radius_sphere = get_best_fit_sphere(points, x_center, z_center, MAX_RADIUS)
+    error_for_max_radius_sphere = max_radius_sphere.get_MSE(points) if use_MSE else max_radius_sphere.get_mean_signed_distance(points)
+    if zero_in_practice(error_for_max_radius_sphere):
+        return max_radius_sphere
+
+    done = False
+    i = 0
+    cut_radius = MIN_RADIUS + (MAX_RADIUS - MIN_RADIUS)/2
+    while not done:
+        cut_sphere = get_best_fit_sphere(points, x_center, z_center, cut_radius)
+        error_for_cut_sphere = cut_sphere.get_MSE(points) if use_MSE else cut_sphere.get_mean_signed_distance(points)
+        # print "iteration #", i, "| cut_radius is", cut_radius, 'and error_for_cut_sphere is', error_for_cut_sphere
+        if zero_in_practice(error_for_cut_sphere):
+            return cut_sphere
+
+        done = abs(error_for_cut_sphere) < epsilon_distance
+        if not done:
+            if abs(error_for_max_radius_sphere) > abs(error_for_min_radius_sphere):
+                # print "resetting max"
+                MAX_RADIUS, error_for_max_radius_sphere = cut_radius, error_for_cut_sphere
+            else:
+                # print "resetting mins"
+                MIN_RADIUS, error_for_min_radius_sphere = cut_radius, error_for_cut_sphere
+        previous_cut_radius = cut_radius
+        cut_radius = MIN_RADIUS + (MAX_RADIUS - MIN_RADIUS)/2
+        i = i + 1
+        done = equal_in_practice(cut_radius, previous_cut_radius) or i == 50
+
+    return cut_sphere

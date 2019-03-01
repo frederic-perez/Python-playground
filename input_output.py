@@ -3,7 +3,8 @@
 import math
 import numpy as np
 import os.path
-from sphere import Sphere, get_best_fit_sphere
+from sphere import Sphere, get_best_fit_sphere, get_best_fit_sphere_for_radius_range
+from optical_sphere import OpticalSphere
 
 def get_pringle_points(num_points, a, b, radius_x, radius_z, offset_xyz, max_noise = 0.):
     points = np.random.rand(num_points, 3)
@@ -26,15 +27,20 @@ def get_pringle_points(num_points, a, b, radius_x, radius_z, offset_xyz, max_noi
     return points
 
 def get_distances_to_sphere_and_scaled_normals(points, sphere):
-    print "sphere is", sphere
+    FUNCTION_NAME = 'get_distances_to_sphere_and_scaled_normals:'
+    print FUNCTION_NAME, "sphere is", sphere
     NUM_POINTS = len(points)
     distances = [0] * NUM_POINTS
     scaled_normals = np.random.rand(NUM_POINTS, 3)
     CENTER = sphere.get_center()
+    max_negative_distance = float("inf")
+    max_positive_distance = -float("inf")
     for i in range(NUM_POINTS):
         point = points[i]
         distance = sphere.get_signed_distance_to_surface(point)
-        print "distance for point", i, '=', point, "is", distance
+        max_negative_distance = min(max_negative_distance, distance)
+        max_positive_distance = max(max_positive_distance, distance)
+        # print "distance for point", i, '=', point, "is", distance
         distances[i] = distance
         scaled_normal = np.zeros(3)
         vector = CENTER - point
@@ -42,6 +48,7 @@ def get_distances_to_sphere_and_scaled_normals(points, sphere):
         for k in range(3):
             scaled_normal[k] = distance * vector[k]/magnitude
         scaled_normals[i] = scaled_normal
+    print FUNCTION_NAME, "max_negative_distance is", max_negative_distance, "| max_positive_distance is", max_positive_distance
     return distances, scaled_normals
 
 def save_xyz_file(filename_xyz, points):
@@ -55,10 +62,11 @@ def save_xyz_file(filename_xyz, points):
     file.close()
 
 def print_a_few_points(points):
-    print "point #", 0, "is", points[0]
-    print "..."
+    FUNCTION_NAME = 'print_a_few_points:'
+    print FUNCTION_NAME, "point #", 0, "is", points[0]
+    print FUNCTION_NAME, "..."
     LAST_INDEX = len(points) - 1
-    print "point #", LAST_INDEX, "is", points[LAST_INDEX]
+    print FUNCTION_NAME, "point #", LAST_INDEX, "is", points[LAST_INDEX]
 
 def read_xyz_file(filename_xyz):
     file_in = open(filename_xyz, 'r')
@@ -243,7 +251,64 @@ def play_with_a_pringle_like_whatnot_42_with_noise():
     print "Best fit sphere for the pringle like whatnot-42 is", SPHERE
     save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(PRINGLE_FILENAME_XYZ, SPHERE, PRINGLE_FILENAME_PLY)
 
+def get_points_rotated_around_z(points, theta):
+    rotated_points = []
+    COS_THETA = math.cos(theta)
+    SIN_THETA = math.sin(theta)
+    for point in points:
+        rotated_point = [
+            point[0]*COS_THETA + point[1]*SIN_THETA,
+            point[0]*(-SIN_THETA) + point[1]*COS_THETA,
+            point[2]]
+        rotated_points.append(rotated_point)
+    return rotated_points
+
+def get_bounding_box(points):
+    x_coords, y_coords, z_coords = zip(*points)
+    return [
+        [min(x_coords), max(x_coords)],
+        [min(y_coords), max(y_coords)],
+        [min(z_coords), max(z_coords)]]
+
+def get_center(bounding_box):
+    center = [0] * 3
+    for i in range(3):
+        center[i] = (bounding_box[i][1] - bounding_box[i][0])/2. + bounding_box[i][0]
+    return center
+
+def study_contour(contour_ID, tilt):
+    print 'study_contour(' + contour_ID + ', ' + str(tilt) + ") starts..."
+    FILENAME_CONTOUR_XYZ = 'data/_contour-' + contour_ID + '.xyz'
+    POINTS = read_xyz_file(FILENAME_CONTOUR_XYZ)
+    THETA = math.radians(-tilt)
+    ROTATED_POINTS = get_points_rotated_around_z(POINTS, THETA)
+    FILENAME_CONTOUR_ROTATED_BASE = 'data/_contour-' + contour_ID + '-rotated'
+    FILENAME_CONTOUR_ROTATED_XYZ = FILENAME_CONTOUR_ROTATED_BASE + '.xyz'
+    FILENAME_CONTOUR_ROTATED_PLY = FILENAME_CONTOUR_ROTATED_BASE + '.ply'
+    save_xyz_file(FILENAME_CONTOUR_ROTATED_XYZ, ROTATED_POINTS)
+    save_ply_file(FILENAME_CONTOUR_ROTATED_PLY, ROTATED_POINTS)
+
+    BOUNDING_BOX = get_bounding_box(ROTATED_POINTS)
+    CENTER = get_center(BOUNDING_BOX)
+    SPHERE_RADIUS_RANGE = [40., 1000.]
+    USE_MSE = True
+    SPHERE = get_best_fit_sphere_for_radius_range(ROTATED_POINTS, CENTER[0], CENTER[2], SPHERE_RADIUS_RANGE, USE_MSE)
+    print "Best fit sphere for", FILENAME_CONTOUR_XYZ, "is", SPHERE, "| Base is", OpticalSphere(SPHERE.get_radius()).get_base_curve()
+
+    SPHERE_RADIUS_FIXED = 151 # 151 for Base 3.5 # 106 for Base 5
+    SPHERE_WITH_FIXED_RADIUS = get_best_fit_sphere(ROTATED_POINTS, CENTER[0], CENTER[2], SPHERE_RADIUS_FIXED, USE_MSE)
+    print "Best fit sphere with fixed radius for", FILENAME_CONTOUR_XYZ, "is", SPHERE_WITH_FIXED_RADIUS, "| Base is", OpticalSphere(SPHERE_WITH_FIXED_RADIUS.get_radius()).get_base_curve()
+
+    FILENAME_CONTOUR_STUDY_RESULTS_PLY = 'data/_contour-' + contour_ID + '-study-results.ply'
+    save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(
+        FILENAME_CONTOUR_ROTATED_XYZ, SPHERE, FILENAME_CONTOUR_STUDY_RESULTS_PLY)
+
+    FILENAME_CONTOUR_STUDY_RESULTS_WITH_FIXED_RADIUS_PLY = 'data/_contour-' + contour_ID + '-study-results-with-fixed-radius.ply'
+    save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(
+        FILENAME_CONTOUR_ROTATED_XYZ, SPHERE_WITH_FIXED_RADIUS, FILENAME_CONTOUR_STUDY_RESULTS_WITH_FIXED_RADIUS_PLY)
+
 if __name__ == '__main__':
+    """
     FILENAME_IN = 'data/points-in.xyz'
     FILENAME_OUT = 'data/points-out.ply'
     save_as_ply(FILENAME_IN, FILENAME_OUT)
@@ -256,3 +321,26 @@ if __name__ == '__main__':
 
     print
     play_with_a_pringle_like_whatnot_42_with_noise()
+
+    print
+    play_with_a_pringle_like_whatnot_42_with_noise()
+    """
+
+    CONTOUR_ID_AND_TILT_ARRAY = [
+        ['47', 7]
+    ]
+    """
+      ['41', 5],
+      ['42', 7],
+      ['43', 6],
+      ['44', 5],
+      ['45', 9],
+      ['46', 8],
+      ['47', 7],
+      ['48', 4]
+    ]
+    """
+    for contour_ID_and_tilt in CONTOUR_ID_AND_TILT_ARRAY:
+        contour_ID, tilt = contour_ID_and_tilt
+        study_contour(contour_ID, tilt)
+        print
