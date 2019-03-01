@@ -3,7 +3,7 @@
 import math
 import numpy as np
 import os.path
-from sphere import Sphere, get_best_fit_sphere, get_best_fit_sphere_for_radius_range_NEW
+from sphere import Sphere, get_best_fit_sphere, get_best_fit_sphere_for_radius_range
 from optical_sphere import OpticalSphere
 
 def get_pringle_points(num_points, a, b, radius_x, radius_z, offset_xyz, max_noise = 0.):
@@ -292,20 +292,24 @@ def study_contour(contour_ID, tilt):
     CENTER = get_center(BOUNDING_BOX)
     SPHERE_RADIUS_RANGE = [40., 1000.]
     USE_MSE = True
-    SPHERE = get_best_fit_sphere_for_radius_range_NEW(ROTATED_POINTS, CENTER[0], CENTER[2], SPHERE_RADIUS_RANGE, USE_MSE)
+    SPHERE = get_best_fit_sphere_for_radius_range(ROTATED_POINTS, CENTER[0], CENTER[2], SPHERE_RADIUS_RANGE, USE_MSE)
     print "Best fit sphere for", FILENAME_CONTOUR_XYZ, "is", SPHERE, "| Base is", OpticalSphere(SPHERE.get_radius()).get_base_curve()
 
+    """
     SPHERE_RADIUS_FIXED = 151 # 151 for Base 3.5 # 106 for Base 5
     SPHERE_WITH_FIXED_RADIUS = get_best_fit_sphere(ROTATED_POINTS, CENTER[0], CENTER[2], SPHERE_RADIUS_FIXED, USE_MSE)
-    print "Best fit sphere with fixed radius for", FILENAME_CONTOUR_XYZ, "is", SPHERE_WITH_FIXED_RADIUS, "| Base is", OpticalSphere(SPHERE_WITH_FIXED_RADIUS.get_radius()).get_base_curve()
+    print "Best fit sphere with fixed radius", SPHERE_RADIUS_FIXED, "for", FILENAME_CONTOUR_XYZ, "is", SPHERE_WITH_FIXED_RADIUS, "| Base is", OpticalSphere(SPHERE_WITH_FIXED_RADIUS.get_radius()).get_base_curve()
+    """
 
     FILENAME_CONTOUR_STUDY_RESULTS_PLY = 'data/_contour-' + contour_ID + '-study-results.ply'
     save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(
         FILENAME_CONTOUR_ROTATED_XYZ, SPHERE, FILENAME_CONTOUR_STUDY_RESULTS_PLY)
 
+    """
     FILENAME_CONTOUR_STUDY_RESULTS_WITH_FIXED_RADIUS_PLY = 'data/_contour-' + contour_ID + '-study-results-with-fixed-radius.ply'
     save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(
         FILENAME_CONTOUR_ROTATED_XYZ, SPHERE_WITH_FIXED_RADIUS, FILENAME_CONTOUR_STUDY_RESULTS_WITH_FIXED_RADIUS_PLY)
+    """
 
 if __name__ == '__main__':
     """
@@ -327,17 +331,24 @@ if __name__ == '__main__':
     """
 
     CONTOUR_ID_AND_TILT_ARRAY = [
-        ['46', 8]
+        ['41', 5],
+        ['42', 7],
+        ['43', 6],
+        ['44', 5],
+        ['45', 9],
+        ['46', 8],
+        ['47', 7],
+        ['48', 4]
     ]
     """
-      ['41', 5],
-      ['42', 7],
-      ['43', 6],
-      ['44', 5],
-      ['45', 9],
-      ['46', 8],
-      ['47', 7],
-      ['48', 4]
+        ['41', 5],
+        ['42', 7],
+        ['43', 6],
+        ['44', 5],
+        ['45', 9],
+        ['46', 8],
+        ['47', 7],
+        ['48', 4]
     ]
     """
     for contour_ID_and_tilt in CONTOUR_ID_AND_TILT_ARRAY:

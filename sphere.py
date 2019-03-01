@@ -140,6 +140,26 @@ def get_y_low_and_y_high(points, x_center, z_center, radius):
 
     return y_low, y_high
 
+def get_index_of_minimum_abs_error(error_array):
+    N = len(error_array)
+    index = 0
+    minimum_abs_error = float("inf")
+    for i in range(N):
+        current_abs_error = abs(error_array[i])
+        if current_abs_error < minimum_abs_error:
+            minimum_abs_error = current_abs_error
+            index = i
+    return index
+
+def get_indices_around_minimum_abs_error(error_array):
+    N = len(error_array)
+    INDEX = get_index_of_minimum_abs_error(error_array)
+    if INDEX == 0:
+        return 0, 1
+    elif INDEX == N - 1:
+        return N - 2, N - 1
+    return INDEX - 1, INDEX + 1
+
 def get_best_fit_sphere(points, x_center, z_center, radius, use_MSE = False):
     if not hasattr(points, "__len__"):
         raise TypeError('points should be an array')
@@ -148,115 +168,39 @@ def get_best_fit_sphere(points, x_center, z_center, radius, use_MSE = False):
     if NUM_POINTS <= 4:
         raise ValueError('points should have at least 5 elements')
 
-    # HACK y_low, y_high = get_y_low_and_y_high(points, x_center, z_center, radius)
-    y_low = 0. # HACK
-    y_high = 500. # HACK
-    # print "y_low is", y_low, "| y_high is", y_high
+    # TODO: add y_range parameter
+    y_min = 0. # HACK
+    y_max = 500. # HACK
 
-    bottom_sphere = Sphere([x_center, y_low, z_center], radius)
-    error_for_bottom_sphere = bottom_sphere.get_MSE(points) if use_MSE else bottom_sphere.get_mean_signed_distance(points)
-    if zero_in_practice(error_for_bottom_sphere):
-        return bottom_sphere
-
-    top_sphere = Sphere([x_center, y_high, z_center], radius)
-    error_for_top_sphere = top_sphere.get_MSE(points) if use_MSE else top_sphere.get_mean_signed_distance(points)
-    if zero_in_practice(error_for_top_sphere):
-        return top_sphere
+    N = 9
+    y = [0.] * N
+    error = [0.] * N
 
     done = False
     i = 0
-    y_cut = y_low + (y_high - y_low)/2
+    idx_min = 0
     while not done:
-        cut_sphere = Sphere([x_center, y_cut, z_center], radius)
-        error_for_cut_sphere = cut_sphere.get_MSE(points) if use_MSE else cut_sphere.get_mean_signed_distance(points)
-        # print "iteration #", i, "| y_cut is", y_cut, 'and error_for_cut_circle is', error_for_cut_circle
-        if zero_in_practice(error_for_cut_sphere):
-            return cut_sphere
+      delta = (y_max - y_min)/(N - 1.)
+      for j in range(N):
+          y[j] = y_min + delta*j
+          sphere = Sphere([x_center, y[j], z_center], radius)
+          error[j] = sphere.get_MSE(points) if use_MSE else sphere.get_mean_signed_distance(points)
+          # print "i =", i, "j =", j, "| y =", y[j], "| error =", error[j]
+          if zero_in_practice(error[j]):
+              return sphere
+      
+      idx_min, idx_max = get_indices_around_minimum_abs_error(error)
+      y_min, y_max = y[idx_min], y[idx_max]
+      # print "i =", i, "| idx_min is", idx_min, "idx_max is", idx_max, "y range:", y_min, y_max
 
-        done = abs(error_for_cut_sphere) < epsilon_distance
-        if not done:
-            if abs(error_for_top_sphere) > abs(error_for_bottom_sphere):
-                # print "resetting top"
-                y_high, error_for_top_sphere = y_cut, error_for_cut_sphere
-            else:
-                # print "resetting bottom"
-                y_low, error_for_bottom_sphere = y_cut, error_for_cut_sphere
-        previous_y_cut = y_cut
-        y_cut = y_low + .5*(y_high - y_low)
-        i = i + 1
-        done = equal_in_practice(y_cut, previous_y_cut) or i == 50
+      i = i + 1
+      done =  equal_in_practice(y[idx_min], y[idx_max]) or equal_in_practice(error[idx_min], error[idx_max]) or i == 50
 
-    return Sphere([x_center, y_cut, z_center], radius)
+    # raise ValueError('WIP')
 
-def get_best_fit_sphere_for_radius_range_DEPRECATED(points, x_center, z_center, radius_range, use_MSE = False):
-    if not hasattr(points, "__len__"):
-        raise TypeError('points should be an array')
+    return Sphere([x_center, y[idx_min], z_center], radius)
 
-    NUM_POINTS = len(points)
-    if NUM_POINTS <= 4:
-        raise ValueError('points should have at least 5 elements')
-
-    if len(radius_range) != 2:
-        raise ValueError('radius_range should have 2 elements')
-
-    MIN_RADIUS = radius_range[0]
-    MAX_RADIUS = radius_range[1]
-
-    min_radius_sphere = get_best_fit_sphere(points, x_center, z_center, MIN_RADIUS)
-    error_for_min_radius_sphere = min_radius_sphere.get_MSE(points) if use_MSE else min_radius_sphere.get_mean_signed_distance(points)
-    if zero_in_practice(error_for_min_radius_sphere):
-        return min_radius_sphere
-
-    max_radius_sphere = get_best_fit_sphere(points, x_center, z_center, MAX_RADIUS)
-    error_for_max_radius_sphere = max_radius_sphere.get_MSE(points) if use_MSE else max_radius_sphere.get_mean_signed_distance(points)
-    if zero_in_practice(error_for_max_radius_sphere):
-        return max_radius_sphere
-
-    done = False
-    i = 0
-    cut_radius = MIN_RADIUS + (MAX_RADIUS - MIN_RADIUS)/2
-    while not done:
-        cut_sphere = get_best_fit_sphere(points, x_center, z_center, cut_radius)
-        error_for_cut_sphere = cut_sphere.get_MSE(points) if use_MSE else cut_sphere.get_mean_signed_distance(points)
-        # print "iteration #", i, "| cut_radius is", cut_radius, 'and error_for_cut_sphere is', error_for_cut_sphere
-        if zero_in_practice(error_for_cut_sphere):
-            return cut_sphere
-
-        done = abs(error_for_cut_sphere) < epsilon_distance
-        if not done:
-            if abs(error_for_max_radius_sphere) > abs(error_for_min_radius_sphere):
-                # print "resetting max"
-                MAX_RADIUS, error_for_max_radius_sphere = cut_radius, error_for_cut_sphere
-            else:
-                # print "resetting mins"
-                MIN_RADIUS, error_for_min_radius_sphere = cut_radius, error_for_cut_sphere
-        previous_cut_radius = cut_radius
-        cut_radius = MIN_RADIUS + (MAX_RADIUS - MIN_RADIUS)/2
-        i = i + 1
-        done = equal_in_practice(cut_radius, previous_cut_radius) or i == 50
-
-    return cut_sphere
-
-def get_index_of_minimum_error(error_array):
-    N = len(error_array)
-    index = 0
-    minimum_error = float("inf")
-    for i in range(N):
-        if error_array[i] < minimum_error:
-            minimum_error = error_array[i]
-            index = i
-    return index
-
-def get_indices_around_minimum_error(error_array):
-    N = len(error_array)
-    INDEX = get_index_of_minimum_error(error_array)
-    if INDEX == 0:
-        return 0, 1
-    elif INDEX == N:
-        return N - 1, N
-    return INDEX - 1, INDEX + 1
-
-def get_best_fit_sphere_for_radius_range_NEW(points, x_center, z_center, radius_range, use_MSE = False):
+def get_best_fit_sphere_for_radius_range(points, x_center, z_center, radius_range, use_MSE = False):
     if not hasattr(points, "__len__"):
         raise TypeError('points should be an array')
 
@@ -283,13 +227,13 @@ def get_best_fit_sphere_for_radius_range_NEW(points, x_center, z_center, radius_
           radius[j] = radius_min + delta*j
           sphere = get_best_fit_sphere(points, x_center, z_center, radius[j])
           error[j] = sphere.get_MSE(points) if use_MSE else sphere.get_mean_signed_distance(points)
-          print "i =", i, "j =", j, "| radius =", radius[j], "| error =", error[j]
+          # print "i =", i, "j =", j, "| radius =", radius[j], "| error =", error[j]
           if zero_in_practice(error[j]):
               return sphere
       
-      idx_min, idx_max = get_indices_around_minimum_error(error)
+      idx_min, idx_max = get_indices_around_minimum_abs_error(error)
       radius_min, radius_max = radius[idx_min], radius[idx_max]
-      print "idx_min is", idx_min, "idx_max is", idx_max, "radius range:", radius_min, radius_max
+      # print "idx_min is", idx_min, "idx_max is", idx_max, "radius range:", radius_min, radius_max
 
       i = i + 1
       done =  equal_in_practice(radius[idx_min], radius[idx_max]) or equal_in_practice(error[idx_min], error[idx_max]) or i == 50
