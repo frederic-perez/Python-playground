@@ -3,7 +3,7 @@
 import math
 import numpy as np
 import os.path
-from sphere import Sphere, get_best_fit_sphere, get_best_fit_sphere_for_radius_range
+from sphere import Sphere, get_best_fit_sphere, get_best_fit_sphere_for_radius_range_NEW
 from optical_sphere import OpticalSphere
 
 def get_pringle_points(num_points, a, b, radius_x, radius_z, offset_xyz, max_noise = 0.):
@@ -292,7 +292,7 @@ def study_contour(contour_ID, tilt):
     CENTER = get_center(BOUNDING_BOX)
     SPHERE_RADIUS_RANGE = [40., 1000.]
     USE_MSE = True
-    SPHERE = get_best_fit_sphere_for_radius_range(ROTATED_POINTS, CENTER[0], CENTER[2], SPHERE_RADIUS_RANGE, USE_MSE)
+    SPHERE = get_best_fit_sphere_for_radius_range_NEW(ROTATED_POINTS, CENTER[0], CENTER[2], SPHERE_RADIUS_RANGE, USE_MSE)
     print "Best fit sphere for", FILENAME_CONTOUR_XYZ, "is", SPHERE, "| Base is", OpticalSphere(SPHERE.get_radius()).get_base_curve()
 
     SPHERE_RADIUS_FIXED = 151 # 151 for Base 3.5 # 106 for Base 5
@@ -327,7 +327,7 @@ if __name__ == '__main__':
     """
 
     CONTOUR_ID_AND_TILT_ARRAY = [
-        ['47', 7]
+        ['46', 8]
     ]
     """
       ['41', 5],

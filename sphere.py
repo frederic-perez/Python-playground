@@ -188,7 +188,7 @@ def get_best_fit_sphere(points, x_center, z_center, radius, use_MSE = False):
 
     return Sphere([x_center, y_cut, z_center], radius)
 
-def get_best_fit_sphere_for_radius_range(points, x_center, z_center, radius_range, use_MSE = False):
+def get_best_fit_sphere_for_radius_range_DEPRECATED(points, x_center, z_center, radius_range, use_MSE = False):
     if not hasattr(points, "__len__"):
         raise TypeError('points should be an array')
 
@@ -236,3 +236,62 @@ def get_best_fit_sphere_for_radius_range(points, x_center, z_center, radius_rang
         done = equal_in_practice(cut_radius, previous_cut_radius) or i == 50
 
     return cut_sphere
+
+def get_index_of_minimum_error(error_array):
+    N = len(error_array)
+    index = 0
+    minimum_error = float("inf")
+    for i in range(N):
+        if error_array[i] < minimum_error:
+            minimum_error = error_array[i]
+            index = i
+    return index
+
+def get_indices_around_minimum_error(error_array):
+    N = len(error_array)
+    INDEX = get_index_of_minimum_error(error_array)
+    if INDEX == 0:
+        return 0, 1
+    elif INDEX == N:
+        return N - 1, N
+    return INDEX - 1, INDEX + 1
+
+def get_best_fit_sphere_for_radius_range_NEW(points, x_center, z_center, radius_range, use_MSE = False):
+    if not hasattr(points, "__len__"):
+        raise TypeError('points should be an array')
+
+    NUM_POINTS = len(points)
+    if NUM_POINTS <= 4:
+        raise ValueError('points should have at least 5 elements')
+
+    if len(radius_range) != 2:
+        raise ValueError('radius_range should have 2 elements')
+
+    radius_min = radius_range[0]
+    radius_max = radius_range[1]
+
+    N = 9
+    radius = [0.] * N
+    error = [0.] * N
+
+    done = False
+    i = 0
+    idx_min = 0
+    while not done:
+      delta = (radius_max - radius_min)/(N - 1.)
+      for j in range(N):
+          radius[j] = radius_min + delta*j
+          sphere = get_best_fit_sphere(points, x_center, z_center, radius[j])
+          error[j] = sphere.get_MSE(points) if use_MSE else sphere.get_mean_signed_distance(points)
+          print "i =", i, "j =", j, "| radius =", radius[j], "| error =", error[j]
+          if zero_in_practice(error[j]):
+              return sphere
+      
+      idx_min, idx_max = get_indices_around_minimum_error(error)
+      radius_min, radius_max = radius[idx_min], radius[idx_max]
+      print "idx_min is", idx_min, "idx_max is", idx_max, "radius range:", radius_min, radius_max
+
+      i = i + 1
+      done =  equal_in_practice(radius[idx_min], radius[idx_max]) or equal_in_practice(error[idx_min], error[idx_max]) or i == 50
+
+    return get_best_fit_sphere(points, x_center, z_center, radius[idx_min])
