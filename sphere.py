@@ -172,16 +172,16 @@ def get_best_fit_sphere(points, x_center, z_center, radius, use_MSE = False):
     y_min = 0. # HACK
     y_max = 500. # HACK
 
-    N = 9
-    y = [0.] * N
-    error = [0.] * N
+    NUM_SAMPLES = 9
+    y = [0.] * NUM_SAMPLES
+    error = [0.] * NUM_SAMPLES
 
     done = False
     i = 0
     idx_min = 0
     while not done:
-      delta = (y_max - y_min)/(N - 1.)
-      for j in range(N):
+      delta = (y_max - y_min)/(NUM_SAMPLES - 1.)
+      for j in range(NUM_SAMPLES):
           y[j] = y_min + delta*j
           sphere = Sphere([x_center, y[j], z_center], radius)
           error[j] = sphere.get_MSE(points) if use_MSE else sphere.get_mean_signed_distance(points)
