@@ -16,12 +16,12 @@ class Sphere(object):
         self.radius = radius
         return
 
-    def __eq__(self, other):
+    def __eq__(self, other, epsilon = epsilon_distance):
         return \
-            equal_in_practice(self.center[0], other.center[0]) \
-            and equal_in_practice(self.center[1], other.center[1]) \
-            and equal_in_practice(self.center[2], other.center[2]) \
-            and equal_in_practice(self.radius, other.radius)
+            equal_in_practice(self.center[0], other.center[0], epsilon) \
+            and equal_in_practice(self.center[1], other.center[1], epsilon) \
+            and equal_in_practice(self.center[2], other.center[2], epsilon) \
+            and equal_in_practice(self.radius, other.radius, epsilon)
 
     def __str__(self):
         return 'Sphere(center={0}, radius={1})'.format(self.center, self.radius)
@@ -160,7 +160,7 @@ def get_indices_around_minimum_abs_error(error_array):
         return N - 2, N - 1
     return INDEX - 1, INDEX + 1
 
-def get_best_fit_sphere(points, x_center, z_center, radius, use_MSE = False):
+def get_best_fit_sphere(points, x_center, z_center, y_range, radius, use_MSE = False):
     if not hasattr(points, "__len__"):
         raise TypeError('points should be an array')
 
@@ -168,9 +168,8 @@ def get_best_fit_sphere(points, x_center, z_center, radius, use_MSE = False):
     if NUM_POINTS <= 4:
         raise ValueError('points should have at least 5 elements')
 
-    # TODO: add y_range parameter
-    y_min = 0. # HACK
-    y_max = 500. # HACK
+    y_min = y_range[0]
+    y_max = y_range[1]
 
     NUM_SAMPLES = 9
     y = [0.] * NUM_SAMPLES
@@ -200,7 +199,7 @@ def get_best_fit_sphere(points, x_center, z_center, radius, use_MSE = False):
 
     return Sphere([x_center, y[idx_min], z_center], radius)
 
-def get_best_fit_sphere_for_radius_range(points, x_center, z_center, radius_range, use_MSE = False):
+def get_best_fit_sphere_for_radius_range(points, x_center, z_center, y_range, radius_range, use_MSE = False):
     if not hasattr(points, "__len__"):
         raise TypeError('points should be an array')
 
@@ -208,24 +207,27 @@ def get_best_fit_sphere_for_radius_range(points, x_center, z_center, radius_rang
     if NUM_POINTS <= 4:
         raise ValueError('points should have at least 5 elements')
 
+    if len(y_range) != 2:
+        raise ValueError('y_range should have 2 elements')
+
     if len(radius_range) != 2:
         raise ValueError('radius_range should have 2 elements')
 
     radius_min = radius_range[0]
     radius_max = radius_range[1]
 
-    N = 9
-    radius = [0.] * N
-    error = [0.] * N
+    NUM_SAMPLES = 9
+    radius = [0.] * NUM_SAMPLES
+    error = [0.] * NUM_SAMPLES
 
     done = False
     i = 0
     idx_min = 0
     while not done:
-      delta = (radius_max - radius_min)/(N - 1.)
-      for j in range(N):
+      delta = (radius_max - radius_min)/(NUM_SAMPLES - 1.)
+      for j in range(NUM_SAMPLES):
           radius[j] = radius_min + delta*j
-          sphere = get_best_fit_sphere(points, x_center, z_center, radius[j])
+          sphere = get_best_fit_sphere(points, x_center, z_center, y_range, radius[j], use_MSE)
           error[j] = sphere.get_MSE(points) if use_MSE else sphere.get_mean_signed_distance(points)
           # print "i =", i, "j =", j, "| radius =", radius[j], "| error =", error[j]
           if zero_in_practice(error[j]):
@@ -238,4 +240,4 @@ def get_best_fit_sphere_for_radius_range(points, x_center, z_center, radius_rang
       i = i + 1
       done =  equal_in_practice(radius[idx_min], radius[idx_max]) or equal_in_practice(error[idx_min], error[idx_max]) or i == 50
 
-    return get_best_fit_sphere(points, x_center, z_center, radius[idx_min])
+    return get_best_fit_sphere(points, x_center, z_center, y_range, radius[idx_min], use_MSE)

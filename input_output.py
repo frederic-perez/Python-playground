@@ -245,9 +245,10 @@ def play_with_a_pringle_like_whatnot_42_with_noise():
     save_xyz_file(PRINGLE_FILENAME_XYZ, PRINGLE_POINTS)
     PRINGLE_FILENAME_PLY = 'data/pringle-like-whatnot-42-with-noise.ply'
     # SPHERE_CENTER = [PRINGLE_OFFSET[0], 0, PRINGLE_OFFSET[2]]
+    SPHERE_Y_RANGE = [0, 500]
     SPHERE_RADIUS = 106 # 6.8
     # SPHERE = Sphere(SPHERE_CENTER, SPHERE_RADIUS)
-    SPHERE = get_best_fit_sphere(PRINGLE_POINTS, PRINGLE_OFFSET[0], PRINGLE_OFFSET[2], SPHERE_RADIUS)
+    SPHERE = get_best_fit_sphere(PRINGLE_POINTS, PRINGLE_OFFSET[0], PRINGLE_OFFSET[2], SPHERE_Y_RANGE, SPHERE_RADIUS)
     print "Best fit sphere for the pringle like whatnot-42 is", SPHERE
     save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(PRINGLE_FILENAME_XYZ, SPHERE, PRINGLE_FILENAME_PLY)
 
@@ -290,9 +291,10 @@ def study_contour(contour_ID, tilt):
 
     BOUNDING_BOX = get_bounding_box(ROTATED_POINTS)
     CENTER = get_center(BOUNDING_BOX)
+    SPHERE_Y_RANGE = [0, 500]
     SPHERE_RADIUS_RANGE = [40., 1000.]
     USE_MSE = True
-    SPHERE = get_best_fit_sphere_for_radius_range(ROTATED_POINTS, CENTER[0], CENTER[2], SPHERE_RADIUS_RANGE, USE_MSE)
+    SPHERE = get_best_fit_sphere_for_radius_range(ROTATED_POINTS, CENTER[0], CENTER[2], SPHERE_Y_RANGE, SPHERE_RADIUS_RANGE, USE_MSE)
     print "Best fit sphere for", FILENAME_CONTOUR_XYZ, "is", SPHERE, "| Base is", OpticalSphere(SPHERE.get_radius()).get_base_curve()
 
     """
