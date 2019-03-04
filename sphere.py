@@ -160,13 +160,22 @@ def get_indices_around_minimum_abs_error(error_array):
         return N - 2, N - 1
     return INDEX - 1, INDEX + 1
 
-def get_best_fit_sphere(points, x_center, z_center, y_range, radius, use_MSE = False):
+def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE = False):
     if not hasattr(points, "__len__"):
         raise TypeError('points should be an array')
 
     NUM_POINTS = len(points)
     if NUM_POINTS <= 4:
         raise ValueError('points should have at least 5 elements')
+
+    if len(center_x_and_z) != 2:
+        raise ValueError('center_x_and_z should have 2 elements')
+
+    if len(y_range) != 2:
+        raise ValueError('y_range should have 2 elements')
+
+    x_center = center_x_and_z[0]
+    z_center = center_x_and_z[1]
 
     y_min = y_range[0]
     y_max = y_range[1]

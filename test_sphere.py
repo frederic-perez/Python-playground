@@ -258,8 +258,7 @@ class Test_get_best_fit_sphere(unittest.TestCase):
         CENTER = [0, 0, 0]
         RADIUS = 3.4
         SPHERE = Sphere(CENTER, RADIUS)
-        X_CENTER = CENTER[0]
-        Z_CENTER = CENTER[2]
+        CENTER_X_AND_Z = [CENTER[0], CENTER[2]]
         Y_RANGE = [-1, 4]
 
         points = []
@@ -272,7 +271,7 @@ class Test_get_best_fit_sphere(unittest.TestCase):
                     CENTER[1] + RADIUS*math.cos(theta),
                     CENTER[2] + RADIUS*math.sin(theta)*math.sin(phi)])
 
-        RESULT = get_best_fit_sphere(points, X_CENTER, Z_CENTER, Y_RANGE, RADIUS)
+        RESULT = get_best_fit_sphere(points, CENTER_X_AND_Z, Y_RANGE, RADIUS)
         EPSILON_DISTANCE = 1e-5
         self.assertTrue(SPHERE.__eq__(RESULT, EPSILON_DISTANCE))
 
@@ -280,8 +279,7 @@ class Test_get_best_fit_sphere(unittest.TestCase):
         CENTER = [0, 0, 0]
         RADIUS = 3.4
         SPHERE = Sphere(CENTER, RADIUS)
-        X_CENTER = CENTER[0]
-        Z_CENTER = CENTER[2]
+        CENTER_X_AND_Z = [CENTER[0], CENTER[2]]
         Y_RANGE = [-1, 10]
 
         points = []
@@ -294,7 +292,7 @@ class Test_get_best_fit_sphere(unittest.TestCase):
                     CENTER[1] + RADIUS*math.cos(theta),
                     CENTER[2] + RADIUS*math.sin(theta)*math.sin(phi)])
 
-        RESULT = get_best_fit_sphere(points, X_CENTER, Z_CENTER, Y_RANGE, RADIUS)
+        RESULT = get_best_fit_sphere(points, CENTER_X_AND_Z, Y_RANGE, RADIUS)
         EPSILON_DISTANCE = 1e-5
         self.assertTrue(SPHERE.__eq__(RESULT, EPSILON_DISTANCE))
 
@@ -302,11 +300,10 @@ class Test_get_best_fit_sphere(unittest.TestCase):
         CENTER = [0, 0, 0]
         RADIUS = 3.4
         SPHERE = Sphere(CENTER, RADIUS)
-        X_CENTER = CENTER[0]
-        Z_CENTER = CENTER[2]
+        CENTER_X_AND_Z = [CENTER[0], CENTER[2]]
         Y_RANGE = [-10, 20]
         POINTS = get_sample_points_on_the_surface(SPHERE)
-        RESULT = get_best_fit_sphere(POINTS, X_CENTER, Z_CENTER, Y_RANGE, RADIUS)
+        RESULT = get_best_fit_sphere(POINTS, CENTER_X_AND_Z, Y_RANGE, RADIUS)
         EPSILON_DISTANCE = 1e-5
         self.assertTrue(SPHERE.__eq__(RESULT, EPSILON_DISTANCE))
 
