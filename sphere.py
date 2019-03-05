@@ -3,6 +3,7 @@
 import math
 import numpy as np
 from epsilon import epsilon_distance, zero_in_practice, equal_in_practice
+from error_array import get_indices_around_minimum_abs_error
 
 class Sphere(object):
     def __init__(self, center, radius):
@@ -139,26 +140,6 @@ def get_y_low_and_y_high(points, x_center, z_center, radius):
         y_high = max(y_high, point[1] + SQRT_DISCRIMINANT)
 
     return y_low, y_high
-
-def get_index_of_minimum_abs_error(error_array):
-    N = len(error_array)
-    index = 0
-    minimum_abs_error = float("inf")
-    for i in range(N):
-        current_abs_error = abs(error_array[i])
-        if current_abs_error < minimum_abs_error:
-            minimum_abs_error = current_abs_error
-            index = i
-    return index
-
-def get_indices_around_minimum_abs_error(error_array):
-    N = len(error_array)
-    INDEX = get_index_of_minimum_abs_error(error_array)
-    if INDEX == 0:
-        return 0, 1
-    elif INDEX == N - 1:
-        return N - 2, N - 1
-    return INDEX - 1, INDEX + 1
 
 def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE = False):
     if not hasattr(points, "__len__"):
