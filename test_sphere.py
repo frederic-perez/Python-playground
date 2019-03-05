@@ -271,9 +271,10 @@ class Test_get_best_fit_sphere(unittest.TestCase):
                     CENTER[1] + RADIUS*math.cos(theta),
                     CENTER[2] + RADIUS*math.sin(theta)*math.sin(phi)])
 
-        RESULT = get_best_fit_sphere(points, CENTER_X_AND_Z, Y_RANGE, RADIUS)
-        EPSILON_DISTANCE = 1e-5
-        self.assertTrue(SPHERE.__eq__(RESULT, EPSILON_DISTANCE))
+        for use_MSE in [True, False]:
+            RESULT = get_best_fit_sphere(points, CENTER_X_AND_Z, Y_RANGE, RADIUS, use_MSE)
+            EPSILON_DISTANCE = 1e-5
+            self.assertTrue(SPHERE.__eq__(RESULT, EPSILON_DISTANCE))
 
     def test_Given4PointsInBottomOfSphereS_When_get_best_fit_sphere_ThenResultIsS(self):
         CENTER = [0, 0, 0]
@@ -292,9 +293,10 @@ class Test_get_best_fit_sphere(unittest.TestCase):
                     CENTER[1] + RADIUS*math.cos(theta),
                     CENTER[2] + RADIUS*math.sin(theta)*math.sin(phi)])
 
-        RESULT = get_best_fit_sphere(points, CENTER_X_AND_Z, Y_RANGE, RADIUS)
-        EPSILON_DISTANCE = 1e-5
-        self.assertTrue(SPHERE.__eq__(RESULT, EPSILON_DISTANCE))
+        for use_MSE in [True, False]:
+            RESULT = get_best_fit_sphere(points, CENTER_X_AND_Z, Y_RANGE, RADIUS, use_MSE)
+            EPSILON_DISTANCE = 1e-5
+            self.assertTrue(SPHERE.__eq__(RESULT, EPSILON_DISTANCE))
 
     def test_GivenNPointsAroundSphereS_When_get_best_fit_sphere_ThenResultIsS(self):
         CENTER = [0, 0, 0]
@@ -303,9 +305,10 @@ class Test_get_best_fit_sphere(unittest.TestCase):
         CENTER_X_AND_Z = [CENTER[0], CENTER[2]]
         Y_RANGE = [-10, 20]
         POINTS = get_sample_points_on_the_surface(SPHERE)
-        RESULT = get_best_fit_sphere(POINTS, CENTER_X_AND_Z, Y_RANGE, RADIUS)
-        EPSILON_DISTANCE = 1e-5
-        self.assertTrue(SPHERE.__eq__(RESULT, EPSILON_DISTANCE))
+        for use_MSE in [True, False]:
+            RESULT = get_best_fit_sphere(POINTS, CENTER_X_AND_Z, Y_RANGE, RADIUS, use_MSE)
+            EPSILON_DISTANCE = 1e-5
+            self.assertTrue(SPHERE.__eq__(RESULT, EPSILON_DISTANCE))
 
 if __name__ == '__main__':
     unittest.main()
