@@ -1,8 +1,17 @@
 'module docstring should be here'
 
+import logging
 import numpy as np
+import subprocess
 from sphere import \
     Sphere, get_sphere, epsilon_distance, equal_in_practice, zero_in_practice
+from timer import Timer
+
+logging.basicConfig(format='%(asctime)s.%(msecs)d %(levelname)-8s %(filename)s:L%(lineno)d %(message)s',
+    datefmt='%m.%d.%Y %H:%M:%S',
+    level=logging.DEBUG)
+
+logger = logging.getLogger(__name__)
 
 def average(*numbers):
     """Self-explanatory"""
@@ -19,7 +28,7 @@ def get_sphere_given4StraightCrosshairPoints_From_42():
     POINT_4 = np.array([-62.0412, 5.9778, -19.7658], np.float_)
     POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
     SPHERE_42 = get_sphere(POINTS)
-    print "SPHERE_42 given 4 straight crosshair points", SPHERE_42
+    logger.info('SPHERE_42 given 4 straight crosshair points: ' + SPHERE_42.__str__())
 
 def get_sphere_given4RotatedCrosshairPoints_From_42():
     POINT_1 = np.array([-58.7767,  4.9348,    -3.7779], np.float_)
@@ -28,7 +37,7 @@ def get_sphere_given4RotatedCrosshairPoints_From_42():
     POINT_4 = np.array([-55.543,   4.7384,   -37.1852], np.float_)
     POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
     SPHERE_42 = get_sphere(POINTS)
-    print "SPHERE_42 given 4 rotated crosshair points", SPHERE_42
+    logger.info('SPHERE_42 given 4 rotated crosshair points: ' + SPHERE_42.__str__())
 
 def get_sphere_given4StraightCrosshairPoints_From_46():
     POINT_1 = np.array([-36.9284,  2.1009,  -1.0189], np.float_)
@@ -37,7 +46,7 @@ def get_sphere_given4StraightCrosshairPoints_From_46():
     POINT_4 = np.array([-65.5153,  8.0756, -26.2123], np.float_)
     POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
     SPHERE_46 = get_sphere(POINTS)
-    print "SPHERE_46 given 4 straight crosshair points", SPHERE_46
+    logger.info('SPHERE_46 given 4 straight crosshair points: ' + SPHERE_46.__str__())
 
 def get_sphere_given4RotatedCrosshairPoints_From_46():
     POINT_1 = np.array([-56.2434, 5.6835, -8.3162], np.float_)
@@ -46,13 +55,30 @@ def get_sphere_given4RotatedCrosshairPoints_From_46():
     POINT_4 = np.array([-18.2069, 0.2075, -3.8871], np.float_)
     POINTS = (POINT_1, POINT_2, POINT_3, POINT_4)
     SPHERE_46 = get_sphere(POINTS)
-    print "SPHERE_46 given 4 rotated crosshair points", SPHERE_46
+    logger.info('SPHERE_46 given 4 rotated crosshair points: ' + SPHERE_46.__str__())
+
+def download_file_using_curl(url, output_filename):
+    COMMAND = "curl " + url + " -o " + output_filename
+    timer = Timer()
+    RESULT = subprocess.call(COMMAND, shell=True)  # returns the exit code in unix
+    if RESULT == 0:
+        logger.info('File ' + output_filename + ' downloaded in ' + timer.get_duration_string())
+    else:
+        logger.error('Failed to download file ' + output_filename)
 
 if __name__ == '__main__':
 
     get_sphere_given4StraightCrosshairPoints_From_42()
     get_sphere_given4RotatedCrosshairPoints_From_42()
-    print
+
     get_sphere_given4StraightCrosshairPoints_From_46()
     get_sphere_given4RotatedCrosshairPoints_From_46()
-    print
+
+    command = "git --version"
+    timer = Timer()
+    RESULT = subprocess.call(command, shell=True)  # returns the exit code in unix
+    logger.info('Command \"' + command + '\" returned ' + str(RESULT) + ' and took ' + timer.get_duration_string())
+
+    download_file_using_curl("https://ucfc6643a66550d50a72d5c6ad8939.dl.dropboxusercontent.com/cd/0/get/Acgtbdfxtq1Hv_TCylXob8zA8RNVbg9qJNZUkuBJ9GrD039rGB4SQ4vvTlDHCw_Wvzxivl1re-R_i-HM_dkKPzcpowNgxikC8ot3SkB2Y7_gSMYBVN8gxsCMzExKMUvxqvU/file#", "_L.7z")
+    # download_file_using_curl("https://uc664893b3b0452d68ea9a97c6d215.dl.dropboxusercontent.com/cd/0/get/AcizWDT7iMqgf95wFZmzRDSNI8abCb1scDvPIXmwT2blSDWJPRB1reUF-C46fXplNvTR3rB2s4VYbYM4tVzF_-4B9DAJV4gJYynGKFvmD_dyjIM-2H4oIHuWmCy-1mkhomk/file#", "_M.7z")
+  
