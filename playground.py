@@ -7,7 +7,7 @@ from sphere import \
     Sphere, get_sphere, epsilon_distance, equal_in_practice, zero_in_practice
 from timer import Timer
 
-logging.basicConfig(format='%(asctime)s.%(msecs)d %(levelname)-8s %(filename)s:L%(lineno)d %(funcName)s: %(message)s',
+logging.basicConfig(format='%(asctime)s.%(msecs)d %(levelname)-8s %(filename)s:%(lineno)d %(funcName)s: %(message)s',
     datefmt='%m.%d.%Y %H:%M:%S',
     level=logging.DEBUG)
 
@@ -79,20 +79,19 @@ if __name__ == '__main__':
 
     get_git_version()
 
-    """
     FILENAME_AND_URL_ARRAY = [
-      # ['data/_L.7z', 'https://ucfc43a66550d50a72d5c6ad893966.dl.dropboxusercontent.com/cd/0/get/Acgtbdfxtq1Hv_TCylXob8zA8RNVbg9qJNZUkuBJ9GrD039rGB4SQ4vvTlDHCw_Wvzxivl1re-R_i-HM_dkKPzcpowNgxikC8ot3SkB2Y7_gSMYBVN8gxsCMzExKMUvxqvU/file#'],
-      # ['data/_M.7z', 'https://ucfa13937452aeb2f165f01ea16937.dl.dropboxusercontent.com/cd/0/get/Aclm3eKtglwJbgFkBAX8u_8Lbf1ZkoqfgchqjzGEXju8LUjgHyIfRGKfKnpHg1opTaisrztJFu8Sda-S3He6zgthINXLc5dpwJUo8dqaCX1SE5dbpdQoMsffGxqe8hmsg_k/file?dl=1#'],
-      ['data/_C54.xml', 'https://uc7b36b201202ac7cc04d68a05a966.dl.dropboxusercontent.com/cd/0/get/AclhxNHBCsS2_ilqbP43MbJnWUNyZmirnWtmSg3D5bM8pDq4WUk4H2sk_dMI0j63OU3q5HQyDAvxCdI3LrjlGms7Ui5B4zsSIJMoEyUmJB5F9SpRKIHYU3J1ZNSNgwl_eFg/file#'],
-      ['data/_F.stl', 'https://uc9961f6bd3472cdc89cd193cf4f37.dl.dropboxusercontent.com/cd/0/get/AcmcZszabuV-PTcgdSLBXqurosEBnS7zHxU0Kj5cjLkNUbIIoigDcRQsMjYa3Ndr7xWHXljjLn0MANfe-AEntU6vSz2Q7yosMEDkb_g2svrOjEGk9ila4Vd8lQLr8KJdo7k/file#'],
-      ['data/_L.stl', 'https://uc0a059daf35cb3466bfa34ee51666.dl.dropboxusercontent.com/cd/0/get/AcnlQBb60Hl8eGw5p-s99eCERh8m32TdJeU-RMh1JL_LbI7SNemva-Hp5zoxArCRBjwm_49fT6aClct0FAHXSyDFopXVy6K2__tFNrliWp-O9mRmmEkL-GDOHml1xAMYuLY/file#'],
-      ['data/_R.stl', 'https://uc0dfa07f6b21b5c7d4102e78bb537.dl.dropboxusercontent.com/cd/0/get/AcnyAgA-ShRXNUP2rp8iCvrLd99DRThS_p1TWfgK1SDV0TRYlY6UdLHbN24WOsNv2TeJTjKAPTzkZdvJLITMy7I4TO5JEHhm8rLt7uv9ZKOvXqPfNloTB4WiVwHfzyuYYos/file#']
+      ['data/_L.7z', 'https://uccbc8e1809ffe6c06563a47e1bb66.dl.dropboxusercontent.com/cd/0/get/AcqreqsqlnLf9OlXvIf54sAFQPhaV7Xoexyd_bJIe4fa3HBgaiVwMJ2uT0w5YZhZObLZZhFrCzbEdcoNGYQN9tXa-sB4liuyx5pA6zEH1nr8XTaSGBcSCQZuNcXVugLwypw/file#'],
+      ['data/_M.7z', 'https://uc26a4adfaf1d3cdc9423283971b37.dl.dropboxusercontent.com/cd/0/get/AcqqVOiBNeEZzpeXi_6Fmp883j7ikUNiR6OaW0gpf-B7RHXAFl1jrmxZ4AlL5W7czzfonoegeBGJDOeMWUE7xzchzz6zWlFt-EksvSWTfNbU3ydePSl4BjM-I29RfrAd0ns/file#']
+      #['data/_C54.xml', 'https://uc7b36b201202ac7cc04d68a05a966.dl.dropboxusercontent.com/cd/0/get/AclhxNHBCsS2_ilqbP43MbJnWUNyZmirnWtmSg3D5bM8pDq4WUk4H2sk_dMI0j63OU3q5HQyDAvxCdI3LrjlGms7Ui5B4zsSIJMoEyUmJB5F9SpRKIHYU3J1ZNSNgwl_eFg/file#'],
+      #['data/_F.stl', 'https://uc9961f6bd3472cdc89cd193cf4f37.dl.dropboxusercontent.com/cd/0/get/AcmcZszabuV-PTcgdSLBXqurosEBnS7zHxU0Kj5cjLkNUbIIoigDcRQsMjYa3Ndr7xWHXljjLn0MANfe-AEntU6vSz2Q7yosMEDkb_g2svrOjEGk9ila4Vd8lQLr8KJdo7k/file#'],
+      #['data/_L.stl', 'https://uc0a059daf35cb3466bfa34ee51666.dl.dropboxusercontent.com/cd/0/get/AcnlQBb60Hl8eGw5p-s99eCERh8m32TdJeU-RMh1JL_LbI7SNemva-Hp5zoxArCRBjwm_49fT6aClct0FAHXSyDFopXVy6K2__tFNrliWp-O9mRmmEkL-GDOHml1xAMYuLY/file#'],
+      #['data/_R.stl', 'https://uc0dfa07f6b21b5c7d4102e78bb537.dl.dropboxusercontent.com/cd/0/get/AcnyAgA-ShRXNUP2rp8iCvrLd99DRThS_p1TWfgK1SDV0TRYlY6UdLHbN24WOsNv2TeJTjKAPTzkZdvJLITMy7I4TO5JEHhm8rLt7uv9ZKOvXqPfNloTB4WiVwHfzyuYYos/file#']
     ]
     for filename_and_url in FILENAME_AND_URL_ARRAY:
         filename, url = filename_and_url
         download_file_using_curl(url, filename)
-    """
-    filename = 'data/_M.7z'
-    output_directory = 'data/_M'
-    # decompress_7z_file(filename, output_directory)
-  
+
+        filename_extension = filename[-2:]
+        if filename_extension == '7z':
+            output_directory = filename[0:7]
+            decompress_7z_file(filename, output_directory)
