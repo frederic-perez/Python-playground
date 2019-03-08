@@ -17,6 +17,11 @@ def get_index_of_minimum_abs_error(error_array):
     return index
 
 def get_indices_around_minimum_abs_error(error_array):
+    if not hasattr(error_array, "__len__"):
+        raise TypeError('error_array should be an array')
+    if error_array.__len__() < 3:
+        raise TypeError('error_array should have at least 3 components ')
+
     N = len(error_array)
     INDEX = get_index_of_minimum_abs_error(error_array)
     if INDEX == 0:
