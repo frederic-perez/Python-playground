@@ -1,6 +1,11 @@
 'module docstring should be here'
 
 def get_index_of_minimum_abs_error(error_array):
+    if not hasattr(error_array, "__len__"):
+        raise TypeError('error_array should be an array')
+    if error_array.__len__() == 0:
+        raise TypeError('error_array should not be empty')
+
     N = len(error_array)
     index = 0
     minimum_abs_error = float("inf")
