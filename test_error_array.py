@@ -70,5 +70,19 @@ class Test_get_indices_around_minimum_abs_error(unittest.TestCase):
             idx_center = (n - 1)/2
             self.assertEqual(get_indices_around_minimum_abs_error(errors), (idx_center - 1, idx_center + 1))
 
+class Test_check_single_minimum(unittest.TestCase):
+
+    def test_GivenANotAnArray_When_check_single_minimum_ThenExceptionIsRaised(self):
+
+    def given...:
+        Y_ARRAYS = [[], [1], [1, 2]]
+        for y_array in Y_ARRAYS:
+            self.assertRaises(TypeError, check_single_minimum, y_array)
+
+    def given...:
+        Y_ARRAYS = [[1, 1, 1], [1, 1, 2], [1, 2, 2]]
+        for y_array in Y_ARRAYS:
+            self.assertEqual(check_single_minimum, y_array)...
+
 if __name__ == '__main__':
     unittest.main()
