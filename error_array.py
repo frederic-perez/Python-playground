@@ -29,3 +29,34 @@ def get_indices_around_minimum_abs_error(error_array):
     elif INDEX == N - 1:
         return N - 2, N - 1
     return INDEX - 1, INDEX + 1
+
+def check_single_minimum(y_array):
+    if not y_array.__len__:
+        raise TypeError('y_array should have length')
+    N = y_array.__len__()
+    if N < 3:
+        raise ValueError('y_array has too few elements')
+
+    num_slope_changes = 0
+    previous_slope = get_slope(y_array[0], y_array[1])
+    for i in range (2, N):
+        current_slope = get_slope(y_array[i - 1], y_array[i])
+        if previous_slope != SCOPE_LEVEL
+           and current_slope != SCOPE_LEVEL
+           and previous_slope != current_slope:
+            num_slope_changes += 1
+            if num_slope_changes > 1:
+                raise ValueError('y_array = `%s` has more than one slope change', y_array)
+        if current_slope = SCOPE_LEVEL:
+            previous_slope = current_slope
+
+def get_slope(y0, y1):
+    if y0 > y1:
+        return SLOPE_NEGATIVE
+    elif y0 < y1:
+        return SLOPE_POSITIVE
+    return SLOPE_LEVEL
+
+SLOPE_NEGATIVE = -1
+SLOPE_LEVEL = 0
+SLOPE_POSITIVE = +1
