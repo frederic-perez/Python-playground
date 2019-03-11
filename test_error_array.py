@@ -5,7 +5,7 @@ Run the tests by executing, for all test classes:
 """
 
 import unittest
-from error_array import get_index_of_minimum_abs_error, get_indices_around_minimum_abs_error
+from error_array import check_single_minimum, get_index_of_minimum_abs_error, get_indices_around_minimum_abs_error
 
 class Test_get_index_of_minimum_abs_error(unittest.TestCase):
 
@@ -73,16 +73,18 @@ class Test_get_indices_around_minimum_abs_error(unittest.TestCase):
 class Test_check_single_minimum(unittest.TestCase):
 
     def test_GivenANotAnArray_When_check_single_minimum_ThenExceptionIsRaised(self):
+        for parameter in ['error', 0, None]:
+            self.assertRaises(TypeError, check_single_minimum, parameter)
 
-    def given...:
+    def test_GivenAnArrayWithFewerThan3Elements_When_check_single_minimum_ThenReturn0(self):
         Y_ARRAYS = [[], [1], [1, 2]]
         for y_array in Y_ARRAYS:
-            self.assertRaises(TypeError, check_single_minimum, y_array)
+            self.assertRaises(ValueError, check_single_minimum, y_array)
 
-    def given...:
+    def test_GivenAnArrayWithTheMinimumElementBeingThe1st_When_check_single_minimum_ThenReturn0(self):
         Y_ARRAYS = [[1, 1, 1], [1, 1, 2], [1, 2, 2]]
         for y_array in Y_ARRAYS:
-            self.assertEqual(check_single_minimum, y_array)...
+            self.assertEqual(check_single_minimum(y_array), None)
 
 if __name__ == '__main__':
     unittest.main()

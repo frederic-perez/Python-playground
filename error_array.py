@@ -31,8 +31,8 @@ def get_indices_around_minimum_abs_error(error_array):
     return INDEX - 1, INDEX + 1
 
 def check_single_minimum(y_array):
-    if not y_array.__len__:
-        raise TypeError('y_array should have length')
+    if not hasattr(y_array, "__len__") or isinstance(y_array, str):
+        raise TypeError('y_array should be an array')
     N = y_array.__len__()
     if N < 3:
         raise ValueError('y_array has too few elements')
@@ -41,13 +41,13 @@ def check_single_minimum(y_array):
     previous_slope = get_slope(y_array[0], y_array[1])
     for i in range (2, N):
         current_slope = get_slope(y_array[i - 1], y_array[i])
-        if previous_slope != SCOPE_LEVEL
-           and current_slope != SCOPE_LEVEL
+        if previous_slope != SLOPE_LEVEL \
+           and current_slope != SLOPE_LEVEL \
            and previous_slope != current_slope:
             num_slope_changes += 1
             if num_slope_changes > 1:
                 raise ValueError('y_array = `%s` has more than one slope change', y_array)
-        if current_slope = SCOPE_LEVEL:
+        if current_slope == SLOPE_LEVEL:
             previous_slope = current_slope
 
 def get_slope(y0, y1):
