@@ -129,7 +129,7 @@ def get_y_min_and_y_max(points, x_center, radius):
 
     return y_min, y_max
 
-def get_best_fit_circle(points, x_center, radius, use_MSE = False):
+def get_best_fit_circle(points, x_center, radius, use_MSE):
     if not hasattr(points, "__len__"):
         raise TypeError('points should be an array')
 
