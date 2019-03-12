@@ -22,6 +22,8 @@ def get_indices_around_minimum_abs_error(error_array):
     if error_array.__len__() < 3:
         raise TypeError('error_array should have at least 3 components ')
 
+    check_single_minimum(error_array)
+
     N = len(error_array)
     INDEX = get_index_of_minimum_abs_error(error_array)
     if INDEX == 0:
@@ -46,7 +48,8 @@ def check_single_minimum(y_array):
            and previous_slope != current_slope:
             num_slope_changes += 1
             if num_slope_changes > 1:
-                raise ValueError('y_array = `%s` has more than one slope change', y_array)
+                # raise ValueError('y_array = `%s` has more than one slope change', y_array)
+                print 'Warning: y_array = `%s` has more than one slope change' % y_array
         if current_slope == SLOPE_LEVEL:
             previous_slope = current_slope
 
