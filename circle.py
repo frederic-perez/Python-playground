@@ -129,7 +129,7 @@ def get_y_min_and_y_max(points, x_center, radius):
 
     return y_min, y_max
 
-def get_best_fit_circle(points, x_center, radius, use_MSE):
+def get_best_fit_circle(points, x_center, radius, use_MSE, num_samples = 9):
     if not hasattr(points, "__len__"):
         raise TypeError('points should be an array')
 
@@ -139,16 +139,15 @@ def get_best_fit_circle(points, x_center, radius, use_MSE):
 
     y_min, y_max = get_y_min_and_y_max(points, x_center, radius)
 
-    NUM_SAMPLES = 9
-    y = [0.] * NUM_SAMPLES
-    error = [0.] * NUM_SAMPLES
+    y = [0.] * num_samples
+    error = [0.] * num_samples
 
     done = False
     i = 0
     idx_min = 0
     while not done:
-      delta = (y_max - y_min)/(NUM_SAMPLES - 1.)
-      for j in range(NUM_SAMPLES):
+      delta = (y_max - y_min)/(num_samples - 1.)
+      for j in range(num_samples):
           y[j] = y_min + delta*j
           circle = Circle([x_center, y[j]], radius)
           error[j] = circle.get_MSE(points) if use_MSE else circle.get_mean_signed_distance(points)

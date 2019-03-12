@@ -141,7 +141,7 @@ def get_y_low_and_y_high(points, x_center, z_center, radius):
 
     return y_low, y_high
 
-def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE):
+def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE, num_samples = 9):
     if not hasattr(points, "__len__"):
         raise TypeError('points should be an array')
 
@@ -161,16 +161,15 @@ def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE):
     y_min = y_range[0]
     y_max = y_range[1]
 
-    NUM_SAMPLES = 9
-    y = [0.] * NUM_SAMPLES
-    error = [0.] * NUM_SAMPLES
+    y = [0.] * num_samples
+    error = [0.] * num_samples
 
     done = False
     i = 0
     idx_min = 0
     while not done:
-      delta = (y_max - y_min)/(NUM_SAMPLES - 1.)
-      for j in range(NUM_SAMPLES):
+      delta = (y_max - y_min)/(num_samples - 1.)
+      for j in range(num_samples):
           y[j] = y_min + delta*j
           sphere = Sphere([x_center, y[j], z_center], radius)
           error[j] = sphere.get_MSE(points) if use_MSE else sphere.get_mean_signed_distance(points)
@@ -189,7 +188,7 @@ def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE):
 
     return Sphere([x_center, y[idx_min], z_center], radius)
 
-def get_best_fit_sphere_for_radius_range(points, x_center, z_center, y_range, radius_range, use_MSE):
+def get_best_fit_sphere_for_radius_range(points, x_center, z_center, y_range, radius_range, use_MSE, num_samples = 9):
     if not hasattr(points, "__len__"):
         raise TypeError('points should be an array')
 
@@ -206,18 +205,17 @@ def get_best_fit_sphere_for_radius_range(points, x_center, z_center, y_range, ra
     radius_min = radius_range[0]
     radius_max = radius_range[1]
 
-    NUM_SAMPLES = 9
-    radius = [0.] * NUM_SAMPLES
-    error = [0.] * NUM_SAMPLES
+    radius = [0.] * num_samples
+    error = [0.] * num_samples
 
     done = False
     i = 0
     idx_min = 0
     while not done:
-      delta = (radius_max - radius_min)/(NUM_SAMPLES - 1.)
-      for j in range(NUM_SAMPLES):
+      delta = (radius_max - radius_min)/(num_samples - 1.)
+      for j in range(num_samples):
           radius[j] = radius_min + delta*j
-          sphere = get_best_fit_sphere(points, x_center, z_center, y_range, radius[j], use_MSE)
+          sphere = get_best_fit_sphere(points, x_center, z_center, y_range, radius[j], use_MSE, num_samples)
           error[j] = sphere.get_MSE(points) if use_MSE else sphere.get_mean_signed_distance(points)
           # print "i =", i, "j =", j, "| radius =", radius[j], "| error =", error[j]
           if zero_in_practice(error[j]):
@@ -230,4 +228,4 @@ def get_best_fit_sphere_for_radius_range(points, x_center, z_center, y_range, ra
       i = i + 1
       done =  equal_in_practice(radius[idx_min], radius[idx_max]) or equal_in_practice(error[idx_min], error[idx_max]) or i == 50
 
-    return get_best_fit_sphere(points, x_center, z_center, y_range, radius[idx_min], use_MSE)
+    return get_best_fit_sphere(points, x_center, z_center, y_range, radius[idx_min], use_MSE, num_samples)
