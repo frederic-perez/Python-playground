@@ -279,7 +279,7 @@ class Test_get_best_fit_circle(unittest.TestCase):
         DELTA_Y = 0.001
 
         points = []
-        for angle in [30, 60, 120, 150]:
+        for angle in [5, 60, 120, 185]:
             radians = math.radians(angle)
             points.append([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians) + DELTA_Y])
             points.append([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians) - DELTA_Y])

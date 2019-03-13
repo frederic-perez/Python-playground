@@ -86,5 +86,9 @@ class Test_check_single_minimum(unittest.TestCase):
         for y_array in Y_ARRAYS:
             self.assertEqual(check_single_minimum(y_array), None)
 
+    def test_GivenAnArrayWithTheMinimumElementBeingThe3rd_When_check_single_minimum_ThenReturn0(self):
+        Y_ARRAY = [8, 2, 1, 6, 24]
+        self.assertEqual(check_single_minimum(Y_ARRAY), None)
+
 if __name__ == '__main__':
     unittest.main()

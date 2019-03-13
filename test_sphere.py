@@ -259,7 +259,7 @@ class Test_get_best_fit_sphere(unittest.TestCase):
         RADIUS = 3.4
         SPHERE = Sphere(CENTER, RADIUS)
         CENTER_X_AND_Z = [CENTER[0], CENTER[2]]
-        Y_RANGE = [-1, 4]
+        Y_RANGE = [-1, 3]
 
         points = []
         for theta_in_degrees in [30, 60]:

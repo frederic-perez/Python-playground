@@ -43,14 +43,15 @@ def check_single_minimum(y_array):
     previous_slope = get_slope(y_array[0], y_array[1])
     for i in range (2, N):
         current_slope = get_slope(y_array[i - 1], y_array[i])
+        # print 'i = %d, current_slope = %d, num_slope_changes = %d' % (i, current_slope, num_slope_changes)
         if previous_slope != SLOPE_LEVEL \
            and current_slope != SLOPE_LEVEL \
            and previous_slope != current_slope:
             num_slope_changes += 1
             if num_slope_changes > 1:
-                # raise ValueError('y_array = `%s` has more than one slope change', y_array)
-                print 'Warning: y_array = `%s` has more than one slope change' % y_array
-        if current_slope == SLOPE_LEVEL:
+                raise ValueError('y_array = `%s` has more than one slope change', y_array)
+                # print 'Warning: y_array = `%s` has more than one slope change' % y_array
+        if current_slope != SLOPE_LEVEL:
             previous_slope = current_slope
 
 def get_slope(y0, y1):
