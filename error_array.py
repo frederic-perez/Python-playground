@@ -1,7 +1,7 @@
 'module docstring should be here'
 
 def get_index_of_minimum_abs_error(error_array):
-    if not hasattr(error_array, "__len__"):
+    if not hasattr(error_array, "__len__") or isinstance(error_array, str):
         raise TypeError('error_array should be an array')
     if error_array.__len__() == 0:
         raise TypeError('error_array should not be empty')
@@ -17,7 +17,7 @@ def get_index_of_minimum_abs_error(error_array):
     return index
 
 def get_indices_around_minimum_abs_error(error_array):
-    if not hasattr(error_array, "__len__"):
+    if not hasattr(error_array, "__len__") or isinstance(error_array, str):
         raise TypeError('error_array should be an array')
     if error_array.__len__() < 3:
         raise TypeError('error_array should have at least 3 components ')
