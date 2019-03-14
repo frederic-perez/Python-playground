@@ -3,12 +3,11 @@
 import math
 import numpy as np
 from epsilon import epsilon_distance, zero_in_practice, equal_in_practice
-from error_array import get_indices_around_minimum_abs_error, is_an_array
+from error_array import check_array_type, get_indices_around_minimum_abs_error
 
 class Circle(object):
     def __init__(self, center, radius):
-        if not is_an_array(center):
-            raise TypeError('center should be an array')
+        check_array_type(center)
         if center.__len__() != 2:
             raise TypeError('center should be an array of 2 elements')
         if radius <= 0:
@@ -45,8 +44,7 @@ class Circle(object):
         return zero_in_practice(DISTANCE)
 
     def get_MSE(self, points):
-        if not is_an_array(points):
-            raise TypeError('points should be an array')
+        check_array_type(points)
 
         NUM_POINTS = len(points)
         if NUM_POINTS < 1:
@@ -60,8 +58,7 @@ class Circle(object):
         return acc_squared_error / NUM_POINTS
 
     def get_mean_signed_distance(self, points):
-        if not is_an_array(points):
-            raise TypeError('points should be an array')
+        check_array_type(points)
 
         NUM_POINTS = len(points)
         if NUM_POINTS < 1:
@@ -130,8 +127,7 @@ def get_y_min_and_y_max(points, x_center, radius):
     return y_min, y_max
 
 def get_best_fit_circle(points, x_center, radius, use_MSE, num_samples = 9):
-    if not is_an_array(points):
-        raise TypeError('points should be an array')
+    check_array_type(points)
 
     NUM_POINTS = len(points)
     if NUM_POINTS <= 3:
