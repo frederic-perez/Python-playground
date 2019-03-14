@@ -1,7 +1,10 @@
 'module docstring should be here'
 
+def is_an_array(parameter):
+    return hasattr(parameter, "__len__") and not isinstance(parameter, str)
+
 def get_index_of_minimum_abs_error(error_array):
-    if not hasattr(error_array, "__len__") or isinstance(error_array, str):
+    if not is_an_array(error_array):
         raise TypeError('error_array should be an array')
     if error_array.__len__() == 0:
         raise TypeError('error_array should not be empty')
@@ -17,7 +20,7 @@ def get_index_of_minimum_abs_error(error_array):
     return index
 
 def get_indices_around_minimum_abs_error(error_array):
-    if not hasattr(error_array, "__len__") or isinstance(error_array, str):
+    if not is_an_array(error_array):
         raise TypeError('error_array should be an array')
     if error_array.__len__() < 3:
         raise TypeError('error_array should have at least 3 components ')
@@ -33,7 +36,7 @@ def get_indices_around_minimum_abs_error(error_array):
     return INDEX - 1, INDEX + 1
 
 def check_single_minimum(y_array):
-    if not hasattr(y_array, "__len__") or isinstance(y_array, str):
+    if not is_an_array(y_array):
         raise TypeError('y_array should be an array')
     N = y_array.__len__()
     if N < 3:

@@ -3,11 +3,11 @@
 import math
 import numpy as np
 from epsilon import epsilon_distance, zero_in_practice, equal_in_practice
-from error_array import get_indices_around_minimum_abs_error
+from error_array import get_indices_around_minimum_abs_error, is_an_array
 
 class Sphere(object):
     def __init__(self, center, radius):
-        if not hasattr(center, "__len__"):
+        if not is_an_array(center):
             raise TypeError('center should be an array')
         if center.__len__() != 3:
             raise TypeError('center should be an array of 3 elements')
@@ -46,7 +46,7 @@ class Sphere(object):
         return zero_in_practice(DISTANCE)
 
     def get_MSE(self, points):
-        if not hasattr(points, "__len__"):
+        if not is_an_array(points):
             raise TypeError('points should be an array')
 
         NUM_POINTS = len(points)
@@ -61,7 +61,7 @@ class Sphere(object):
         return acc_squared_error / NUM_POINTS
 
     def get_mean_signed_distance(self, points):
-        if not hasattr(points, "__len__"):
+        if not is_an_array(points):
             raise TypeError('points should be an array')
 
         NUM_POINTS = len(points)
@@ -142,7 +142,7 @@ def get_y_low_and_y_high(points, x_center, z_center, radius):
     return y_low, y_high
 
 def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE, num_samples = 9):
-    if not hasattr(points, "__len__"):
+    if not is_an_array(points):
         raise TypeError('points should be an array')
 
     NUM_POINTS = len(points)
@@ -189,7 +189,7 @@ def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE, num_sa
     return Sphere([x_center, y[idx_min], z_center], radius)
 
 def get_best_fit_sphere_for_radius_range(points, x_center, z_center, y_range, radius_range, use_MSE, num_samples = 9):
-    if not hasattr(points, "__len__"):
+    if not is_an_array(points):
         raise TypeError('points should be an array')
 
     NUM_POINTS = len(points)
