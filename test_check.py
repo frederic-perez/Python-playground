@@ -23,7 +23,7 @@ class Test_not_empty(unittest.TestCase):
 
     def test_GivenAnEmptyArray_When_check_not_empty_ThenExceptionIsRaised(self):
         array = []
-        self.assertRaises(TypeError, check_not_empty, array)
+        self.assertRaises(ValueError, check_not_empty, array)
 
     def test_GivenANotEmptyArray_When_check_not_empty_ThenReturnNone(self):
         array = [1]

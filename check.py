@@ -9,4 +9,4 @@ def is_an_array(parameter):
 
 def check_not_empty(parameter):
     if parameter.__len__() == 0:
-        raise TypeError('The parameter should not be empty')
+        raise ValueError('The parameter should not be empty')
