@@ -6,7 +6,10 @@ Run the tests by executing, for all test classes:
 or, for individual test classes (sorted as appearing in this file):
 
   $ python -m unittest -v test_sphere.Test_Sphere
+  $ python -m unittest -v test_sphere.Test_Sphere_get_MSE
+  $ python -m unittest -v test_sphere.Test_Sphere_get_mean_signed_distance
   $ python -m unittest -v test_sphere.Test_get_sphere
+  $ python -m unittest -v test_sphere.Test_get_bet_fit_sphere
 """
 
 import math
@@ -249,10 +252,11 @@ class Test_get_best_fit_sphere(unittest.TestCase):
         Z_CENTER = 0
         Y_RANGE = [0, 500]
         RADIUS = 3.4
+        NUM_SAMPLES = 9
         points = []
         for _ in range(4):
             points.append(POINT)
-            self.assertRaises(ValueError, get_best_fit_sphere, points, X_CENTER, Z_CENTER, Y_RANGE, RADIUS)
+            self.assertRaises(ValueError, get_best_fit_sphere, points, X_CENTER, Z_CENTER, Y_RANGE, RADIUS, NUM_SAMPLES)
 
     def test_Given4PointsInTopOfSphereS_When_get_best_fit_sphere_ThenResultIsS(self):
         CENTER = [0, 0, 0]
@@ -272,9 +276,10 @@ class Test_get_best_fit_sphere(unittest.TestCase):
                     CENTER[2] + RADIUS*math.sin(theta)*math.sin(phi)])
 
         for use_MSE in [True, False]:
-            RESULT = get_best_fit_sphere(points, CENTER_X_AND_Z, Y_RANGE, RADIUS, use_MSE)
-            EPSILON_DISTANCE = 1e-5
-            self.assertTrue(SPHERE.__eq__(RESULT, EPSILON_DISTANCE))
+            for num_samples in range(4, 10):
+                RESULT = get_best_fit_sphere(points, CENTER_X_AND_Z, Y_RANGE, RADIUS, use_MSE, num_samples)
+                EPSILON_DISTANCE = 1e-5
+                self.assertTrue(SPHERE.__eq__(RESULT, EPSILON_DISTANCE))
 
     def test_Given4PointsInBottomOfSphereS_When_get_best_fit_sphere_ThenResultIsS(self):
         CENTER = [0, 0, 0]
@@ -294,9 +299,10 @@ class Test_get_best_fit_sphere(unittest.TestCase):
                     CENTER[2] + RADIUS*math.sin(theta)*math.sin(phi)])
 
         for use_MSE in [True, False]:
-            RESULT = get_best_fit_sphere(points, CENTER_X_AND_Z, Y_RANGE, RADIUS, use_MSE)
-            EPSILON_DISTANCE = 1e-5
-            self.assertTrue(SPHERE.__eq__(RESULT, EPSILON_DISTANCE))
+            for num_samples in range(4, 10):
+                RESULT = get_best_fit_sphere(points, CENTER_X_AND_Z, Y_RANGE, RADIUS, use_MSE, num_samples)
+                EPSILON_DISTANCE = 1e-5
+                self.assertTrue(SPHERE.__eq__(RESULT, EPSILON_DISTANCE))
 
     def test_GivenNPointsAroundSphereS_When_get_best_fit_sphere_ThenResultIsS(self):
         CENTER = [0, 0, 0]
@@ -306,9 +312,10 @@ class Test_get_best_fit_sphere(unittest.TestCase):
         Y_RANGE = [-10, 20]
         POINTS = get_sample_points_on_the_surface(SPHERE)
         for use_MSE in [True, False]:
-            RESULT = get_best_fit_sphere(POINTS, CENTER_X_AND_Z, Y_RANGE, RADIUS, use_MSE)
-            EPSILON_DISTANCE = 1e-5
-            self.assertTrue(SPHERE.__eq__(RESULT, EPSILON_DISTANCE))
+            for num_samples in range(4, 10):
+                RESULT = get_best_fit_sphere(POINTS, CENTER_X_AND_Z, Y_RANGE, RADIUS, use_MSE, num_samples)
+                EPSILON_DISTANCE = 1e-5
+                self.assertTrue(SPHERE.__eq__(RESULT, EPSILON_DISTANCE))
 
 if __name__ == '__main__':
     unittest.main()

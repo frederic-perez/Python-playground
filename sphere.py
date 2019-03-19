@@ -133,7 +133,7 @@ def get_y_low_and_y_high(points, x_center, z_center, radius):
 
     return y_low, y_high
 
-def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE, num_samples = 9):
+def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE, num_samples): # num_samples = 9):
     check_array_type(points)
 
     NUM_POINTS = len(points)
@@ -179,7 +179,7 @@ def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE, num_sa
 
     return Sphere([x_center, y[idx_min], z_center], radius)
 
-def get_best_fit_sphere_for_radius_range(points, x_center, z_center, y_range, radius_range, use_MSE, num_samples = 9):
+def get_best_fit_sphere_for_radius_range(points, x_center, z_center, y_range, radius_range, use_MSE, num_samples): # num_samples = 9):
     check_array_type(points)
 
     NUM_POINTS = len(points)
