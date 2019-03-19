@@ -17,11 +17,11 @@ class Circle(object):
         self.radius = radius
         return
 
-    def __eq__(self, other):
+    def __eq__(self, other, epsilon = epsilon_distance):
         return \
-            equal_in_practice(self.center[0], other.center[0]) \
-            and equal_in_practice(self.center[1], other.center[1]) \
-            and equal_in_practice(self.radius, other.radius)
+            equal_in_practice(self.center[0], other.center[0], epsilon) \
+            and equal_in_practice(self.center[1], other.center[1], epsilon) \
+            and equal_in_practice(self.radius, other.radius, epsilon)
 
     def __str__(self):
         return 'Circle(center={0}, radius={1})'.format(self.center, self.radius)
@@ -121,7 +121,7 @@ def get_y_min_and_y_max(points, x_center, radius):
 
     return y_min, y_max
 
-def get_best_fit_circle(points, x_center, radius, use_MSE, num_samples = 9):
+def get_best_fit_circle(points, x_center, radius, use_MSE, num_samples): # num_samples = 9):
     check_array_type(points)
 
     NUM_POINTS = len(points)

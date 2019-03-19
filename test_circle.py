@@ -224,7 +224,8 @@ class Test_get_best_fit_circle(unittest.TestCase):
         for _ in range(3):
             points.append(POINT)
             for use_MSE in [True, False]:
-                self.assertRaises(ValueError, get_best_fit_circle, points, X_CENTER, RADIUS, use_MSE)
+                for num_samples in range(4, 10):
+                    self.assertRaises(ValueError, get_best_fit_circle, points, X_CENTER, RADIUS, use_MSE, num_samples)
 
     def test_Given4PointsInTopOfCircleC_When_get_best_fit_circle_ThenResultIsC(self):
         CENTER = [0, 0]
@@ -238,8 +239,9 @@ class Test_get_best_fit_circle(unittest.TestCase):
             points.append([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)])
 
         for use_MSE in [True, False]:
-            RESULT = get_best_fit_circle(points, X_CENTER, RADIUS, use_MSE)
-            self.assertEqual(CIRCLE, RESULT)
+            for num_samples in range(4, 10):
+                RESULT = get_best_fit_circle(points, X_CENTER, RADIUS, use_MSE, num_samples)
+                self.assertEqual(CIRCLE, RESULT)
 
     def test_Given4PointsInBottomOfCircleC_When_get_best_fit_circle_ThenResultIsC(self):
         CENTER = [0, 0]
@@ -253,10 +255,11 @@ class Test_get_best_fit_circle(unittest.TestCase):
             points.append([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)])
 
         for use_MSE in [True, False]:
-            RESULT = get_best_fit_circle(points, X_CENTER, RADIUS, use_MSE)
-            self.assertEqual(CIRCLE, RESULT)
+            for num_samples in range(4, 10):
+                RESULT = get_best_fit_circle(points, X_CENTER, RADIUS, use_MSE, num_samples)
+                self.assertEqual(CIRCLE, RESULT)
 
-    def test_Given8PointAroundCircleC_When_get_best_fit_circle_ThenResultIsC(self):
+    def test_Given8PointsAroundCircleC_When_get_best_fit_circle_ThenResultIsC(self):
         CENTER = [0, 0]
         RADIUS = 1
         CIRCLE = Circle(CENTER, RADIUS)
@@ -268,8 +271,10 @@ class Test_get_best_fit_circle(unittest.TestCase):
             points.append([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians)])
 
         for use_MSE in [True, False]:
-            RESULT = get_best_fit_circle(points, X_CENTER, RADIUS, use_MSE)
-            self.assertEqual(CIRCLE, RESULT)
+            for num_samples in range(4, 10):
+                RESULT = get_best_fit_circle(points, X_CENTER, RADIUS, use_MSE, num_samples)
+                EPSILON = 1e-5
+                self.assertTrue(CIRCLE.__eq__(RESULT, EPSILON))
 
     def test_Given8PointsAroundTopOfCircleC_When_get_best_fit_circle_ThenResultIsC(self):
         CENTER = [3, 6]
@@ -284,12 +289,11 @@ class Test_get_best_fit_circle(unittest.TestCase):
             points.append([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians) + DELTA_Y])
             points.append([CENTER[0] + RADIUS*math.cos(radians), CENTER[1] + RADIUS*math.sin(radians) - DELTA_Y])
 
-        print "CIRCLE is", CIRCLE
-        EPSILON = 1e-6
         for use_MSE in [True, False]:
-            RESULT = get_best_fit_circle(points, X_CENTER, RADIUS, use_MSE)
-            print "RESULT when use_MSE is", use_MSE, "is", RESULT
-            self.assertTrue(equal_in_practice(CENTER[1], RESULT.get_center()[1], EPSILON))
+            for num_samples in range(8, 10):
+                RESULT = get_best_fit_circle(points, X_CENTER, RADIUS, use_MSE, num_samples)
+                EPSILON = 1e-6
+                self.assertTrue(CIRCLE.__eq__(RESULT, EPSILON))
 
 if __name__ == '__main__':
     unittest.main()
