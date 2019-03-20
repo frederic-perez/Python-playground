@@ -124,10 +124,7 @@ def get_y_min_and_y_max(points, x_center, radius):
 
 def get_best_fit_circle(points, x_center, radius, use_MSE, num_samples): # num_samples = 9):
     check.array_type(points)
-
-    NUM_POINTS = len(points)
-    if NUM_POINTS <= 3:
-        raise ValueError('points should have at least 4 elements')
+    check.length_is_greater_than_N(points, 3)
 
     y_min, y_max = get_y_min_and_y_max(points, x_center, radius)
 

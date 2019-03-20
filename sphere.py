@@ -136,10 +136,7 @@ def get_y_low_and_y_high(points, x_center, z_center, radius):
 
 def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE, num_samples): # num_samples = 9):
     check.array_type(points)
-
-    NUM_POINTS = len(points)
-    if NUM_POINTS <= 4:
-        raise ValueError('points should have at least 5 elements')
+    check.length_is_greater_than_N(points, 4)
 
     if len(center_x_and_z) != 2:
         raise ValueError('center_x_and_z should have 2 elements')
@@ -182,10 +179,7 @@ def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE, num_sa
 
 def get_best_fit_sphere_for_radius_range(points, x_center, z_center, y_range, radius_range, use_MSE, num_samples): # num_samples = 9):
     check_array_type(points)
-
-    NUM_POINTS = len(points)
-    if NUM_POINTS <= 4:
-        raise ValueError('points should have at least 5 elements')
+    check.length_is_greater_than_N(points, 4)
 
     if len(y_range) != 2:
         raise ValueError('y_range should have 2 elements')
