@@ -1,9 +1,9 @@
 'module docstring should be here'
 
-from check import check_array_type, is_an_array
+import check
 
 def get_index_of_minimum_abs_error(error_array):
-    check_array_type(error_array)
+    check.array_type(error_array)
     if error_array.__len__() == 0:
         raise TypeError('error_array should not be empty')
 
@@ -18,7 +18,7 @@ def get_index_of_minimum_abs_error(error_array):
     return index
 
 def get_indices_around_minimum_abs_error(error_array):
-    check_array_type(error_array)
+    check.array_type(error_array)
     if error_array.__len__() < 3:
         raise TypeError('error_array should have at least 3 components ')
 
@@ -33,7 +33,7 @@ def get_indices_around_minimum_abs_error(error_array):
     return INDEX - 1, INDEX + 1
 
 def check_single_minimum(y_array):
-    check_array_type(y_array)
+    check.array_type(y_array)
     N = y_array.__len__()
     if N < 3:
         raise ValueError('y_array has too few elements')

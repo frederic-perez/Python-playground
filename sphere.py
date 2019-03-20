@@ -2,13 +2,14 @@
 
 import math
 import numpy as np
-from check import check_not_empty
+
+import check
 from epsilon import epsilon_distance, zero_in_practice, equal_in_practice
-from error_array import check_array_type, get_indices_around_minimum_abs_error
+from error_array import get_indices_around_minimum_abs_error
 
 class Sphere(object):
     def __init__(self, center, radius):
-        check_array_type(center)
+        check.array_type(center)
         if center.__len__() != 3:
             raise TypeError('center should be an array of 3 elements')
         if radius <= 0:
@@ -46,8 +47,8 @@ class Sphere(object):
         return zero_in_practice(DISTANCE)
 
     def get_MSE(self, points):
-        check_array_type(points)
-        check_not_empty(points)
+        check.array_type(points)
+        check.not_empty(points)
 
         acc_squared_error = 0
         for point in points:
@@ -57,8 +58,8 @@ class Sphere(object):
         return acc_squared_error / len(points)
 
     def get_mean_signed_distance(self, points):
-        check_array_type(points)
-        check_not_empty(points)
+        check.array_type(points)
+        check.not_empty(points)
 
         acc_signed_distance = 0
         for point in points:
@@ -134,7 +135,7 @@ def get_y_low_and_y_high(points, x_center, z_center, radius):
     return y_low, y_high
 
 def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE, num_samples): # num_samples = 9):
-    check_array_type(points)
+    check.array_type(points)
 
     NUM_POINTS = len(points)
     if NUM_POINTS <= 4:
