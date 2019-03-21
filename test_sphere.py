@@ -27,7 +27,7 @@ class Test_Sphere(unittest.TestCase):
     def test_GivenA2DCenterPoint_When_Sphere_ThenExceptionIsRaised(self):
         CENTER_2D = [1, 3]
         RADIUS = 3.
-        self.assertRaises(TypeError, Sphere, CENTER_2D, RADIUS)
+        self.assertRaises(ValueError, Sphere, CENTER_2D, RADIUS)
 
     def test_GivenAMissingRadius_When_Sphere_ThenExceptionIsRaised(self):
         CENTER = [1, 3, 6]

@@ -27,7 +27,7 @@ class Test_Circle(unittest.TestCase):
     def test_GivenA1DCenterPoint_When_Circle_ThenExceptionIsRaised(self):
         CENTER_1D = [1]
         RADIUS = 3.
-        self.assertRaises(TypeError, Circle, CENTER_1D, RADIUS)
+        self.assertRaises(ValueError, Circle, CENTER_1D, RADIUS)
 
     def test_GivenAMissingRadius_When_Circle_ThenExceptionIsRaised(self):
         CENTER = [1, 3]

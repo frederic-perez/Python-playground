@@ -4,8 +4,7 @@ import check
 
 def get_index_of_minimum_abs_error(error_array):
     check.array_type(error_array)
-    if error_array.__len__() == 0:
-        raise TypeError('error_array should not be empty')
+    check.not_empty(error_array)
 
     N = len(error_array)
     index = 0

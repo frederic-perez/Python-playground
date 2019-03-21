@@ -10,8 +10,7 @@ from error_array import get_indices_around_minimum_abs_error
 class Circle(object):
     def __init__(self, center, radius):
         check.array_type(center)
-        if center.__len__() != 2:
-            raise TypeError('center should be an array of 2 elements')
+        check.length_is_equal_to_N(center, 2)
         if radius <= 0:
             raise ValueError("Value %g is out of range" % radius)
         self.center = np.array(center, np.float_)
@@ -70,8 +69,7 @@ def get_circle(points):
     Code adapted from https://stackoverflow.com/questions/52990094
     on February 18, 2019
     """
-    if len(points) != 3:
-        raise ValueError('3 points are required')
+    check.length_is_equal_to_N(points, 3)
 
     a = np.zeros((3, 3))
     for i in range(0, 3):

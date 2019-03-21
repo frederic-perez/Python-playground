@@ -30,6 +30,26 @@ class Test_not_empty(unittest.TestCase):
         array = [1]
         self.assertEqual(check.not_empty(array), None)
 
+class Test_length_is_equal_to_N(unittest.TestCase):
+
+    def test_GivenANotEmptyArrayAndNDifferentThanItsSize_When_length_is_equal_to_N_ThenExceptionIsRaised(self):
+        array = [1, 2, 3]
+        SIZE = len(array)
+        n_array = []
+        for i in range(0, SIZE):
+            n_array.append(i)
+        for i in range(SIZE + 1, SIZE + 5):
+            n_array.append(i)
+
+        for n in n_array:
+            self.assertRaises(ValueError, check.length_is_equal_to_N, array, n)
+
+    def test_GivenANotEmptyArrayAndNEqualToItsSize_When_length_is_equal_to_N_ThenReturnNone(self):
+        array = [1, 2, 3]
+        SIZE = len(array)
+        N = SIZE
+        self.assertEqual(check.length_is_equal_to_N(array, N), None)
+
 class Test_length_is_less_or_equal_to_N(unittest.TestCase):
 
     def test_GivenANotEmptyArrayAndNGreaterThanItsSize_When_length_is_less_or_equal_to_N_ThenReturnNone(self):

@@ -15,7 +15,7 @@ class Test_get_index_of_minimum_abs_error(unittest.TestCase):
 
     def test_GivenAnEmptyArray_When_get_index_of_minimum_abs_error_ThenExceptionIsRaised(self):
         ERRORS = []
-        self.assertRaises(TypeError, get_index_of_minimum_abs_error, ERRORS)
+        self.assertRaises(ValueError, get_index_of_minimum_abs_error, ERRORS)
 
     def test_GivenAnArrayOf1Element_When_get_index_of_minimum_abs_error_ThenReturn0(self):
         ERRORS = [7]

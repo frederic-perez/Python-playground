@@ -10,8 +10,7 @@ from error_array import get_indices_around_minimum_abs_error
 class Sphere(object):
     def __init__(self, center, radius):
         check.array_type(center)
-        if center.__len__() != 3:
-            raise TypeError('center should be an array of 3 elements')
+        check.length_is_equal_to_N(center, 3)
         if radius <= 0:
             raise ValueError("Value %g is out of range" % radius)
         self.center = np.array(center, np.float_)
@@ -71,8 +70,8 @@ def get_sphere(points):
     Translation of code from http://www.convertalot.com/sphere_solver.html
     on December 21, 2018, and then simplified
     """
-    if len(points) != 4:
-        raise ValueError('4 points are required')
+    check.array_type(points)
+    check.length_is_equal_to_N(points, 4)
 
     a = np.zeros((4, 4))
     for i in range(0, 4):
@@ -137,12 +136,8 @@ def get_y_low_and_y_high(points, x_center, z_center, radius):
 def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE, num_samples): # num_samples = 9):
     check.array_type(points)
     check.length_is_greater_than_N(points, 4)
-
-    if len(center_x_and_z) != 2:
-        raise ValueError('center_x_and_z should have 2 elements')
-
-    if len(y_range) != 2:
-        raise ValueError('y_range should have 2 elements')
+    check.length_is_equal_to_N(center_x_and_z, 2)
+    check.length_is_equal_to_N(y_range, 2)
 
     x_center = center_x_and_z[0]
     z_center = center_x_and_z[1]
@@ -173,19 +168,13 @@ def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE, num_sa
       i = i + 1
       done =  equal_in_practice(y[idx_min], y[idx_max]) or equal_in_practice(error[idx_min], error[idx_max]) or i == 50
 
-    # raise ValueError('WIP')
-
     return Sphere([x_center, y[idx_min], z_center], radius)
 
 def get_best_fit_sphere_for_radius_range(points, x_center, z_center, y_range, radius_range, use_MSE, num_samples): # num_samples = 9):
-    check_array_type(points)
+    check.array_type(points)
     check.length_is_greater_than_N(points, 4)
-
-    if len(y_range) != 2:
-        raise ValueError('y_range should have 2 elements')
-
-    if len(radius_range) != 2:
-        raise ValueError('radius_range should have 2 elements')
+    check.length_is_equal_to_N(y_range, 2)
+    check.length_is_equal_to_N(radius_range, 2)
 
     radius_min = radius_range[0]
     radius_max = radius_range[1]
