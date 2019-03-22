@@ -78,5 +78,19 @@ class Test_length_is_greater_than_N(unittest.TestCase):
         for n in range(SIZE, SIZE + 5):
             self.assertRaises(ValueError, check.length_is_greater_than_N, array, n)
 
+class Test_length_is_greater_or_equal_to_N(unittest.TestCase):
+
+    def test_GivenANotEmptyArrayAndNLowerOrEqualToItsSize_When_length_is_greater_or_equal_to_N_ThenReturnNone(self):
+        array = [1, 2, 3]
+        SIZE = len(array)
+        for n in range(0, SIZE + 1):
+            self.assertEqual(check.length_is_greater_or_equal_to_N(array, n), None)
+
+    def test_GivenANotEmptyArrayAndNLargerThanItsSize_When_length_is_greater_or_equal_to_N_ThenExceptionIsRaised(self):
+        array = [1, 2, 3]
+        SIZE = len(array)
+        for n in range(SIZE + 1, SIZE + 5):
+            self.assertRaises(ValueError, check.length_is_greater_or_equal_to_N, array, n)
+
 if __name__ == '__main__':
     unittest.main()

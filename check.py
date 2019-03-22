@@ -25,3 +25,8 @@ def length_is_greater_than_N(arrangement, n):
     LENGTH = len(arrangement)
     if not LENGTH > n:
         raise ValueError('The arrangement should have more than %d element(s)', n)
+
+def length_is_greater_or_equal_to_N(arrangement, n):
+    LENGTH = len(arrangement)
+    if not LENGTH >= n:
+        raise ValueError('The arrangement should have at least %d element(s)', n)
