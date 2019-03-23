@@ -11,6 +11,12 @@ def not_empty(arrangement):
     if arrangement.__len__() == 0:
         raise ValueError('The arrangement should not be empty')
 
+"""
+The names of the functions below loosely follow the nomenclature from C++ of
+operator comparisons.
+See https://en.cppreference.com/w/cpp/language/operator_comparison.
+"""
+
 def length_is_equal_to_N(arrangement, n):
     LENGTH = len(arrangement)
     if not LENGTH == n:
