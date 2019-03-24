@@ -18,8 +18,7 @@ def get_index_of_minimum_abs_error(error_array):
 
 def get_indices_around_minimum_abs_error(error_array):
     check.array_type(error_array)
-    if error_array.__len__() < 3:
-        raise TypeError('error_array should have at least 3 components ')
+    check.length_is_greater_or_equal_to_N(error_array, 3)
 
     check_single_minimum(error_array)
 
@@ -33,10 +32,9 @@ def get_indices_around_minimum_abs_error(error_array):
 
 def check_single_minimum(y_array):
     check.array_type(y_array)
-    N = y_array.__len__()
-    if N < 3:
-        raise ValueError('y_array has too few elements')
+    check.length_is_greater_or_equal_to_N(y_array, 3)
 
+    N = len(y_array)
     num_slope_changes = 0
     previous_slope = get_slope(y_array[0], y_array[1])
     for i in range (2, N):
