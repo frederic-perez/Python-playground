@@ -45,11 +45,11 @@ class Test_get_indices_around_minimum_abs_error(unittest.TestCase):
 
     def test_GivenAnEmptyArray_When_get_indices_around_minimum_abs_error_ThenExceptionIsRaised(self):
         ERRORS = []
-        self.assertRaises(TypeError, get_indices_around_minimum_abs_error, ERRORS)
+        self.assertRaises(ValueError, get_indices_around_minimum_abs_error, ERRORS)
 
     def test_GivenAnArrayWithLessThan3Elements_When_get_indices_around_minimum_abs_error_ThenReturn0(self):
-        self.assertRaises(TypeError, get_indices_around_minimum_abs_error, [1])
-        self.assertRaises(TypeError, get_indices_around_minimum_abs_error, [1, 2])
+        self.assertRaises(ValueError, get_indices_around_minimum_abs_error, [1])
+        self.assertRaises(ValueError, get_indices_around_minimum_abs_error, [1, 2])
 
     def test_GivenAnArrayOfEqualElements_When_get_indices_around_minimum_abs_error_ThenReturn0And1(self):
         ERRORS = [7, 7, 7]
