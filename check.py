@@ -22,6 +22,11 @@ def length_is_equal_to_N(arrangement, n):
     if not LENGTH == n:
         raise ValueError('The arrangement should have exactly %d element(s)', n)
 
+def length_is_less_than_N(arrangement, n):
+    LENGTH = len(arrangement)
+    if not LENGTH < n:
+        raise ValueError('The arrangement should have less than %d element(s)', n)
+
 def length_is_less_or_equal_to_N(arrangement, n):
     LENGTH = len(arrangement)
     if not LENGTH <= n:
