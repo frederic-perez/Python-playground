@@ -136,7 +136,9 @@ def get_y_low_and_y_high(points, x_center, z_center, radius):
 def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE, num_samples): # num_samples = 9):
     check.array_type(points)
     check.length_is_greater_than_N(points, 4)
+    check.array_type(center_x_and_z)
     check.length_is_equal_to_N(center_x_and_z, 2)
+    check.array_type(y_range)
     check.length_is_equal_to_N(y_range, 2)
 
     x_center = center_x_and_z[0]
@@ -170,10 +172,14 @@ def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE, num_sa
 
     return Sphere([x_center, y[idx_min], z_center], radius)
 
-def get_best_fit_sphere_for_radius_range(points, x_center, z_center, y_range, radius_range, use_MSE, num_samples): # num_samples = 9):
+def get_best_fit_sphere_for_radius_range(points, center_x_and_z, y_range, radius_range, use_MSE, num_samples): # num_samples = 9):
     check.array_type(points)
     check.length_is_greater_than_N(points, 4)
+    check.array_type(center_x_and_z)
+    check.length_is_equal_to_N(center_x_and_z, 2)
+    check.array_type(y_range)
     check.length_is_equal_to_N(y_range, 2)
+    check.array_type(radius_range)
     check.length_is_equal_to_N(radius_range, 2)
 
     radius_min = radius_range[0]
@@ -189,7 +195,7 @@ def get_best_fit_sphere_for_radius_range(points, x_center, z_center, y_range, ra
       delta = (radius_max - radius_min)/(num_samples - 1.)
       for j in range(num_samples):
           radius[j] = radius_min + delta*j
-          sphere = get_best_fit_sphere(points, x_center, z_center, y_range, radius[j], use_MSE, num_samples)
+          sphere = get_best_fit_sphere(points, center_x_and_z, y_range, radius[j], use_MSE, num_samples)
           error[j] = sphere.get_MSE(points) if use_MSE else sphere.get_mean_signed_distance(points)
           # print "i =", i, "j =", j, "| radius =", radius[j], "| error =", error[j]
           if zero_in_practice(error[j]):
@@ -202,4 +208,4 @@ def get_best_fit_sphere_for_radius_range(points, x_center, z_center, y_range, ra
       i = i + 1
       done =  equal_in_practice(radius[idx_min], radius[idx_max]) or equal_in_practice(error[idx_min], error[idx_max]) or i == 50
 
-    return get_best_fit_sphere(points, x_center, z_center, y_range, radius[idx_min], use_MSE, num_samples)
+    return get_best_fit_sphere(points, center_x_and_z, y_range, radius[idx_min], use_MSE, num_samples)

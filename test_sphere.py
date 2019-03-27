@@ -9,14 +9,15 @@ or, for individual test classes (sorted as appearing in this file):
   $ python -m unittest -v test_sphere.Test_Sphere_get_MSE
   $ python -m unittest -v test_sphere.Test_Sphere_get_mean_signed_distance
   $ python -m unittest -v test_sphere.Test_get_sphere
-  $ python -m unittest -v test_sphere.Test_get_bet_fit_sphere
+  $ python -m unittest -v test_sphere.Test_get_best_fit_sphere
+  $ python -m unittest -v test_sphere.Test_get_best_fit_sphere_for_radius_range
 """
 
 import math
 import numpy as np
 import unittest
 from epsilon import epsilon_distance, equal_in_practice, zero_in_practice
-from sphere import Sphere, get_sphere, get_best_fit_sphere
+from sphere import Sphere, get_sphere, get_best_fit_sphere, get_best_fit_sphere_for_radius_range
 
 class Test_Sphere(unittest.TestCase):
 
@@ -248,15 +249,15 @@ class Test_get_best_fit_sphere(unittest.TestCase):
 
     def test_GivenLessThan5Points_When_get_best_fit_sphere_ThenExceptionIsRaised(self):
         POINT = [1, 3]
-        X_CENTER = 0
-        Z_CENTER = 0
+        CENTER_X_AND_Z = [0, 0]
         Y_RANGE = [0, 500]
         RADIUS = 3.4
-        NUM_SAMPLES = 9
         points = []
-        for _ in range(4):
+        for _ in range(5):
             points.append(POINT)
-            self.assertRaises(ValueError, get_best_fit_sphere, points, X_CENTER, Z_CENTER, Y_RANGE, RADIUS, NUM_SAMPLES)
+            for use_MSE in [True, False]:
+                for num_samples in range(4, 10):
+                    self.assertRaises(ValueError, get_best_fit_sphere, points, CENTER_X_AND_Z, Y_RANGE, RADIUS, use_MSE, num_samples)
 
     def test_Given4PointsInTopOfSphereS_When_get_best_fit_sphere_ThenResultIsS(self):
         CENTER = [0, 0, 0]
@@ -316,6 +317,20 @@ class Test_get_best_fit_sphere(unittest.TestCase):
                 RESULT = get_best_fit_sphere(POINTS, CENTER_X_AND_Z, Y_RANGE, RADIUS, use_MSE, num_samples)
                 EPSILON_DISTANCE = 1e-5
                 self.assertTrue(SPHERE.__eq__(RESULT, EPSILON_DISTANCE))
+
+class Test_get_best_fit_sphere_for_radius_range(unittest.TestCase):
+
+    def test_GivenLessThan5Points_When_get_best_fit_sphere_for_radius_range_ThenExceptionIsRaised(self):
+        POINT = [1, 3]
+        CENTER_X_AND_Z = [0, 0]
+        Y_RANGE = [0, 500]
+        RADIUS_RANGE = [3.1, 3.9]
+        points = []
+        for _ in range(5):
+            points.append(POINT)
+            for use_MSE in [True, False]:
+                for num_samples in range(4, 10):
+                    self.assertRaises(ValueError, get_best_fit_sphere_for_radius_range, points, CENTER_X_AND_Z, Y_RANGE, RADIUS_RANGE, use_MSE, num_samples)
 
 if __name__ == '__main__':
     unittest.main()
