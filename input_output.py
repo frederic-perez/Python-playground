@@ -291,10 +291,12 @@ def study_contour(contour_ID, tilt):
 
     BOUNDING_BOX = get_bounding_box(ROTATED_POINTS)
     CENTER = get_center(BOUNDING_BOX)
+    CENTER_X_AND_Z = [CENTER[0], CENTER[2]]
     SPHERE_Y_RANGE = [0, 500]
     SPHERE_RADIUS_RANGE = [40., 1000.]
     USE_MSE = True
-    SPHERE = get_best_fit_sphere_for_radius_range(ROTATED_POINTS, CENTER[0], CENTER[2], SPHERE_Y_RANGE, SPHERE_RADIUS_RANGE, USE_MSE)
+    NUM_SAMPLES = 9
+    SPHERE = get_best_fit_sphere_for_radius_range(ROTATED_POINTS, CENTER_X_AND_Z, SPHERE_Y_RANGE, SPHERE_RADIUS_RANGE, USE_MSE, NUM_SAMPLES)
     print "Best fit sphere for", FILENAME_CONTOUR_XYZ, "is", SPHERE, "| Base is", OpticalSphere(SPHERE.get_radius()).get_base_curve()
 
     """
