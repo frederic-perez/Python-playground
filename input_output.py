@@ -299,21 +299,9 @@ def study_contour(contour_ID, tilt):
     SPHERE = get_best_fit_sphere_for_radius_range(ROTATED_POINTS, CENTER_X_AND_Z, SPHERE_Y_RANGE, SPHERE_RADIUS_RANGE, USE_MSE, NUM_SAMPLES)
     print "Best fit sphere for", FILENAME_CONTOUR_XYZ, "is", SPHERE, "| Base is", OpticalSphere(SPHERE.get_radius()).get_base_curve()
 
-    """
-    SPHERE_RADIUS_FIXED = 151 # 151 for Base 3.5 # 106 for Base 5
-    SPHERE_WITH_FIXED_RADIUS = get_best_fit_sphere(ROTATED_POINTS, CENTER[0], CENTER[2], SPHERE_RADIUS_FIXED, USE_MSE)
-    print "Best fit sphere with fixed radius", SPHERE_RADIUS_FIXED, "for", FILENAME_CONTOUR_XYZ, "is", SPHERE_WITH_FIXED_RADIUS, "| Base is", OpticalSphere(SPHERE_WITH_FIXED_RADIUS.get_radius()).get_base_curve()
-    """
-
     FILENAME_CONTOUR_STUDY_RESULTS_PLY = 'data/_contour-' + contour_ID + '-study-results.ply'
     save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(
         FILENAME_CONTOUR_ROTATED_XYZ, SPHERE, FILENAME_CONTOUR_STUDY_RESULTS_PLY)
-
-    """
-    FILENAME_CONTOUR_STUDY_RESULTS_WITH_FIXED_RADIUS_PLY = 'data/_contour-' + contour_ID + '-study-results-with-fixed-radius.ply'
-    save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(
-        FILENAME_CONTOUR_ROTATED_XYZ, SPHERE_WITH_FIXED_RADIUS, FILENAME_CONTOUR_STUDY_RESULTS_WITH_FIXED_RADIUS_PLY)
-    """
 
 if __name__ == '__main__':
     """
