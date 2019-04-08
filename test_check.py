@@ -45,10 +45,12 @@ class Test_length_is_equal_to_N(unittest.TestCase):
             self.assertRaises(ValueError, check.length_is_equal_to_N, array, n)
 
     def test_GivenANotEmptyArrayAndNEqualToItsSize_When_length_is_equal_to_N_ThenReturnNone(self):
-        array = [1, 2, 3]
-        SIZE = len(array)
-        N = SIZE
-        self.assertEqual(check.length_is_equal_to_N(array, N), None)
+        array = []
+        for i in range(0, 5):
+            array.append(i)
+            size = len(array)
+            n = size
+            self.assertEqual(check.length_is_equal_to_N(array, n), None)
 
 class Test_length_is_less_than_N(unittest.TestCase):
 
