@@ -91,16 +91,20 @@ class Test_length_is_less_or_equal_to_N(unittest.TestCase):
 class Test_length_is_greater_than_N(unittest.TestCase):
 
     def test_GivenANotEmptyArrayAndNLowerThanItsSize_When_length_is_greater_than_N_ThenReturnNone(self):
-        array = [1, 2, 3]
-        SIZE = len(array)
-        for n in range(0, SIZE):
-            self.assertEqual(check.length_is_greater_than_N(array, n), None)
+        array = []
+        for i in range(0, 5):
+            array.append(i)
+            size = len(array)
+            for n in range(0, size):
+                self.assertEqual(check.length_is_greater_than_N(array, n), None)
 
     def test_GivenANotEmptyArrayAndNGreaterOrEqualToItsSize_When_length_is_greater_than_N_ThenExceptionIsRaised(self):
-        array = [1, 2, 3]
-        SIZE = len(array)
-        for n in range(SIZE, SIZE + 5):
-            self.assertRaises(ValueError, check.length_is_greater_than_N, array, n)
+        array = []
+        for i in range(0, 5):
+            array.append(i)
+            size = len(array)
+            for n in range(size, size + 5):
+                self.assertRaises(ValueError, check.length_is_greater_than_N, array, n)
 
 class Test_length_is_greater_or_equal_to_N(unittest.TestCase):
 
