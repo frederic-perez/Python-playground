@@ -6,6 +6,14 @@ import os.path
 from sphere import Sphere, get_best_fit_sphere, get_best_fit_sphere_for_radius_range
 from optical_sphere import OpticalSphere
 
+"""
+TODO: Implement function `verify-contour-on-sphere` that reads a set of points,
+and does a loop for alpha ranging from 0 to 85 degrees (delta = 5; i x delta),
+retrieving the four points closest to the cross-mark lines, compute the sphere
+that passes through those points, and save them to study the variability of
+centers and radii.
+"""
+
 def get_pringle_points(num_points, a, b, radius_x, radius_z, offset_xyz, max_noise = 0.):
     points = np.random.rand(num_points, 3)
     A_SQR = a**2
