@@ -19,7 +19,7 @@ def get_pringle_points(num_points, a, b, radius_x, radius_z, offset_xyz, max_noi
     A_SQR = a**2
     B_SQR = b**2
     for i in range(num_points):
-        print "i is", i
+        print("i is", i)
         alpha = i * 2*math.pi/num_points
         x = radius_x * math.sin(alpha)
         z = radius_z * math.cos(alpha)
@@ -36,7 +36,7 @@ def get_pringle_points(num_points, a, b, radius_x, radius_z, offset_xyz, max_noi
 
 def get_distances_to_sphere_and_scaled_normals(points, sphere):
     FUNCTION_NAME = 'get_distances_to_sphere_and_scaled_normals:'
-    print FUNCTION_NAME, "sphere is", sphere
+    print(FUNCTION_NAME, "sphere is", sphere)
     NUM_POINTS = len(points)
     distances = [0] * NUM_POINTS
     scaled_normals = np.random.rand(NUM_POINTS, 3)
@@ -48,7 +48,7 @@ def get_distances_to_sphere_and_scaled_normals(points, sphere):
         distance = sphere.get_signed_distance_to_surface(point)
         max_negative_distance = min(max_negative_distance, distance)
         max_positive_distance = max(max_positive_distance, distance)
-        # print "distance for point", i, '=', point, "is", distance
+        # print("distance for point", i, '=', point, "is", distance)
         distances[i] = distance
         scaled_normal = np.zeros(3)
         vector = CENTER - point
@@ -56,7 +56,7 @@ def get_distances_to_sphere_and_scaled_normals(points, sphere):
         for k in range(3):
             scaled_normal[k] = distance * vector[k]/magnitude
         scaled_normals[i] = scaled_normal
-    print FUNCTION_NAME, "max_negative_distance is", max_negative_distance, "| max_positive_distance is", max_positive_distance
+    print(FUNCTION_NAME, "max_negative_distance is", max_negative_distance, "| max_positive_distance is", max_positive_distance)
     return distances, scaled_normals
 
 def save_xyz_file(filename_xyz, points):
@@ -71,10 +71,10 @@ def save_xyz_file(filename_xyz, points):
 
 def print_a_few_points(points):
     FUNCTION_NAME = 'print_a_few_points:'
-    print FUNCTION_NAME, "point #", 0, "is", points[0]
-    print FUNCTION_NAME, "..."
+    print(FUNCTION_NAME, "point #", 0, "is", points[0])
+    print(FUNCTION_NAME, "...")
     LAST_INDEX = len(points) - 1
-    print FUNCTION_NAME, "point #", LAST_INDEX, "is", points[LAST_INDEX]
+    print(FUNCTION_NAME, "point #", LAST_INDEX, "is", points[LAST_INDEX])
 
 def read_xyz_file(filename_xyz):
     file_in = open(filename_xyz, 'r')
@@ -257,7 +257,7 @@ def play_with_a_pringle_like_whatnot_42_with_noise():
     SPHERE_RADIUS = 106 # 6.8
     # SPHERE = Sphere(SPHERE_CENTER, SPHERE_RADIUS)
     SPHERE = get_best_fit_sphere(PRINGLE_POINTS, PRINGLE_OFFSET[0], PRINGLE_OFFSET[2], SPHERE_Y_RANGE, SPHERE_RADIUS)
-    print "Best fit sphere for the pringle like whatnot-42 is", SPHERE
+    print("Best fit sphere for the pringle like whatnot-42 is", SPHERE)
     save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(PRINGLE_FILENAME_XYZ, SPHERE, PRINGLE_FILENAME_PLY)
 
 def get_points_rotated_around_z(points, theta):
@@ -286,7 +286,7 @@ def get_center(bounding_box):
     return center
 
 def study_contour(contour_ID, tilt):
-    print 'study_contour(' + contour_ID + ', ' + str(tilt) + ") starts..."
+    print('study_contour(' + contour_ID + ', ' + str(tilt) + ") starts...")
     FILENAME_CONTOUR_XYZ = 'data/_contour-' + contour_ID + '.xyz'
     POINTS = read_xyz_file(FILENAME_CONTOUR_XYZ)
     THETA = math.radians(-tilt)
@@ -305,7 +305,7 @@ def study_contour(contour_ID, tilt):
     USE_MSE = True
     NUM_SAMPLES = 9
     SPHERE = get_best_fit_sphere_for_radius_range(ROTATED_POINTS, CENTER_X_AND_Z, SPHERE_Y_RANGE, SPHERE_RADIUS_RANGE, USE_MSE, NUM_SAMPLES)
-    print "Best fit sphere for", FILENAME_CONTOUR_XYZ, "is", SPHERE, "| Base is", OpticalSphere(SPHERE.get_radius()).get_base_curve()
+    print("Best fit sphere for", FILENAME_CONTOUR_XYZ, "is", SPHERE, "| Base is", OpticalSphere(SPHERE.get_radius()).get_base_curve())
 
     FILENAME_CONTOUR_STUDY_RESULTS_PLY = 'data/_contour-' + contour_ID + '-study-results.ply'
     save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(
@@ -331,14 +331,7 @@ if __name__ == '__main__':
     """
 
     CONTOUR_ID_AND_TILT_ARRAY = [
-        ['41', 5],
-        ['42', 7],
-        ['43', 6],
-        ['44', 5],
-        ['45', 9],
-        ['46', 8],
-        ['47', 7],
-        ['48', 4]
+        ['00', 6]
     ]
     """
         ['41', 5],

@@ -25,14 +25,14 @@ class OpticalSphere(Sphere):
         return 1000*(self.N - N_VACUUM)/self.radius
 
     def spy(self, message):
-        print '{0}: {1}'.format(message, self)
+        print('{0}: {1}'.format(message, self))
         return
 
 def print_optical_info(radius):
     OPTICAL_SPHERE = OpticalSphere(radius)
-    print "OPTICAL_SPHERE:", OPTICAL_SPHERE
-    print "  |- surface power is", OPTICAL_SPHERE.get_surface_power(), "diopter(s)"
-    print "  '- base curve is", OPTICAL_SPHERE.get_base_curve(), "diopter(s)"
+    print("OPTICAL_SPHERE:", OPTICAL_SPHERE)
+    print("  |- surface power is", OPTICAL_SPHERE.get_surface_power(), "diopter(s)")
+    print("  '- base curve is", OPTICAL_SPHERE.get_base_curve(), "diopter(s)")
     print
 
 if __name__ == '__main__':
