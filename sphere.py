@@ -34,7 +34,7 @@ class Sphere(object):
         return self.center
   
     def spy(self, message):
-        print '{0}: {1}'.format(message, self)
+        print('{0}: {1}'.format(message, self))
         return
 
     def get_signed_distance_to_surface(self, point):
@@ -159,13 +159,13 @@ def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE, num_sa
           y[j] = y_min + delta*j
           sphere = Sphere([x_center, y[j], z_center], radius)
           error[j] = sphere.get_MSE(points) if use_MSE else sphere.get_mean_signed_distance(points)
-          # print "i =", i, "j =", j, "| y =", y[j], "| error =", error[j]
+          # print("i =", i, "j =", j, "| y =", y[j], "| error =", error[j])
           if zero_in_practice(error[j]):
               return sphere
       
       idx_min, idx_max = get_indices_around_minimum_abs_error(error)
       y_min, y_max = y[idx_min], y[idx_max]
-      # print "i =", i, "| idx_min is", idx_min, "idx_max is", idx_max, "y range:", y_min, y_max
+      # print("i =", i, "| idx_min is", idx_min, "idx_max is", idx_max, "y range:", y_min, y_max)
 
       i = i + 1
       done =  equal_in_practice(y[idx_min], y[idx_max]) or equal_in_practice(error[idx_min], error[idx_max]) or i == 50
@@ -197,13 +197,13 @@ def get_best_fit_sphere_for_radius_range(points, center_x_and_z, y_range, radius
           radius[j] = radius_min + delta*j
           sphere = get_best_fit_sphere(points, center_x_and_z, y_range, radius[j], use_MSE, num_samples)
           error[j] = sphere.get_MSE(points) if use_MSE else sphere.get_mean_signed_distance(points)
-          # print "i =", i, "j =", j, "| radius =", radius[j], "| error =", error[j]
+          # print("i =", i, "j =", j, "| radius =", radius[j], "| error =", error[j])
           if zero_in_practice(error[j]):
               return sphere
       
       idx_min, idx_max = get_indices_around_minimum_abs_error(error)
       radius_min, radius_max = radius[idx_min], radius[idx_max]
-      # print "idx_min is", idx_min, "idx_max is", idx_max, "radius range:", radius_min, radius_max
+      # print("idx_min is", idx_min, "idx_max is", idx_max, "radius range:", radius_min, radius_max)
 
       i = i + 1
       done =  equal_in_practice(radius[idx_min], radius[idx_max]) or equal_in_practice(error[idx_min], error[idx_max]) or i == 50

@@ -33,7 +33,7 @@ class Circle(object):
         return self.center
   
     def spy(self, message):
-        print '{0}: {1}'.format(message, self)
+        print('{0}: {1}'.format(message, self))
         return
 
     def get_signed_distance_to_circumference(self, point):
