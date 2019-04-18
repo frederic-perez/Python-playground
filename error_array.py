@@ -59,3 +59,18 @@ def get_slope(y0, y1):
 SLOPE_NEGATIVE = -1
 SLOPE_LEVEL = 0
 SLOPE_POSITIVE = +1
+
+def get_range(error_array):
+    check.array_type(error_array)
+    check.not_empty(error_array)
+
+    N = len(error_array)
+    minimum_error = float("inf")
+    maximum_error = float("-inf")
+    for i in range(N):
+        current_error = error_array[i]
+        if current_error < minimum_error:
+            minimum_error = current_error
+        if current_error > maximum_error:
+            maximum_error = current_error
+    return maximum_error - minimum_error

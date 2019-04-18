@@ -5,7 +5,7 @@ import numpy as np
 
 import check
 from epsilon import epsilon_distance, zero_in_practice, equal_in_practice
-from error_array import get_indices_around_minimum_abs_error
+from error_array import get_indices_around_minimum_abs_error, get_range
 
 class Sphere(object):
     def __init__(self, center, radius):
@@ -153,6 +153,7 @@ def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE, num_sa
     done = False
     i = 0
     idx_min = 0
+    EPSILON = 1e-10
     while not done:
       delta = (y_max - y_min)/(num_samples - 1.)
       for j in range(num_samples):
@@ -163,6 +164,10 @@ def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE, num_sa
           if zero_in_practice(error[j]):
               return sphere
       
+      error_range = get_range(error)
+      if (zero_in_practice(error_range, EPSILON)):
+          return sphere
+
       idx_min, idx_max = get_indices_around_minimum_abs_error(error)
       y_min, y_max = y[idx_min], y[idx_max]
       # print("i =", i, "| idx_min is", idx_min, "idx_max is", idx_max, "y range:", y_min, y_max)
@@ -191,6 +196,7 @@ def get_best_fit_sphere_for_radius_range(points, center_x_and_z, y_range, radius
     done = False
     i = 0
     idx_min = 0
+    EPSILON = 1e-10
     while not done:
       delta = (radius_max - radius_min)/(num_samples - 1.)
       for j in range(num_samples):
@@ -201,6 +207,11 @@ def get_best_fit_sphere_for_radius_range(points, center_x_and_z, y_range, radius
           if zero_in_practice(error[j]):
               return sphere
       
+      error_range = get_range(error)
+      print(">>> Debug: i = {:d}: error_range = {:.6E}".format(i, error_range))
+      if (zero_in_practice(error_range, EPSILON)):
+          return sphere
+
       idx_min, idx_max = get_indices_around_minimum_abs_error(error)
       radius_min, radius_max = radius[idx_min], radius[idx_max]
       # print("idx_min is", idx_min, "idx_max is", idx_max, "radius range:", radius_min, radius_max)

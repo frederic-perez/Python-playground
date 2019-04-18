@@ -315,7 +315,7 @@ class Test_get_best_fit_sphere(unittest.TestCase):
         for use_MSE in [True, False]:
             for num_samples in range(4, 10):
                 RESULT = get_best_fit_sphere(POINTS, CENTER_X_AND_Z, Y_RANGE, RADIUS, use_MSE, num_samples)
-                EPSILON_DISTANCE = 1e-5
+                EPSILON_DISTANCE = 1e-4
                 self.assertTrue(SPHERE.__eq__(RESULT, EPSILON_DISTANCE))
 
 class Test_get_best_fit_sphere_for_radius_range(unittest.TestCase):
