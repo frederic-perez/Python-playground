@@ -86,6 +86,7 @@ def read_xyz_file(filename_xyz):
     file_in.seek(0)
 
     if num_points == 0:
+        file_in.close()
         raise ValueError('No input points have been retrieved')
 
     points = np.random.rand(num_points, 3)
@@ -95,6 +96,7 @@ def read_xyz_file(filename_xyz):
             try:
                 xyz = list(map(np.float, line.split()))
             except ValueError as e:
+                file_in.close()
                 raise ValueError('Exception caught when reading point #' + str(i) + ' | ' + str(e))
             point = np.zeros(3)
             for idx in range(3):
@@ -331,9 +333,10 @@ if __name__ == '__main__':
     """
 
     CONTOUR_ID_AND_TILT_ARRAY = [
-        ['00', 6]
+        ['01', 6]
     ]
     """
+        ['00', 6],
         ['41', 5],
         ['42', 7],
         ['43', 6],
