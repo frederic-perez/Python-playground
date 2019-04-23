@@ -196,7 +196,7 @@ def get_best_fit_sphere_for_radius_range(points, center_x_and_z, y_range, radius
     done = False
     i = 0
     idx_min = 0
-    EPSILON = 1e-10
+    EPSILON = 1e-9
     while not done:
       delta = (radius_max - radius_min)/(num_samples - 1.)
       for j in range(num_samples):
