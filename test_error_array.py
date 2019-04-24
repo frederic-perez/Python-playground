@@ -5,7 +5,7 @@ Run the tests by executing, for all test classes:
 """
 
 import unittest
-from error_array import check_single_minimum, get_index_of_minimum_abs_error, get_indices_around_minimum_abs_error
+from error_array import check_single_minimum, get_index_of_minimum_abs_error, get_indices_around_minimum_abs_error, get_range
 
 class Test_get_index_of_minimum_abs_error(unittest.TestCase):
 
@@ -89,6 +89,28 @@ class Test_check_single_minimum(unittest.TestCase):
     def test_GivenAnArrayWithTheMinimumElementBeingThe3rd_When_check_single_minimum_ThenReturn0(self):
         Y_ARRAY = [8, 2, 1, 6, 24]
         self.assertEqual(check_single_minimum(Y_ARRAY), None)
+
+class Test_get_range(unittest.TestCase):
+
+    def test_GivenANotAnArray_When_get_range_ThenExceptionIsRaised(self):
+        for parameter in ['error', 0, None]:
+            self.assertRaises(TypeError, get_range, parameter)
+
+    def test_GivenAnArrayWithLessThan2Elements_When_get_range_ThenExceptionIsRaised(self):
+        Y_ARRAYS = [[], [1]]
+        for y_array in Y_ARRAYS:
+            self.assertRaises(ValueError, get_range, y_array)
+
+    def test_GivenAnArrayWithARepeatedK_When_get_range_ThenReturn0(self):
+        Y_ARRAYS = [[0, 0], [7, 7], [9, 9, 9, 9]]
+        for y_array in Y_ARRAYS:
+            self.assertEqual(get_range(y_array), 0)
+
+    def test_GivenAnArrayWithRangeR_When_get_range_ThenReturnR(self):
+        Y_ARRAYS = [[0, 3], [-3, 0], [0, 3, 1, 2]]
+        RANGE = 3
+        for y_array in Y_ARRAYS:
+            self.assertEqual(get_range(y_array), RANGE)
 
 if __name__ == '__main__':
     unittest.main()
