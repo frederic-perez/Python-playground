@@ -255,10 +255,13 @@ def play_with_a_pringle_like_whatnot_42_with_noise():
     save_xyz_file(PRINGLE_FILENAME_XYZ, PRINGLE_POINTS)
     PRINGLE_FILENAME_PLY = 'data/pringle-like-whatnot-42-with-noise.ply'
     # SPHERE_CENTER = [PRINGLE_OFFSET[0], 0, PRINGLE_OFFSET[2]]
+    SPHERE_CENTER_X_AND_Z = [PRINGLE_OFFSET[0], PRINGLE_OFFSET[2]]
     SPHERE_Y_RANGE = [0, 500]
     SPHERE_RADIUS = 106 # 6.8
     # SPHERE = Sphere(SPHERE_CENTER, SPHERE_RADIUS)
-    SPHERE = get_best_fit_sphere(PRINGLE_POINTS, PRINGLE_OFFSET[0], PRINGLE_OFFSET[2], SPHERE_Y_RANGE, SPHERE_RADIUS)
+    USE_MSE = True
+    NUM_SAMPLES = 9
+    SPHERE = get_best_fit_sphere(PRINGLE_POINTS, SPHERE_CENTER_X_AND_Z, SPHERE_Y_RANGE, SPHERE_RADIUS, USE_MSE, NUM_SAMPLES)
     print("Best fit sphere for the pringle like whatnot-42 is", SPHERE)
     save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(PRINGLE_FILENAME_XYZ, SPHERE, PRINGLE_FILENAME_PLY)
 
@@ -314,7 +317,7 @@ def study_contour(contour_ID, tilt):
         FILENAME_CONTOUR_ROTATED_XYZ, SPHERE, FILENAME_CONTOUR_STUDY_RESULTS_PLY)
 
 if __name__ == '__main__':
-    """
+
     FILENAME_IN = 'data/points-in.xyz'
     FILENAME_OUT = 'data/points-out.ply'
     save_as_ply(FILENAME_IN, FILENAME_OUT)
@@ -328,21 +331,8 @@ if __name__ == '__main__':
     print
     play_with_a_pringle_like_whatnot_42_with_noise()
 
-    print
-    play_with_a_pringle_like_whatnot_42_with_noise()
-    """
-
     CONTOUR_ID_AND_TILT_ARRAY = [
-        ['00', 6],
-        ['01', 6], # WIP
-        ['41', 5],
-        ['42', 7],
-        ['43', 6],
-        ['44', 5],
-        ['45', 9],
-        ['46', 8],
-        ['47', 7],
-        ['48', 4]
+        ['01', 6] # WIP
     ]
     """
         ['00', 6],
