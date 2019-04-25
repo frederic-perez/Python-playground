@@ -60,7 +60,7 @@ SLOPE_NEGATIVE = -1
 SLOPE_LEVEL = 0
 SLOPE_POSITIVE = +1
 
-def get_range(error_array):
+def get_range_length(error_array):
     check.array_type(error_array)
     check.length_is_greater_or_equal_to_N(error_array, 2)
 

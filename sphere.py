@@ -5,7 +5,7 @@ import numpy as np
 
 import check
 from epsilon import epsilon_distance, zero_in_practice, equal_in_practice
-from error_array import get_indices_around_minimum_abs_error, get_range
+from error_array import get_indices_around_minimum_abs_error, get_range_length
 
 class Sphere(object):
     def __init__(self, center, radius):
@@ -164,7 +164,7 @@ def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE, num_sa
           if zero_in_practice(error[j]):
               return sphere
       
-      error_range = get_range(error)
+      error_range = get_range_length(error)
       if (zero_in_practice(error_range, EPSILON)):
           return sphere
 
@@ -207,7 +207,7 @@ def get_best_fit_sphere_for_radius_range(points, center_x_and_z, y_range, radius
           if zero_in_practice(error[j]):
               return sphere
       
-      error_range = get_range(error)
+      error_range = get_range_length(error)
       print(">>> Debug: i = {:d}: error_range = {:.6E}".format(i, error_range))
       if (zero_in_practice(error_range, EPSILON)):
           return sphere
