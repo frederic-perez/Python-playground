@@ -3,7 +3,9 @@
 import math
 import numpy as np
 import os.path
-from sphere import Sphere, get_best_fit_sphere, get_best_fit_sphere_for_radius_range
+
+import check
+from sphere import Sphere, get_best_fit_sphere, get_best_fit_sphere_for_radius_range, get_sphere
 from optical_sphere import OpticalSphere
 
 """
@@ -36,7 +38,7 @@ def get_pringle_points(num_points, a, b, radius_x, radius_z, offset_xyz, max_noi
 
 def get_distances_to_sphere_and_scaled_normals(points, sphere):
     FUNCTION_NAME = 'get_distances_to_sphere_and_scaled_normals:'
-    print(FUNCTION_NAME, "sphere is", sphere)
+    # print(FUNCTION_NAME, "sphere is", sphere)
     NUM_POINTS = len(points)
     distances = [0] * NUM_POINTS
     scaled_normals = np.random.rand(NUM_POINTS, 3)
@@ -71,8 +73,10 @@ def save_xyz_file(filename_xyz, points):
 
 # Code based on
 # https://stackoverflow.com/questions/21008858/formatting-floats-in-a-numpy-array
+# and on
+# https://stackoverflow.com/questions/2440692/formatting-floats-in-python-without-superfluous-zeros
 #
-float_formatter = lambda x: "%.3g" % x
+float_formatter = lambda x: "{0:.3f}".format(x).rstrip('0').rstrip('.')
 np.set_printoptions(formatter={'float_kind':float_formatter})
 
 def print_a_few_points(points):
@@ -111,7 +115,9 @@ def read_xyz_file(filename_xyz):
             i += 1
     file_in.close()
 
-    print_a_few_points(points)
+    PRINT_A_FEW_POINTS = False
+    if PRINT_A_FEW_POINTS:
+        print_a_few_points(points)
 
     return points
 
@@ -296,6 +302,23 @@ def get_center(bounding_box):
         center[i] = (bounding_box[i][1] - bounding_box[i][0])/2. + bounding_box[i][0]
     return center
 
+def get_spheres_given_series_of_4_points_and_study_variability(points):
+    check.is_an_array(points)
+    check.length_is_greater_or_equal_to_N(points, 4)
+    DELTA = int(len(points)/4)
+    four_points = np.random.rand(4, 3)
+    sphere_centers = np.random.rand(DELTA, 3)
+    for i in range(DELTA):
+        four_points[0] = points[i]
+        four_points[1] = points[i + DELTA]
+        four_points[2] = points[i + 2*DELTA]
+        four_points[3] = points[i + 3*DELTA]
+        sphere = get_sphere(four_points)
+        # print("Sphere #", i, "given 4 points is", sphere)
+        sphere_centers[i] = sphere.get_center()
+    bounding_box = get_bounding_box(sphere_centers)
+    print("Variability of the centers of set of spheres given 4 points is [{:.3f}, {:.3f}] [{:.3f}, {:.3f}] [{:.3f}, {:.3f}]".format(bounding_box[0][0], bounding_box[0][1], bounding_box[1][0], bounding_box[1][1], bounding_box[2][0], bounding_box[2][1]))
+
 def study_contour(contour_ID, tilt):
     print('\nstudy_contour(' + contour_ID + ', ' + str(tilt) + ") starts...")
     FILENAME_CONTOUR_XYZ = 'data/_contour-' + contour_ID + '.xyz'
@@ -316,11 +339,13 @@ def study_contour(contour_ID, tilt):
     USE_MSE = True
     NUM_SAMPLES = 9
     SPHERE = get_best_fit_sphere_for_radius_range(ROTATED_POINTS, CENTER_X_AND_Z, SPHERE_Y_RANGE, SPHERE_RADIUS_RANGE, USE_MSE, NUM_SAMPLES)
-    print("Best fit sphere for", FILENAME_CONTOUR_XYZ, "is", SPHERE, "| Base is {:.3g}".format(OpticalSphere(SPHERE.get_radius()).get_base_curve()))
+    print("Best fit sphere for", FILENAME_CONTOUR_XYZ, "is", SPHERE, "| Base is {:.3f}".format(OpticalSphere(SPHERE.get_radius()).get_base_curve()).rstrip('0').rstrip('.'))
 
     FILENAME_CONTOUR_STUDY_RESULTS_PLY = 'data/_contour-' + contour_ID + '-study-results.ply'
     save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(
         FILENAME_CONTOUR_ROTATED_XYZ, SPHERE, FILENAME_CONTOUR_STUDY_RESULTS_PLY)
+
+    get_spheres_given_series_of_4_points_and_study_variability(ROTATED_POINTS)
 
 if __name__ == '__main__':
 
@@ -338,11 +363,7 @@ if __name__ == '__main__':
     play_with_a_pringle_like_whatnot_42_with_noise()
 
     CONTOUR_ID_AND_TILT_ARRAY = [
-        ['01', 6] # WIP
-    ]
-    """
-        ['00', 6],
-        ['01', 6], # WIP
+        ['01', 6],
         ['41', 5],
         ['42', 7],
         ['43', 6],
@@ -351,6 +372,9 @@ if __name__ == '__main__':
         ['46', 8],
         ['47', 7],
         ['48', 4]
+    ]
+    """
+        ['01', 6] # WIP
     ]
     """
     for contour_ID_and_tilt in CONTOUR_ID_AND_TILT_ARRAY:

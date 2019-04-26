@@ -197,6 +197,7 @@ def get_best_fit_sphere_for_radius_range(points, center_x_and_z, y_range, radius
     i = 0
     idx_min = 0
     EPSILON = 1e-9
+    SPY_ERROR_RANGE_LENGTH = False
     while not done:
       delta = (radius_max - radius_min)/(num_samples - 1.)
       for j in range(num_samples):
@@ -207,9 +208,10 @@ def get_best_fit_sphere_for_radius_range(points, center_x_and_z, y_range, radius
           if zero_in_practice(error[j]):
               return sphere
       
-      error_range = get_range_length(error)
-      print(">>> Debug: i = {:d}: error_range_length = {:.3E}".format(i, error_range))
-      if (zero_in_practice(error_range, EPSILON)):
+      error_range_length = get_range_length(error)
+      if SPY_ERROR_RANGE_LENGTH:
+          print(">>> Debug: i = {:d}: error_range_length = {:.3E}".format(i, error_range_length))
+      if (zero_in_practice(error_range_length, EPSILON)):
           return sphere
 
       idx_min, idx_max = get_indices_around_minimum_abs_error(error)
