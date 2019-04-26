@@ -56,7 +56,7 @@ def get_distances_to_sphere_and_scaled_normals(points, sphere):
         for k in range(3):
             scaled_normal[k] = distance * vector[k]/magnitude
         scaled_normals[i] = scaled_normal
-    print(FUNCTION_NAME, "max_negative_distance is", max_negative_distance, "| max_positive_distance is", max_positive_distance)
+    print(FUNCTION_NAME, "max_negative_distance is {:.3f} | max_positive_distance is {:.3f}".format(max_negative_distance, max_positive_distance))
     return distances, scaled_normals
 
 def save_xyz_file(filename_xyz, points):
@@ -68,6 +68,12 @@ def save_xyz_file(filename_xyz, points):
         file.write(LINE)
 
     file.close()
+
+# Code based on
+# https://stackoverflow.com/questions/21008858/formatting-floats-in-a-numpy-array
+#
+float_formatter = lambda x: "%.3g" % x
+np.set_printoptions(formatter={'float_kind':float_formatter})
 
 def print_a_few_points(points):
     FUNCTION_NAME = 'print_a_few_points:'
@@ -291,7 +297,7 @@ def get_center(bounding_box):
     return center
 
 def study_contour(contour_ID, tilt):
-    print('study_contour(' + contour_ID + ', ' + str(tilt) + ") starts...")
+    print('\nstudy_contour(' + contour_ID + ', ' + str(tilt) + ") starts...")
     FILENAME_CONTOUR_XYZ = 'data/_contour-' + contour_ID + '.xyz'
     POINTS = read_xyz_file(FILENAME_CONTOUR_XYZ)
     THETA = math.radians(-tilt)
@@ -310,7 +316,7 @@ def study_contour(contour_ID, tilt):
     USE_MSE = True
     NUM_SAMPLES = 9
     SPHERE = get_best_fit_sphere_for_radius_range(ROTATED_POINTS, CENTER_X_AND_Z, SPHERE_Y_RANGE, SPHERE_RADIUS_RANGE, USE_MSE, NUM_SAMPLES)
-    print("Best fit sphere for", FILENAME_CONTOUR_XYZ, "is", SPHERE, "| Base is", OpticalSphere(SPHERE.get_radius()).get_base_curve())
+    print("Best fit sphere for", FILENAME_CONTOUR_XYZ, "is", SPHERE, "| Base is {:.3g}".format(OpticalSphere(SPHERE.get_radius()).get_base_curve()))
 
     FILENAME_CONTOUR_STUDY_RESULTS_PLY = 'data/_contour-' + contour_ID + '-study-results.ply'
     save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(

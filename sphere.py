@@ -25,7 +25,7 @@ class Sphere(object):
             and equal_in_practice(self.radius, other.radius, epsilon)
 
     def __str__(self):
-        return 'Sphere(center={0}, radius={1})'.format(self.center, self.radius)
+        return 'Sphere(center={0}, radius={1:.3g})'.format(self.center, self.radius)
 
     def get_radius(self):
         return self.radius
@@ -164,8 +164,8 @@ def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE, num_sa
           if zero_in_practice(error[j]):
               return sphere
       
-      error_range = get_range_length(error)
-      if (zero_in_practice(error_range, EPSILON)):
+      error_range_length = get_range_length(error)
+      if (zero_in_practice(error_range_length, EPSILON)):
           return sphere
 
       idx_min, idx_max = get_indices_around_minimum_abs_error(error)
@@ -208,7 +208,7 @@ def get_best_fit_sphere_for_radius_range(points, center_x_and_z, y_range, radius
               return sphere
       
       error_range = get_range_length(error)
-      print(">>> Debug: i = {:d}: error_range = {:.6E}".format(i, error_range))
+      print(">>> Debug: i = {:d}: error_range_length = {:.3E}".format(i, error_range))
       if (zero_in_practice(error_range, EPSILON)):
           return sphere
 
