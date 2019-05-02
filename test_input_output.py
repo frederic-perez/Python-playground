@@ -1,7 +1,9 @@
 """
 Run the tests by executing, for all test classes:
 
-  $ python -m unittest -v test_input_output
+  $ python -m unittest -v test_input_output.py
+  or
+  $ python test_input_output.py
 """
 
 import unittest

@@ -1,7 +1,9 @@
 """
 Run the tests by executing, for all test classes:
 
-  $ python -m unittest -v test_error_array
+  $ python -m unittest -v test_error_array.py
+  or
+  $ python test_error_array.py
 """
 
 import unittest

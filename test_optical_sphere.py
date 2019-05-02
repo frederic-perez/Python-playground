@@ -1,6 +1,9 @@
 """
-Run the tests by executing:
-$ python -m unittest -v test_optical_sphere
+Run the tests by executing, for all test classes:
+
+  $ python -m unittest -v test_optical_sphere.py
+  or
+  $ python test_optical_sphere.py
 """
 
 import unittest

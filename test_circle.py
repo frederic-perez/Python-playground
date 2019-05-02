@@ -1,7 +1,9 @@
 """
 Run the tests by executing, for all test classes:
 
-  $ python -m unittest -v test_circle
+  $ python -m unittest -v test_circle.py
+  or
+  $ python test_circle.py
 
 or, for individual test classes (sorted as appearing in this file):
 

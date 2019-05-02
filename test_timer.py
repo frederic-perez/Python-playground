@@ -1,7 +1,9 @@
 """
 Run the tests by executing, for all test classes:
 
-  $ python -m unittest -v test_timer
+  $ python -m unittest -v test_timer.py
+  or
+  $ python test_timer.py
 """
 
 import unittest

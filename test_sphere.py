@@ -1,7 +1,9 @@
 """
 Run the tests by executing, for all test classes:
 
-  $ python -m unittest -v test_sphere
+  $ python -m unittest -v test_sphere.py
+  or
+  $ python test_sphere.py
 
 or, for individual test classes (sorted as appearing in this file):
 

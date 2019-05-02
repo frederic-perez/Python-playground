@@ -1,6 +1,9 @@
 """
-Run the tests by executing:
-$ python -m unittest -v test_playground
+Run the tests by executing, for all test classes:
+
+  $ python -m unittest -v test_playground.py
+  or
+  $ python test_playground.py
 """
 
 import math
