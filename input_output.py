@@ -61,16 +61,6 @@ def get_distances_to_sphere_and_scaled_normals(points, sphere):
     print(FUNCTION_NAME, "max_negative_distance is {:.3f} | max_positive_distance is {:.3f}".format(max_negative_distance, max_positive_distance))
     return distances, scaled_normals
 
-def save_xyz_file(filename_xyz, points):
-    file = open(filename_xyz, 'w')
-
-    NUM_POINTS = len(points)
-    for point in points:
-        LINE = str(point[0]) + ' ' + str(point[1]) + ' ' + str(point[2]) + '\n'
-        file.write(LINE)
-
-    file.close()
-
 # Code based on
 # https://stackoverflow.com/questions/21008858/formatting-floats-in-a-numpy-array
 # and on
@@ -78,6 +68,17 @@ def save_xyz_file(filename_xyz, points):
 #
 float_formatter = lambda x: "{0:.3f}".format(x).rstrip('0').rstrip('.')
 np.set_printoptions(formatter={'float_kind':float_formatter})
+
+def save_xyz_file(filename_xyz, points):
+    file_out = open(filename_xyz, 'w')
+
+    NUM_POINTS = len(points)
+    for point in points:
+        print("{} {} {}".format(
+            float_formatter(point[0]), float_formatter(point[1]), float_formatter(point[2])),
+            file=file_out)
+
+    file_out.close()
 
 def print_a_few_points(points):
     FUNCTION_NAME = 'print_a_few_points:'
