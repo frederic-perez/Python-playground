@@ -122,7 +122,7 @@ def read_xyz_file(filename_xyz):
     return points
 
 def save_ply_file(filename_ply, points):
-    file = open(filename_ply, 'w')
+    file_out = open(filename_ply, 'w')
 
     NUM_POINTS = len(points)
     HEADER = ("ply\n"
@@ -132,11 +132,12 @@ def save_ply_file(filename_ply, points):
               "property float y\n"
               "property float z\n"
               "end_header\n")
-    file.write(HEADER)
+    file_out.write(HEADER)
     for point in points:
-        LINE = str(point[0]) + ' ' + str(point[1]) + ' ' + str(point[2]) + '\n'
-        file.write(LINE)
-    file.close()
+        print("{} {} {}".format(
+            float_formatter(point[0]), float_formatter(point[1]), float_formatter(point[2])),
+            file=file_out)
+    file_out.close()
 
 def save_ply_file_with_distances_and_scaled_normals(filename_ply, points, distances, scaled_normals):
     """
