@@ -152,7 +152,7 @@ def save_ply_file_with_distances_and_scaled_normals(filename_ply, points, distan
 
     Credits for Cory Quammen to provide the hint to write this function.
     """
-    file = open(filename_ply, 'w')
+    file_out = open(filename_ply, 'w')
 
     NUM_POINTS = len(points)
     HEADER = ("ply\n"
@@ -167,16 +167,17 @@ def save_ply_file_with_distances_and_scaled_normals(filename_ply, points, distan
               "property float ny\n"
               "property float nz\n"
               "end_header\n")
-    file.write(HEADER)
+    file_out.write(HEADER)
     for i in range(NUM_POINTS):
         point = points[i]
         distance = distances[i]
         scaled_normal = scaled_normals[i]
-        LINE = str(point[0]) + ' ' + str(point[1]) + ' ' + str(point[2]) \
-            + ' ' + str(distance) + ' 0' \
-            + ' ' + str(scaled_normal[0]) + ' ' + str(scaled_normal[1]) + ' ' + str(scaled_normal[2]) + '\n'
-        file.write(LINE)
-    file.close()
+        print("{} {} {} {} 0 {} {} {}".format(
+            float_formatter(point[0]), float_formatter(point[1]), float_formatter(point[2]),
+            float_formatter(distance),
+            float_formatter(scaled_normal[0]), float_formatter(scaled_normal[1]), float_formatter(scaled_normal[2])),
+            file=file_out)
+    file_out.close()
 
 def save_as_ply(filename_xyz_in, filename_ply_out):
     if not filename_xyz_in:
@@ -363,7 +364,28 @@ if __name__ == '__main__':
     play_with_a_pringle_like_whatnot_42_with_noise()
 
     CONTOUR_ID_AND_TILT_ARRAY = [
+    ]
+    """
         ['01', 6],
+        ['04', 6], # Liq Ona
+        ['05', 6], # Liq Stream
+        ['24', 6],
+        ['25', 6],
+        ['26', 6],
+        ['27', 6],
+        ['28', 6],
+        ['29', 6],
+        ['30', 6],
+        ['31', 6],
+        ['32', 6],
+        ['33', 6],
+        ['34', 6],
+        ['35', 6],
+        ['36', 6],
+        ['37', 6],
+        ['38', 6],
+        ['39', 6],
+        ['40', 6],
         ['41', 5],
         ['42', 7],
         ['43', 6],
@@ -374,7 +396,20 @@ if __name__ == '__main__':
         ['48', 4]
     ]
     """
-        ['01', 6] # WIP
+    """
+        ['01', 6], # Liq Splash (latest version)
+        ['02', 0], # etnia model
+        ['03', 6] # rayban model
+        ['04', 6] # Liq Ona
+        ['05', 6] # Liq Stream
+        ['41', 5],
+        ['42', 7],
+        ['43', 6],
+        ['44', 5],
+        ['45', 9],
+        ['46', 8],
+        ['47', 7],
+        ['48', 4]
     ]
     """
     for contour_ID_and_tilt in CONTOUR_ID_AND_TILT_ARRAY:
