@@ -72,7 +72,6 @@ np.set_printoptions(formatter={'float_kind':float_formatter})
 def save_xyz_file(filename_xyz, points):
     file_out = open(filename_xyz, 'w')
 
-    NUM_POINTS = len(points)
     for point in points:
         print("{} {} {}".format(
             float_formatter(point[0]), float_formatter(point[1]), float_formatter(point[2])),
