@@ -49,7 +49,7 @@ class Test_get_indices_around_minimum_abs_error(unittest.TestCase):
         ERRORS = []
         self.assertRaises(ValueError, get_indices_around_minimum_abs_error, ERRORS)
 
-    def test_GivenAnArrayWithLessThan3Elements_When_get_indices_around_minimum_abs_error_ThenReturn0(self):
+    def test_GivenAnArrayWithLessThan3Elements_When_get_indices_around_minimum_abs_error_ThenExceptionIsRaised(self):
         self.assertRaises(ValueError, get_indices_around_minimum_abs_error, [1])
         self.assertRaises(ValueError, get_indices_around_minimum_abs_error, [1, 2])
 
