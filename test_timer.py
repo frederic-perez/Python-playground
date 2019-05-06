@@ -18,11 +18,11 @@ class Test_timer(unittest.TestCase):
         self.assertTrue(RESULT == "0.000\"" or RESULT == "0.001\"")
 
     def test_GivenATimerAndXmsPass_When_get_duration_string_ThenReturnDurationCloseToXms(self):
-        TIMER = Timer()
         X_MILLISECONDS = 0.123
+        TIMER = Timer()
         sleep(X_MILLISECONDS)
         RESULT = TIMER.get_duration_string()
-        self.assertTrue(RESULT == "0.123\"" or RESULT == "0.124\"")
+        self.assertTrue(RESULT == "0.123\"" or RESULT == "0.124\"" or RESULT == "0.125\"")
 
 if __name__ == '__main__':
     unittest.main()
