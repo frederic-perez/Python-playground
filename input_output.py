@@ -351,6 +351,8 @@ def study_contour(contour_ID, tilt):
 
 if __name__ == '__main__':
 
+    np.random.seed(42)
+
     FILENAME_IN = 'data/points-in.xyz'
     FILENAME_OUT = 'data/points-out.ply'
     save_as_ply(FILENAME_IN, FILENAME_OUT)
