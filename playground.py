@@ -13,6 +13,12 @@ logging.basicConfig(format='%(asctime)s.%(msecs)d %(levelname)-8s %(filename)s:%
 
 logger = logging.getLogger(__name__)
 
+def play_with_numpy_random_numbers():
+    np.random.seed(42)
+    NUM_POINTS = 1
+    points = np.random.rand(NUM_POINTS, 3)
+    print("points = {}".format(points))
+
 def average(*numbers):
     """Self-explanatory"""
     if not numbers:
@@ -47,6 +53,8 @@ def decompress_7z_file(filename, output_directory):
     logger.info('Command `%s` took %s and returned %d', COMMAND, timer.get_duration_string(), RESULT)
 
 if __name__ == '__main__':
+
+    play_with_numpy_random_numbers()
 
     ARRAY_OF_DESCRIPTION_AND_POINTS = [
         ('4 straight crosshair points from whatnot 42', [
