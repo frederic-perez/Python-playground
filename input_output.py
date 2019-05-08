@@ -69,13 +69,20 @@ def get_distances_to_sphere_and_scaled_normals(points, sphere):
 float_formatter = lambda x: "{0:.3f}".format(x).rstrip('0').rstrip('.')
 np.set_printoptions(formatter={'float_kind':float_formatter})
 
+def floats_formatter(array):
+    result = ''
+    LENGTH = len(array)
+    for i in range(0, LENGTH):
+        result += "{0:.3f}".format(array[i]).rstrip('0').rstrip('.')
+        if i != LENGTH - 1:
+            result += ' '
+    return result
+
 def save_xyz_file(filename_xyz, points):
     file_out = open(filename_xyz, 'w')
 
     for point in points:
-        print("{} {} {}".format(
-            float_formatter(point[0]), float_formatter(point[1]), float_formatter(point[2])),
-            file=file_out)
+        print("{}".format(floats_formatter(point)), file=file_out)
 
     file_out.close()
 
@@ -134,9 +141,7 @@ def save_ply_file(filename_ply, points):
               "end_header\n")
     file_out.write(HEADER)
     for point in points:
-        print("{} {} {}".format(
-            float_formatter(point[0]), float_formatter(point[1]), float_formatter(point[2])),
-            file=file_out)
+        print("{}".format(floats_formatter(point)), file=file_out)
     file_out.close()
 
 def save_ply_file_with_distances_and_scaled_normals(filename_ply, points, distances, scaled_normals):
@@ -173,10 +178,10 @@ def save_ply_file_with_distances_and_scaled_normals(filename_ply, points, distan
         point = points[i]
         distance = distances[i]
         scaled_normal = scaled_normals[i]
-        print("{} {} {} {} 0 {} {} {}".format(
-            float_formatter(point[0]), float_formatter(point[1]), float_formatter(point[2]),
+        print("{} {} 0 {}".format(
+            floats_formatter(point),
             float_formatter(distance),
-            float_formatter(scaled_normal[0]), float_formatter(scaled_normal[1]), float_formatter(scaled_normal[2])),
+            floats_formatter(scaled_normal)),
             file=file_out)
     file_out.close()
 
