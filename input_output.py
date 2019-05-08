@@ -73,7 +73,7 @@ def floats_formatter(array):
     result = ''
     LENGTH = len(array)
     for i in range(0, LENGTH):
-        result += "{0:.3f}".format(array[i]).rstrip('0').rstrip('.')
+        result += float_formatter(array[i])
         if i != LENGTH - 1:
             result += ' '
     return result
