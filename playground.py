@@ -15,9 +15,9 @@ logger = logging.getLogger(__name__)
 
 def play_with_numpy_random_numbers():
     np.random.seed(42)
-    NUM_POINTS = 1
+    NUM_POINTS = 2
     points = np.random.rand(NUM_POINTS, 3)
-    print("points = {}".format(points))
+    logger.info("points = {}".format(points))
 
 def average(*numbers):
     """Self-explanatory"""
@@ -88,8 +88,8 @@ if __name__ == '__main__':
     get_git_version()
 
     FILENAME_AND_URL_ARRAY = [
-      ['data/_L.7z', 'https://uccbc8e1809ffe6c06563a47e1bb66.dl.dropboxusercontent.com/cd/0/get/AcqreqsqlnLf9OlXvIf54sAFQPhaV7Xoexyd_bJIe4fa3HBgaiVwMJ2uT0w5YZhZObLZZhFrCzbEdcoNGYQN9tXa-sB4liuyx5pA6zEH1nr8XTaSGBcSCQZuNcXVugLwypw/file#'],
-      ['data/_M.7z', 'https://uc26a4adfaf1d3cdc9423283971b37.dl.dropboxusercontent.com/cd/0/get/AcqqVOiBNeEZzpeXi_6Fmp883j7ikUNiR6OaW0gpf-B7RHXAFl1jrmxZ4AlL5W7czzfonoegeBGJDOeMWUE7xzchzz6zWlFt-EksvSWTfNbU3ydePSl4BjM-I29RfrAd0ns/file#']
+      #['data/_L.7z', 'https://uccbc8e1809ffe6c06563a47e1bb66.dl.dropboxusercontent.com/cd/0/get/AcqreqsqlnLf9OlXvIf54sAFQPhaV7Xoexyd_bJIe4fa3HBgaiVwMJ2uT0w5YZhZObLZZhFrCzbEdcoNGYQN9tXa-sB4liuyx5pA6zEH1nr8XTaSGBcSCQZuNcXVugLwypw/file#'],
+      #['data/_M.7z', 'https://uc26a4adfaf1d3cdc9423283971b37.dl.dropboxusercontent.com/cd/0/get/AcqqVOiBNeEZzpeXi_6Fmp883j7ikUNiR6OaW0gpf-B7RHXAFl1jrmxZ4AlL5W7czzfonoegeBGJDOeMWUE7xzchzz6zWlFt-EksvSWTfNbU3ydePSl4BjM-I29RfrAd0ns/file#']
       #['data/_C54.xml', 'https://uc7b36b201202ac7cc04d68a05a966.dl.dropboxusercontent.com/cd/0/get/AclhxNHBCsS2_ilqbP43MbJnWUNyZmirnWtmSg3D5bM8pDq4WUk4H2sk_dMI0j63OU3q5HQyDAvxCdI3LrjlGms7Ui5B4zsSIJMoEyUmJB5F9SpRKIHYU3J1ZNSNgwl_eFg/file#'],
       #['data/_F.stl', 'https://uc9961f6bd3472cdc89cd193cf4f37.dl.dropboxusercontent.com/cd/0/get/AcmcZszabuV-PTcgdSLBXqurosEBnS7zHxU0Kj5cjLkNUbIIoigDcRQsMjYa3Ndr7xWHXljjLn0MANfe-AEntU6vSz2Q7yosMEDkb_g2svrOjEGk9ila4Vd8lQLr8KJdo7k/file#'],
       #['data/_L.stl', 'https://uc0a059daf35cb3466bfa34ee51666.dl.dropboxusercontent.com/cd/0/get/AcnlQBb60Hl8eGw5p-s99eCERh8m32TdJeU-RMh1JL_LbI7SNemva-Hp5zoxArCRBjwm_49fT6aClct0FAHXSyDFopXVy6K2__tFNrliWp-O9mRmmEkL-GDOHml1xAMYuLY/file#'],
