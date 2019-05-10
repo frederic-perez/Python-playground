@@ -346,23 +346,12 @@ def study_contour(contour_ID, tilt):
 
     get_spheres_given_series_of_4_points_and_study_variability(ROTATED_POINTS)
 
-def study_contour_2(contour_ID, tilt):
-    print('\nstudy_contour_2(' + contour_ID + ', ' + str(tilt) + ") starts...")
+def study_contour_2(contour_ID, sphere):
+    print('\nstudy_contour_2(' + contour_ID + ', ' + str(sphere) + ") starts...")
     FILENAME_CONTOUR_XYZ = 'data/_contour-' + contour_ID + '.xyz'
     POINTS = read_xyz_file(FILENAME_CONTOUR_XYZ)
 
-    MIN = [-152.733597, -78.710632, -145.985275]
-    MAX = [111.365540, 185.388504, 117.765846]
-    HARDCODED_CENTER = [0, 0, 0]
-    HARDCODED_RADII = [0, 0, 0]
-    for i in range(3):
-        HARDCODED_RADII[i] = (MAX[i]-MIN[i])/2.0
-        HARDCODED_CENTER[i] = MIN[i] + HARDCODED_RADII[i]
-    
-    HARDCODED_RADIUS = (HARDCODED_RADII[0] + HARDCODED_RADII[1] + HARDCODED_RADII[0])/3.
-    HARDCODED_SPHERE = Sphere(HARDCODED_CENTER, HARDCODED_RADIUS)
-    print("HARDCODED_SPHERE has been implied to be", HARDCODED_SPHERE)
-    _, _ = get_distances_to_sphere_and_scaled_normals(POINTS, HARDCODED_SPHERE)
+    _, _ = get_distances_to_sphere_and_scaled_normals(POINTS, sphere)
 
     get_spheres_given_series_of_4_points_and_study_variability(POINTS)
 
@@ -383,8 +372,9 @@ if __name__ == '__main__':
     print
     play_with_a_pringle_like_whatnot_42_with_noise()
 
-    CONTOUR_ID_AND_TILT_ARRAY = [
-        ['04', 6] # ano
+    CONTOUR_ID_AND_SPHERE_ARRAY = [
+        ['04', Sphere([-20.684027, 53.338932, -14.109715], 132)], # ano; using vertices barycenter
+        ['05', Sphere([-22.295578, 60.587006, -609.661499], 131.3)] # maerts; using vertices barycenter
     ]
     """
         ['02', 0], # ainte
@@ -421,8 +411,8 @@ if __name__ == '__main__':
         ['48', 4]
     ]
     """
-    for contour_ID_and_tilt in CONTOUR_ID_AND_TILT_ARRAY:
-        contour_ID, tilt = contour_ID_and_tilt
+    for contour_ID_and_sphere in CONTOUR_ID_AND_SPHERE_ARRAY:
+        contour_ID, sphere = contour_ID_and_sphere
         # study_contour(contour_ID, tilt)
-        study_contour_2(contour_ID, tilt)
+        study_contour_2(contour_ID, sphere)
         print
