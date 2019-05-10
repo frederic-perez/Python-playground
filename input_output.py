@@ -346,6 +346,26 @@ def study_contour(contour_ID, tilt):
 
     get_spheres_given_series_of_4_points_and_study_variability(ROTATED_POINTS)
 
+def study_contour_2(contour_ID, tilt):
+    print('\nstudy_contour_2(' + contour_ID + ', ' + str(tilt) + ") starts...")
+    FILENAME_CONTOUR_XYZ = 'data/_contour-' + contour_ID + '.xyz'
+    POINTS = read_xyz_file(FILENAME_CONTOUR_XYZ)
+
+    MIN = [-152.733597, -78.710632, -145.985275]
+    MAX = [111.365540, 185.388504, 117.765846]
+    HARDCODED_CENTER = [0, 0, 0]
+    HARDCODED_RADII = [0, 0, 0]
+    for i in range(3):
+        HARDCODED_RADII[i] = (MAX[i]-MIN[i])/2.0
+        HARDCODED_CENTER[i] = MIN[i] + HARDCODED_RADII[i]
+    
+    HARDCODED_RADIUS = (HARDCODED_RADII[0] + HARDCODED_RADII[1] + HARDCODED_RADII[0])/3.
+    HARDCODED_SPHERE = Sphere(HARDCODED_CENTER, HARDCODED_RADIUS)
+    print("HARDCODED_SPHERE has been implied to be", HARDCODED_SPHERE)
+    _, _ = get_distances_to_sphere_and_scaled_normals(POINTS, HARDCODED_SPHERE)
+
+    get_spheres_given_series_of_4_points_and_study_variability(POINTS)
+
 if __name__ == '__main__':
 
     np.random.seed(42)
@@ -364,6 +384,7 @@ if __name__ == '__main__':
     play_with_a_pringle_like_whatnot_42_with_noise()
 
     CONTOUR_ID_AND_TILT_ARRAY = [
+        ['04', 6] # ano
     ]
     """
         ['02', 0], # ainte
@@ -402,5 +423,6 @@ if __name__ == '__main__':
     """
     for contour_ID_and_tilt in CONTOUR_ID_AND_TILT_ARRAY:
         contour_ID, tilt = contour_ID_and_tilt
-        study_contour(contour_ID, tilt)
+        # study_contour(contour_ID, tilt)
+        study_contour_2(contour_ID, tilt)
         print
