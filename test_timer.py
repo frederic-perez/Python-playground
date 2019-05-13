@@ -22,7 +22,11 @@ class Test_timer(unittest.TestCase):
         TIMER = Timer()
         sleep(X_MILLISECONDS)
         RESULT = TIMER.get_duration_string()
-        self.assertTrue(RESULT == "0.123\"" or RESULT == "0.124\"" or RESULT == "0.125\"")
+        RESULT_TRIMMED = RESULT.replace("\"", "")
+        IT_IS_CLOSE_ENOUGH = float(RESULT_TRIMMED) - X_MILLISECONDS <= 0.003
+        if not IT_IS_CLOSE_ENOUGH:
+            print("Too bad: RESULT is {}, too far from {}".format(RESULT, X_MILLISECONDS))
+        self.assertTrue(IT_IS_CLOSE_ENOUGH)
 
 if __name__ == '__main__':
     unittest.main()
