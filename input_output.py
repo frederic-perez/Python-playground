@@ -373,17 +373,15 @@ if __name__ == '__main__':
     play_with_a_pringle_like_whatnot_42_with_noise()
 
     CONTOUR_ID_AND_SPHERE_ARRAY = [
-        ['04', Sphere([-20.684027, 53.338932, -14.109715], 132)], # ano; using vertices barycenter
-        ['05', Sphere([-22.295578, 60.587006, -609.661499], 131.3)] # maerts; using vertices barycenter
+        # ['01', 6], # hsalps
+        # ['02', 0], # ainte
+        # ['03', 6], # nabyar
+        # ['04', Sphere([-20.684027, 53.338932, -14.109715], 132)], # ano; using vertices barycenter
+        ['05', Sphere([-22.295578, 60.587006, -609.661499], 131.3)], # maerts; using vertices barycenter
+        # ['06', Sphere(...)], # yzzif
+        ['07', Sphere([-19.99, 60.98, -116.1], 132)] # uen: using provided data 
     ]
     """
-        ['02', 0], # ainte
-        ['03', 6], # nabyar
-
-        ['01', 6], # hsalps
-        ['04', 6], # ano
-        ['05', 6], # maerts
-        ['06', 8], # yzzif
         ['24', 6],
         ['25', 6],
         ['26', 6],
