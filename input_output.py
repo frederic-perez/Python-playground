@@ -276,18 +276,6 @@ def play_with_a_pringle_like_whatnot_42_with_noise():
     print("Best fit sphere for the pringle like whatnot-42 is", SPHERE)
     save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(PRINGLE_FILENAME_XYZ, SPHERE, PRINGLE_FILENAME_PLY)
 
-def get_points_rotated_around_z(points, theta):
-    rotated_points = []
-    COS_THETA = math.cos(theta)
-    SIN_THETA = math.sin(theta)
-    for point in points:
-        rotated_point = [
-            point[0]*COS_THETA + point[1]*SIN_THETA,
-            point[0]*(-SIN_THETA) + point[1]*COS_THETA,
-            point[2]]
-        rotated_points.append(rotated_point)
-    return rotated_points
-
 def get_bounding_box(points):
     x_coords, y_coords, z_coords = zip(*points)
     return [
@@ -318,36 +306,8 @@ def get_spheres_given_series_of_4_points_and_study_variability(points):
     bounding_box = get_bounding_box(sphere_centers)
     print("Variability of the centers of set of spheres given 4 points is [{:.3f}, {:.3f}] [{:.3f}, {:.3f}] [{:.3f}, {:.3f}]".format(bounding_box[0][0], bounding_box[0][1], bounding_box[1][0], bounding_box[1][1], bounding_box[2][0], bounding_box[2][1]))
 
-def study_contour(contour_ID, tilt):
-    print('\nstudy_contour(' + contour_ID + ', ' + str(tilt) + ") starts...")
-    FILENAME_CONTOUR_XYZ = 'data/_contour-' + contour_ID + '.xyz'
-    POINTS = read_xyz_file(FILENAME_CONTOUR_XYZ)
-    THETA = math.radians(-tilt)
-    ROTATED_POINTS = get_points_rotated_around_z(POINTS, THETA)
-    FILENAME_CONTOUR_ROTATED_BASE = 'data/_contour-' + contour_ID + '-rotated'
-    FILENAME_CONTOUR_ROTATED_XYZ = FILENAME_CONTOUR_ROTATED_BASE + '.xyz'
-    FILENAME_CONTOUR_ROTATED_PLY = FILENAME_CONTOUR_ROTATED_BASE + '.ply'
-    save_xyz_file(FILENAME_CONTOUR_ROTATED_XYZ, ROTATED_POINTS)
-    save_ply_file(FILENAME_CONTOUR_ROTATED_PLY, ROTATED_POINTS)
-
-    BOUNDING_BOX = get_bounding_box(ROTATED_POINTS)
-    CENTER = get_center(BOUNDING_BOX)
-    CENTER_X_AND_Z = [CENTER[0], CENTER[2]]
-    SPHERE_Y_RANGE = [0, 500]
-    SPHERE_RADIUS_RANGE = [40., 1000.]
-    USE_MSE = True
-    NUM_SAMPLES = 9
-    SPHERE = get_best_fit_sphere_for_radius_range(ROTATED_POINTS, CENTER_X_AND_Z, SPHERE_Y_RANGE, SPHERE_RADIUS_RANGE, USE_MSE, NUM_SAMPLES)
-    print("Best fit sphere for", FILENAME_CONTOUR_XYZ, "is", SPHERE, "| Base is {:.3f}".format(OpticalSphere(SPHERE.get_radius()).get_base_curve()).rstrip('0').rstrip('.'))
-
-    FILENAME_CONTOUR_STUDY_RESULTS_PLY = 'data/_contour-' + contour_ID + '-study-results.ply'
-    save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(
-        FILENAME_CONTOUR_ROTATED_XYZ, SPHERE, FILENAME_CONTOUR_STUDY_RESULTS_PLY)
-
-    get_spheres_given_series_of_4_points_and_study_variability(ROTATED_POINTS)
-
-def study_contour_2(contour_ID, sphere):
-    print('\nstudy_contour_2(' + contour_ID + ', ' + str(sphere) + ") starts...")
+def study_contour(contour_ID, sphere):
+    print('\nstudy_contour(' + contour_ID + ', ' + str(sphere) + ") starts...")
     FILENAME_CONTOUR_XYZ = 'data/_contour-' + contour_ID + '.xyz'
     POINTS = read_xyz_file(FILENAME_CONTOUR_XYZ)
 
@@ -411,6 +371,5 @@ if __name__ == '__main__':
     """
     for contour_ID_and_sphere in CONTOUR_ID_AND_SPHERE_ARRAY:
         contour_ID, sphere = contour_ID_and_sphere
-        # study_contour(contour_ID, tilt)
-        study_contour_2(contour_ID, sphere)
+        study_contour(contour_ID, sphere)
         print
