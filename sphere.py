@@ -25,7 +25,7 @@ class Sphere(object):
             and equal_in_practice(self.radius, other.radius, epsilon)
 
     def __str__(self):
-        return 'Sphere(center={0}, radius={1:.3g})'.format(self.center, self.radius)
+        return 'Sphere(center={0}, radius={1:.1f})'.format(self.center, self.radius)
 
     def get_radius(self):
         return self.radius
