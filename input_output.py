@@ -13,7 +13,7 @@ def get_pringle_points(num_points, a, b, radius_x, radius_z, offset_xyz, max_noi
     A_SQR = a**2
     B_SQR = b**2
     for i in range(num_points):
-        print("i is", i)
+        # print("i is", i)
         alpha = i * 2*math.pi/num_points
         x = radius_x * math.sin(alpha)
         z = radius_z * math.cos(alpha)
@@ -59,6 +59,8 @@ def get_distances_to_sphere_and_scaled_normals(points, sphere):
 # https://stackoverflow.com/questions/2440692/formatting-floats-in-python-without-superfluous-zeros
 #
 float_formatter = lambda x: "{0:.3f}".format(x).rstrip('0').rstrip('.')
+float_HQ_formatter = lambda x: "{0:.21f}".format(x).rstrip('0').rstrip('.')
+
 np.set_printoptions(formatter={'float_kind':float_formatter})
 
 def floats_formatter(array):
@@ -66,6 +68,15 @@ def floats_formatter(array):
     LENGTH = len(array)
     for i in range(0, LENGTH):
         result += float_formatter(array[i])
+        if i != LENGTH - 1:
+            result += ' '
+    return result
+
+def floats_HQ_formatter(array):
+    result = ''
+    LENGTH = len(array)
+    for i in range(0, LENGTH):
+        result += float_HQ_formatter(array[i])
         if i != LENGTH - 1:
             result += ' '
     return result
@@ -133,7 +144,8 @@ def save_ply_file(filename_ply, points):
               "end_header\n")
     file_out.write(HEADER)
     for point in points:
-        print("{}".format(floats_formatter(point)), file=file_out)
+        # print("{}".format(floats_formatter(point)), file=file_out)
+        print("{}".format(floats_HQ_formatter(point)), file=file_out)
     file_out.close()
 
 def save_ply_file_with_distances_and_scaled_normals(filename_ply, points, distances, scaled_normals):
@@ -289,22 +301,85 @@ def get_center(bounding_box):
         center[i] = (bounding_box[i][1] - bounding_box[i][0])/2. + bounding_box[i][0]
     return center
 
+def get_min_and_max_distances_between_points(points):
+    min_distance = float("inf")
+    max_distance = float("-inf")
+    NUM_POINTS = len(points)
+    for i in range(NUM_POINTS):
+        for j in range(i + 1, NUM_POINTS):
+            vector = points[i] - points[j]
+            distance = np.linalg.norm(vector)
+            if distance < min_distance:
+                min_distance = distance
+            if distance > max_distance:
+                max_distance = distance
+    return min_distance, max_distance
+
+def get_index_of_closest_point(point, points, indices_to_skip):
+    min_distance = float("inf")
+    index = -1
+    NUM_POINTS = len(points)
+    for i in range(NUM_POINTS):
+        if i not in indices_to_skip:
+            vector = point - points[i]
+            distance = np.linalg.norm(vector)
+            if distance < min_distance:
+                min_distance = distance
+                index = i
+    if index == -1:
+        # Chosen from https://docs.python.org/3/library/exceptions.html#exception-hierarchy
+        raise AssertionError('Could not set the resulting index')
+    return index
+
+def get_sorted_points(points):
+    check.is_an_array(points)
+    check.length_is_greater_or_equal_to_N(points, 4)
+    NUM_POINTS = len(points)
+    sorted_points= []
+    sorted_points.append(points[0])
+    indices_to_skip = []
+    indices_to_skip.append(0)
+    for i in range(1, NUM_POINTS):
+        last_sorted_point = sorted_points[i - 1]
+        idx = get_index_of_closest_point(last_sorted_point, points, indices_to_skip)
+        sorted_points.append(points[idx])
+        indices_to_skip.append(idx)
+    check.length_is_equal_to_N(sorted_points, NUM_POINTS)
+    return sorted_points
+
 def get_spheres_given_series_of_4_points_and_study_variability(points):
     check.is_an_array(points)
     check.length_is_greater_or_equal_to_N(points, 4)
     DELTA = int(len(points)/4)
     four_points = np.random.rand(4, 3)
-    sphere_centers = np.random.rand(DELTA, 3)
+    sphere_centers = []
+    sphere_radii = []
+    min_distance_between_points_compared = float("inf")
+    max_distance_between_points_compared = float("-inf")
     for i in range(DELTA):
         four_points[0] = points[i]
         four_points[1] = points[i + DELTA]
         four_points[2] = points[i + 2*DELTA]
         four_points[3] = points[i + 3*DELTA]
+        # print('indices used: {} {} {} {}'.format(i, i + DELTA, i + 2*DELTA, i + 3*DELTA))
+        min_distance_between_4_points, max_distace_between_4_points = get_min_and_max_distances_between_points(four_points)
+        if min_distance_between_4_points < min_distance_between_points_compared:
+            min_distance_between_points_compared = min_distance_between_4_points
+        if max_distace_between_4_points > max_distance_between_points_compared:
+            max_distance_between_points_compared = max_distace_between_4_points
         sphere = get_sphere(four_points)
-        # print("Sphere #", i, "given 4 points is", sphere)
-        sphere_centers[i] = sphere.get_center()
+        print("Sphere #{} given 4 points for indices {} {} {} {} is {}".format(i, i, i + DELTA, i + 2*DELTA, i + 3*DELTA, sphere))
+        if i == 8:
+            print('  four_points is {}'.format(four_points))
+            for j in range(4):
+                print('  point {}: distance to surface is {}'.format(four_points[j], sphere.get_signed_distance_to_surface(four_points[j])))
+        sphere_centers.append(sphere.get_center())
+        sphere_radii.append(sphere.get_radius())
     bounding_box = get_bounding_box(sphere_centers)
-    print("Variability of the centers of set of spheres given 4 points is [{:.3f}, {:.3f}] [{:.3f}, {:.3f}] [{:.3f}, {:.3f}]".format(bounding_box[0][0], bounding_box[0][1], bounding_box[1][0], bounding_box[1][1], bounding_box[2][0], bounding_box[2][1]))
+    print('From the set of spheres given 4 points',)
+    print('  the variability of the centers is [{:.3f}, {:.3f}] [{:.3f}, {:.3f}] [{:.3f}, {:.3f}]'.format(bounding_box[0][0], bounding_box[0][1], bounding_box[1][0], bounding_box[1][1], bounding_box[2][0], bounding_box[2][1]))
+    print('  the variability of the radii is [{:.1f}, {:.1f}]'.format(min(sphere_radii), max(sphere_radii)))
+    print('and the min and max distances between the sets of 4 points been used are {:.3f} and {:.3f}'.format(min_distance_between_points_compared, max_distance_between_points_compared))
 
 def study_contour(contour_ID, sphere):
     print('\nstudy_contour(' + contour_ID + ', ' + str(sphere) + ") starts...")
@@ -313,7 +388,11 @@ def study_contour(contour_ID, sphere):
 
     _, _ = get_distances_to_sphere_and_scaled_normals(POINTS, sphere)
 
-    get_spheres_given_series_of_4_points_and_study_variability(POINTS)
+    # get_spheres_given_series_of_4_points_and_study_variability(POINTS)
+    # save_ply_file('data/_contour-' + contour_ID + '-debug--original-points.ply', POINTS)
+    SORTED_POINTS = get_sorted_points(POINTS)
+    get_spheres_given_series_of_4_points_and_study_variability(SORTED_POINTS)
+    save_ply_file('data/_contour-' + contour_ID + '-debug--sorted-points.ply', SORTED_POINTS)
 
 if __name__ == '__main__':
 
@@ -336,10 +415,10 @@ if __name__ == '__main__':
         # ['01', 6], # hsalps
         # ['02', 0], # ainte
         # ['03', 6], # nabyar
-        # ['04', Sphere([-20.684027, 53.338932, -14.109715], 132)], # ano; using vertices barycenter
-        ['05', Sphere([-22.295578, 60.587006, -609.661499], 131.3)], # maerts; using vertices barycenter
+        ['04', Sphere([-20.684027, 53.338932, -14.109715], 132)], # ano; using vertices barycenter
+        # ['05', Sphere([-22.295578, 60.587006, -609.661499], 131.3)], # maerts; using vertices barycenter
         # ['06', Sphere(...)], # yzzif
-        ['07', Sphere([-19.99, 60.98, -116.1], 132)] # uen: using provided data 
+        # ['07', Sphere([-19.99, 60.98, -116.1], 132)] # uen: using provided data 
     ]
     """
         ['24', 6],
