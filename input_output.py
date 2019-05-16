@@ -356,23 +356,20 @@ def get_spheres_given_series_of_4_points_and_study_variability(points):
     sphere_radii = []
     min_distance_between_points_compared = float("inf")
     max_distance_between_points_compared = float("-inf")
+    SORTED_POINTS = get_sorted_points(points)
+    save_ply_file('data/_contour-' + contour_ID + '-debug--sorted-points.ply', SORTED_POINTS)
     for i in range(DELTA):
-        four_points[0] = points[i]
-        four_points[1] = points[i + DELTA]
-        four_points[2] = points[i + 2*DELTA]
-        four_points[3] = points[i + 3*DELTA]
-        # print('indices used: {} {} {} {}'.format(i, i + DELTA, i + 2*DELTA, i + 3*DELTA))
+        four_points[0] = SORTED_POINTS[i]
+        four_points[1] = SORTED_POINTS[i + DELTA]
+        four_points[2] = SORTED_POINTS[i + 2*DELTA]
+        four_points[3] = SORTED_POINTS[i + 3*DELTA]
         min_distance_between_4_points, max_distace_between_4_points = get_min_and_max_distances_between_points(four_points)
         if min_distance_between_4_points < min_distance_between_points_compared:
             min_distance_between_points_compared = min_distance_between_4_points
         if max_distace_between_4_points > max_distance_between_points_compared:
             max_distance_between_points_compared = max_distace_between_4_points
         sphere = get_sphere(four_points)
-        print("Sphere #{} given 4 points for indices {} {} {} {} is {}".format(i, i, i + DELTA, i + 2*DELTA, i + 3*DELTA, sphere))
-        if i == 8:
-            print('  four_points is {}'.format(four_points))
-            for j in range(4):
-                print('  point {}: distance to surface is {}'.format(four_points[j], sphere.get_signed_distance_to_surface(four_points[j])))
+        # print("Sphere #{} given 4 points for indices {} {} {} {} is {}".format(i, i, i + DELTA, i + 2*DELTA, i + 3*DELTA, sphere))
         sphere_centers.append(sphere.get_center())
         sphere_radii.append(sphere.get_radius())
     bounding_box = get_bounding_box(sphere_centers)
@@ -388,11 +385,7 @@ def study_contour(contour_ID, sphere):
 
     _, _ = get_distances_to_sphere_and_scaled_normals(POINTS, sphere)
 
-    # get_spheres_given_series_of_4_points_and_study_variability(POINTS)
-    # save_ply_file('data/_contour-' + contour_ID + '-debug--original-points.ply', POINTS)
-    SORTED_POINTS = get_sorted_points(POINTS)
-    get_spheres_given_series_of_4_points_and_study_variability(SORTED_POINTS)
-    save_ply_file('data/_contour-' + contour_ID + '-debug--sorted-points.ply', SORTED_POINTS)
+    get_spheres_given_series_of_4_points_and_study_variability(POINTS)
 
 if __name__ == '__main__':
 
@@ -416,9 +409,10 @@ if __name__ == '__main__':
         # ['02', 0], # ainte
         # ['03', 6], # nabyar
         ['04', Sphere([-20.684027, 53.338932, -14.109715], 132)], # ano; using vertices barycenter
-        # ['05', Sphere([-22.295578, 60.587006, -609.661499], 131.3)], # maerts; using vertices barycenter
+        ['05', Sphere([-22.295578, 60.587006, -609.661499], 131.3)], # maerts; using vertices barycenter
         # ['06', Sphere(...)], # yzzif
-        # ['07', Sphere([-19.99, 60.98, -116.1], 132)] # uen: using provided data 
+        ['07', Sphere([-19.99, 60.98, -116.1], 132)], # uen; using provided data 
+        ['08', Sphere([-22.372335, 61.412712, -601.807983], 132)] # tsorf; using using vertices barycenter
     ]
     """
         ['24', 6],
