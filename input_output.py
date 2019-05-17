@@ -379,7 +379,7 @@ def get_spheres_given_series_of_4_points_and_study_variability(points):
     print('and the min and max distances between the sets of 4 points been used are {:.3f} and {:.3f}'.format(min_distance_between_points_compared, max_distance_between_points_compared))
 
 def study_contour(contour_ID, sphere):
-    print('\nstudy_contour(' + contour_ID + ', ' + str(sphere) + ") starts...")
+    print('\nstudy_contour({}, {}) starts...'.format(contour_ID, sphere))
     FILENAME_CONTOUR_XYZ = 'data/_contour-' + contour_ID + '.xyz'
     POINTS = read_xyz_file(FILENAME_CONTOUR_XYZ)
 
