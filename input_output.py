@@ -414,34 +414,6 @@ if __name__ == '__main__':
         ['07', Sphere([-19.99, 60.98, -116.1], 132)], # uen; using provided data 
         ['08', Sphere([-22.372335, 61.412712, -601.807983], 132)] # tsorf; using using vertices barycenter
     ]
-    """
-        ['24', 6],
-        ['25', 6],
-        ['26', 6],
-        ['27', 6],
-        ['28', 6],
-        ['29', 6],
-        ['30', 6],
-        ['31', 6],
-        ['32', 6],
-        ['33', 6],
-        ['34', 6],
-        ['35', 6],
-        ['36', 6],
-        ['37', 6],
-        ['38', 6],
-        ['39', 6],
-        ['40', 6],
-        ['41', 5],
-        ['42', 7],
-        ['43', 6],
-        ['44', 5],
-        ['45', 9],
-        ['46', 8],
-        ['47', 7],
-        ['48', 4]
-    ]
-    """
     for contour_ID_and_sphere in CONTOUR_ID_AND_SPHERE_ARRAY:
         contour_ID, sphere = contour_ID_and_sphere
         study_contour(contour_ID, sphere)
