@@ -6,6 +6,7 @@ import numpy as np
 import check
 from epsilon import epsilon_distance, zero_in_practice, equal_in_practice
 from error_array import get_indices_around_minimum_abs_error, get_range_length
+from formatting import float_formatter
 
 class Sphere(object):
     def __init__(self, center, radius):
@@ -27,7 +28,7 @@ class Sphere(object):
     def __str__(self):
         return \
             'Sphere(center={0}, '.format(self.center) \
-            + 'radius={0:.3f}'.format(self.radius).rstrip('0').rstrip('.') \
+            + 'radius={0}'.format(float_formatter(self.radius)) \
             + ')'
 
     def get_radius(self):
