@@ -5,6 +5,7 @@ import numpy as np
 import os.path
 
 import check
+from formatting import float_formatter, floats_formatter, floats_HQ_formatter
 from sphere import Sphere, get_best_fit_sphere, get_best_fit_sphere_for_radius_range, get_sphere
 from optical_sphere import OpticalSphere
 
@@ -53,33 +54,7 @@ def get_distances_to_sphere_and_scaled_normals(points, sphere):
     print(FUNCTION_NAME, "max_negative_distance is {:.3f} | max_positive_distance is {:.3f}".format(max_negative_distance, max_positive_distance))
     return distances, scaled_normals
 
-# Code based on
-# https://stackoverflow.com/questions/21008858/formatting-floats-in-a-numpy-array
-# and on
-# https://stackoverflow.com/questions/2440692/formatting-floats-in-python-without-superfluous-zeros
-#
-float_formatter = lambda x: "{0:.3f}".format(x).rstrip('0').rstrip('.')
-float_HQ_formatter = lambda x: "{0:.21f}".format(x).rstrip('0').rstrip('.')
-
 np.set_printoptions(formatter={'float_kind':float_formatter})
-
-def floats_formatter(array):
-    result = ''
-    LENGTH = len(array)
-    for i in range(0, LENGTH):
-        result += float_formatter(array[i])
-        if i != LENGTH - 1:
-            result += ' '
-    return result
-
-def floats_HQ_formatter(array):
-    result = ''
-    LENGTH = len(array)
-    for i in range(0, LENGTH):
-        result += float_HQ_formatter(array[i])
-        if i != LENGTH - 1:
-            result += ' '
-    return result
 
 def save_xyz_file(filename_xyz, points):
     file_out = open(filename_xyz, 'w')
