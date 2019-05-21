@@ -6,6 +6,7 @@ import numpy as np
 import check
 from epsilon import epsilon_distance, zero_in_practice, equal_in_practice
 from error_array import get_indices_around_minimum_abs_error
+from formatting import float_formatter
 
 class Circle(object):
     def __init__(self, center, radius):
@@ -24,7 +25,9 @@ class Circle(object):
             and equal_in_practice(self.radius, other.radius, epsilon)
 
     def __str__(self):
-        return 'Circle(center={0}, radius={1})'.format(self.center, self.radius)
+        return \
+            'Circle(center={}, '.format(self.center) \
+            + 'radius={})'.format(float_formatter(self.radius))
 
     def get_radius(self):
         return self.radius
@@ -150,3 +153,9 @@ def get_best_fit_circle(points, x_center, radius, use_MSE, num_samples): # num_s
       done =  equal_in_practice(y[idx_min], y[idx_max]) or equal_in_practice(error[idx_min], error[idx_max]) or i == 50
 
     return Circle([x_center, y[idx_min]], radius)
+
+if __name__ == '__main__':
+    CENTER = [1.1111, 2.2222]
+    RADIUS = 3.3333
+    CIRCLE = Circle(CENTER, RADIUS)
+    print('CIRCLE is', CIRCLE)
