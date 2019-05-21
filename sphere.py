@@ -28,8 +28,7 @@ class Sphere(object):
     def __str__(self):
         return \
             'Sphere(center={0}, '.format(self.center) \
-            + 'radius={0}'.format(float_formatter(self.radius)) \
-            + ')'
+            + 'radius={0})'.format(float_formatter(self.radius))
 
     def get_radius(self):
         return self.radius
@@ -226,3 +225,9 @@ def get_best_fit_sphere_for_radius_range(points, center_x_and_z, y_range, radius
       done =  equal_in_practice(radius[idx_min], radius[idx_max]) or equal_in_practice(error[idx_min], error[idx_max]) or i == 50
 
     return get_best_fit_sphere(points, center_x_and_z, y_range, radius[idx_min], use_MSE, num_samples)
+
+if __name__ == '__main__':
+    CENTER = [1.11111, 2.22222, 3.33333]
+    RADIUS = 4.44444
+    SPHERE = Sphere(CENTER, RADIUS)
+    print('SPHERE is', SPHERE)
