@@ -383,11 +383,12 @@ if __name__ == '__main__':
         # ['01', 6], # hsalps
         # ['02', 0], # ainte
         # ['03', 6], # nabyar
-        ['04', Sphere([-20.684027, 53.338932, -14.109715], 132)], # ano; using vertices barycenter
-        ['05', Sphere([-22.295578, 60.587006, -609.661499], 131.3)], # maerts; using vertices barycenter
+        ['04', Sphere([-20.684027, 53.338932, -14.109715], 132)], # ano, using vertices barycenter
+        ['05', Sphere([-22.295578, 60.587006, -609.661499], 131.3)], # maerts, using vertices barycenter
         # ['06', Sphere(...)], # yzzif -- dismissed because we lack the sphere
-        ['07', Sphere([-19.99, 60.98, -116.1], 132)], # uen; using provided data 
-        ['08', Sphere([-22.372335, 61.412712, -601.807983], 132)] # tsorf; using using vertices barycenter
+        ['07', Sphere([-19.99, 60.98, -116.1], 132)], # uen, using provided data 
+        ['08', Sphere([-22.372335, 61.412712, -601.807983], 132)], # tsorf, using using vertices barycenter
+        ['09', Sphere([-22.22, 64.71, -609.73], 131.25)] # 7xr, using provided data, and trial-and-error for radius
     ]
     for contour_ID_and_sphere in CONTOUR_ID_AND_SPHERE_ARRAY:
         contour_ID, sphere = contour_ID_and_sphere
