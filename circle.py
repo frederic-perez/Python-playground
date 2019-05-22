@@ -141,13 +141,13 @@ def get_best_fit_circle(points, x_center, radius, use_MSE, num_samples): # num_s
           y[j] = y_min + delta*j
           circle = Circle([x_center, y[j]], radius)
           error[j] = circle.get_MSE(points) if use_MSE else circle.get_mean_signed_distance(points)
-          # print "i =", i, "j =", j, "| y =", y[j], "| error =", error[j]
+          # print('i = {}, j = {} | y = {} | error = {}'.format(i, j, y[j], error[j]))
           if zero_in_practice(error[j]):
               return circle
       
       idx_min, idx_max = get_indices_around_minimum_abs_error(error)
       y_min, y_max = y[idx_min], y[idx_max]
-      # print "idx_min is", idx_min, "idx_max is", idx_max, "y range:", y_min, y_max
+      # print('idx_min = {}, idx_max = {}, y range: {} {}'.format(idx_min, idx_max, y_min, y_max))
 
       i = i + 1
       done =  equal_in_practice(y[idx_min], y[idx_max]) or equal_in_practice(error[idx_min], error[idx_max]) or i == 50
@@ -159,3 +159,4 @@ if __name__ == '__main__':
     RADIUS = 3.3333
     CIRCLE = Circle(CENTER, RADIUS)
     print('CIRCLE is', CIRCLE)
+    CIRCLE.spy('Spying CIRCLE')
