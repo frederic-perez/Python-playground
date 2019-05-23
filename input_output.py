@@ -388,7 +388,8 @@ if __name__ == '__main__':
         # ['06', Sphere(...)], # yzzif -- dismissed because we lack the sphere
         ['07', Sphere([-19.99, 60.98, -116.1], 132)], # uen, using provided data 
         ['08', Sphere([-22.372335, 61.412712, -601.807983], 132)], # tsorf, using using vertices barycenter
-        ['09', Sphere([-22.22, 64.71, -609.73], 131.25)] # 7xr, using provided data, and trial-and-error for radius
+        ['09', Sphere([-22.22, 64.71, -609.73], 131.25)], # 7xr, using provided data, and trial-and-error for radius
+        ['10', Sphere([-21.56, 62.67, -118], 131.94)] # ram, using provided data, and trial-and-error for radius
     ]
     for contour_ID_and_sphere in CONTOUR_ID_AND_SPHERE_ARRAY:
         contour_ID, sphere = contour_ID_and_sphere
