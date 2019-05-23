@@ -231,3 +231,4 @@ if __name__ == '__main__':
     RADIUS = 4.44444
     SPHERE = Sphere(CENTER, RADIUS)
     print('SPHERE is', SPHERE)
+    SPHERE.spy('Spying SPHERE')
