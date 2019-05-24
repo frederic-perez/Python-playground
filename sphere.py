@@ -35,7 +35,7 @@ class Sphere(object):
         return self.center
   
     def spy(self, message):
-        print('{0}: {1}'.format(message, self))
+        print('{}: {}'.format(message, self))
         return
 
     def get_signed_distance_to_surface(self, point):
