@@ -12,7 +12,7 @@ class OpticalSphere(Sphere):
         return
 
     def __str__(self):
-        return 'OpticalSphere(radius: {0} mm, n: {1})'.format(self.radius, self.N)
+        return 'OpticalSphere(radius: {} mm, n: {})'.format(self.radius, self.N)
 
     def get_n(self):
         return self.N
@@ -25,7 +25,7 @@ class OpticalSphere(Sphere):
         return 1000*(self.N - N_VACUUM)/self.radius
 
     def spy(self, message):
-        print('{0}: {1}'.format(message, self))
+        print('{}: {}'.format(message, self))
         return
 
 def print_optical_info(radius):
