@@ -2,6 +2,8 @@
 
 #import math
 import numpy as np
+from formatting import float_formatter
+
 from sphere import Sphere
 
 class OpticalSphere(Sphere):
@@ -12,7 +14,7 @@ class OpticalSphere(Sphere):
         return
 
     def __str__(self):
-        return 'OpticalSphere(radius: {} mm, n: {})'.format(self.radius, self.N)
+        return 'OpticalSphere(radius: {} mm, n: {})'.format(float_formatter(self.radius), float_formatter(self.N))
 
     def get_n(self):
         return self.N
@@ -31,8 +33,8 @@ class OpticalSphere(Sphere):
 def print_optical_info(radius):
     OPTICAL_SPHERE = OpticalSphere(radius)
     print("OPTICAL_SPHERE:", OPTICAL_SPHERE)
-    print("  |- surface power is", OPTICAL_SPHERE.get_surface_power(), "diopter(s)")
-    print("  '- base curve is", OPTICAL_SPHERE.get_base_curve(), "diopter(s)")
+    print("  |- surface power is {} diopter(s)".format(float_formatter(OPTICAL_SPHERE.get_surface_power())))
+    print("  '- base curve is {} diopter(s)".format(float_formatter(OPTICAL_SPHERE.get_base_curve())))
     print
 
 if __name__ == '__main__':
@@ -44,4 +46,7 @@ if __name__ == '__main__':
     print_optical_info(radius)
 
     radius = 53
+    print_optical_info(radius)
+
+    radius = 123.456789
     print_optical_info(radius)
