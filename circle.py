@@ -13,7 +13,7 @@ class Circle(object):
         check.array_type(center)
         check.length_is_equal_to_N(center, 2)
         if radius <= 0:
-            raise ValueError("Value %g is out of range" % radius)
+            raise ValueError('Radius value {} is out of range'.format(float_formatter(radius)))
         self.center = np.array(center, np.float_)
         self.radius = radius
         return
@@ -158,3 +158,6 @@ if __name__ == '__main__':
     CIRCLE = Circle(CENTER, RADIUS)
     print('CIRCLE is', CIRCLE)
     CIRCLE.spy('Spying CIRCLE')
+
+    NEGATIVE_RADIUS = -1.23456
+    BAD_CIRCLE = Circle(CENTER, NEGATIVE_RADIUS)
