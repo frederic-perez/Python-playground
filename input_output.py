@@ -390,9 +390,10 @@ if __name__ == '__main__':
         # ['08', Sphere([-22.372335, 61.412712, -601.807983], 132)], # tsorf, using using vertices barycenter
         # ['09', Sphere([-22.22, 64.71, -609.73], 131.25)], # 7xr, using provided data, and trial-and-error for radius
         # ['10', Sphere([-21.56, 62.67, -118], 131.94)], # ram, using provided data, and trial-and-error for radius
-        ['97', Sphere([-21.64, 62.10, -10.70], 131.96)], # CIMIM 7, using provided data, and trial-and-error for radius
-        ['98', Sphere([-21.64, 62.29, -10.70], 131.95)], # CIMIM B1, using provided data, and trial-and-error for radius
-        ['99', Sphere([-20.68, 62.34, -10.70], 131.95)] # CIMIM 3, using provided data, and trial-and-error for radius
+        ['96', Sphere([-21.64, 61.44, -14.06], 132.77)], # B3 CIMIM, using provided data, and trial-and-error for radius
+        ['97', Sphere([-21.64, 62.10, -10.70], 131.96)], # 7 CIMIM, using provided data, and trial-and-error for radius
+        ['98', Sphere([-21.64, 62.29, -10.70], 131.95)], # B1 CIMIM, using provided data, and trial-and-error for radius
+        ['99', Sphere([-20.68, 62.34, -10.70], 131.95)] # 3 CIMIM, using provided data, and trial-and-error for radius
     ]
     for contour_ID_and_sphere in CONTOUR_ID_AND_SPHERE_ARRAY:
         contour_ID, sphere = contour_ID_and_sphere
