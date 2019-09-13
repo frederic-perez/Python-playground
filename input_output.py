@@ -390,6 +390,8 @@ if __name__ == '__main__':
         # ['08', Sphere([-22.372335, 61.412712, -601.807983], 132)], # tsorf, using using vertices barycenter
         # ['09', Sphere([-22.22, 64.71, -609.73], 131.25)], # 7xr, using provided data, and trial-and-error for radius
         # ['10', Sphere([-21.56, 62.67, -118], 131.94)], # ram, using provided data, and trial-and-error for radius
+        ['94', Sphere([-21.64, 62.29, -11.56], 131.955)], # B2 CIMIM, using provided data, and trial-and-error for radius
+        ['95', Sphere([-24.09, 93.39, -11.27], 131.95)], # 1 CIMIM, using provided data, and trial-and-error for radius
         ['96', Sphere([-21.64, 61.44, -14.06], 132.77)], # B3 CIMIM, using provided data, and trial-and-error for radius
         ['97', Sphere([-21.64, 62.10, -10.70], 131.96)], # 7 CIMIM, using provided data, and trial-and-error for radius
         ['98', Sphere([-21.64, 62.29, -10.70], 131.95)], # B1 CIMIM, using provided data, and trial-and-error for radius
