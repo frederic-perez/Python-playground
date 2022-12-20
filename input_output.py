@@ -89,7 +89,7 @@ def read_xyz_file(filename_xyz):
     for line in file_in:
         if line.strip():
             try:
-                xyz = list(map(np.float, line.split()))
+                xyz = list(map(np.float64, line.split()))
             except ValueError as e:
                 file_in.close()
                 raise ValueError('Exception caught when reading point #' + str(i) + ' | ' + str(e))
