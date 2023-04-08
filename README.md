@@ -8,12 +8,19 @@ A place for continuous learning of Python and software engineering through exper
 
 ## Some interesting URLs
 
+### Learning
+
+- [Learn Python - Full Course for Beginners [Tutorial]](https://www.youtube.com/watch?v=rfscVS0vtbw) (4:26:51)
+- kaggle.com’s [learn/python](https://www.kaggle.com/learn/python)
+- tutorialspoint.com’s [Python Tutorial](https://www.tutorialspoint.com/python)
+### Others
+
+- [Awesome Python Typing](https://github.com/typeddjango/awesome-python-typing): Collection of awesome Python types, stubs, plugins, and tools to work with them.
 - [Execute Python Online](https://www.tutorialspoint.com/python3_terminal_online.php)
-- tutorialspoint.com's [Python Tutorial](https://www.tutorialspoint.com/python)
+- [The Hitchhiker’s Guide to Packaging](https://the-hitchhikers-guide-to-packaging.readthedocs.io/en/latest/)
+- [The Hitchhiker’s Guide to Python](https://docs.python-guide.org/), with its [Code Style](https://docs.python-guide.org/writing/style/)
 - python.org's [Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/)
 - python.org's [unittest](https://docs.python.org/3/library/unittest.html) documentation
-- [The Hitchhiker’s Guide to Python](https://docs.python-guide.org/), with its [Code Style](https://docs.python-guide.org/writing/style/)
-- [The Hitchhiker’s Guide to Packaging](https://the-hitchhikers-guide-to-packaging.readthedocs.io/en/latest/)
 
 ## References and influencing material
 
