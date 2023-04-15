@@ -1,3 +1,4 @@
 *.pyc
 _*
+.idea/
 data/_*

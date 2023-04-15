@@ -11,7 +11,7 @@ from formatting import float_formatter
 class Sphere(object):
     def __init__(self, center, radius):
         check.array_type(center)
-        check.length_is_equal_to_N(center, 3)
+        check.length_is_equal_to_n(center, 3)
         if radius <= 0:
             raise ValueError('Radius value {} is out of range'.format(float_formatter(radius)))
         self.center = np.array(center, np.float_)
@@ -72,7 +72,7 @@ def get_sphere(points):
     on December 21, 2018, and then simplified
     """
     check.array_type(points)
-    check.length_is_equal_to_N(points, 4)
+    check.length_is_equal_to_n(points, 4)
 
     a = np.zeros((4, 4))
     for i in range(0, 4):
@@ -136,11 +136,11 @@ def get_y_low_and_y_high(points, x_center, z_center, radius):
 
 def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE, num_samples): # num_samples = 9):
     check.array_type(points)
-    check.length_is_greater_than_N(points, 4)
+    check.length_is_greater_than_n(points, 4)
     check.array_type(center_x_and_z)
-    check.length_is_equal_to_N(center_x_and_z, 2)
+    check.length_is_equal_to_n(center_x_and_z, 2)
     check.array_type(y_range)
-    check.length_is_equal_to_N(y_range, 2)
+    check.length_is_equal_to_n(y_range, 2)
 
     x_center = center_x_and_z[0]
     z_center = center_x_and_z[1]
@@ -180,13 +180,13 @@ def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_MSE, num_sa
 
 def get_best_fit_sphere_for_radius_range(points, center_x_and_z, y_range, radius_range, use_MSE, num_samples): # num_samples = 9):
     check.array_type(points)
-    check.length_is_greater_than_N(points, 4)
+    check.length_is_greater_than_n(points, 4)
     check.array_type(center_x_and_z)
-    check.length_is_equal_to_N(center_x_and_z, 2)
+    check.length_is_equal_to_n(center_x_and_z, 2)
     check.array_type(y_range)
-    check.length_is_equal_to_N(y_range, 2)
+    check.length_is_equal_to_n(y_range, 2)
     check.array_type(radius_range)
-    check.length_is_equal_to_N(radius_range, 2)
+    check.length_is_equal_to_n(radius_range, 2)
 
     radius_min = radius_range[0]
     radius_max = radius_range[1]

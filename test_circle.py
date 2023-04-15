@@ -136,14 +136,14 @@ class Test_Circle_get_MSE(unittest.TestCase):
         CENTER = [2.7, -1.3]
         RADIUS = 3.4
         CIRCLE = Circle(CENTER, RADIUS)
-        self.assertRaises(ValueError, CIRCLE.get_MSE, ())
+        self.assertRaises(ValueError, CIRCLE.get_mse, ())
 
     def test_GivenACircleAndPointsOnCircumference_When_get_MSE_ThenReturn0(self):
         CENTER = [2.7, -1.3]
         RADIUS = 3.4
         CIRCLE = Circle(CENTER, RADIUS)
         POINTS = get_sample_points_on_the_circumference(CIRCLE)
-        self.assertTrue(zero_in_practice(CIRCLE.get_MSE(POINTS)))
+        self.assertTrue(zero_in_practice(CIRCLE.get_mse(POINTS)))
 
     def test_GivenACircleAndPointsOn2xRadius_When_get_MSE_ThenReturnRadiusSquared(self):
         CENTER = [2.7, -1.3]
@@ -151,7 +151,7 @@ class Test_Circle_get_MSE(unittest.TestCase):
         CIRCLE = Circle(CENTER, RADIUS)
         TWO_RADIUS = 2*RADIUS
         POINTS = get_sample_points_on_the_circumference(Circle(CENTER, TWO_RADIUS))
-        self.assertTrue(equal_in_practice(CIRCLE.get_MSE(POINTS), RADIUS*RADIUS))
+        self.assertTrue(equal_in_practice(CIRCLE.get_mse(POINTS), RADIUS * RADIUS))
 
 class Test_Circle_get_mean_signed_distance(unittest.TestCase):
 

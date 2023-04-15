@@ -308,7 +308,7 @@ def get_index_of_closest_point(point, points, indices_to_skip):
 
 def get_sorted_points(points):
     check.is_an_array(points)
-    check.length_is_greater_or_equal_to_N(points, 4)
+    check.length_is_greater_or_equal_to_n(points, 4)
     NUM_POINTS = len(points)
     sorted_points= []
     sorted_points.append(points[0])
@@ -319,12 +319,12 @@ def get_sorted_points(points):
         idx = get_index_of_closest_point(last_sorted_point, points, indices_to_skip)
         sorted_points.append(points[idx])
         indices_to_skip.append(idx)
-    check.length_is_equal_to_N(sorted_points, NUM_POINTS)
+    check.length_is_equal_to_n(sorted_points, NUM_POINTS)
     return sorted_points
 
 def get_spheres_given_series_of_4_points_and_study_variability(points):
     check.is_an_array(points)
-    check.length_is_greater_or_equal_to_N(points, 4)
+    check.length_is_greater_or_equal_to_n(points, 4)
     DELTA = int(len(points)/4)
     four_points = np.random.rand(4, 3)
     sphere_centers = []

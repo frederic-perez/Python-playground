@@ -18,7 +18,7 @@ def get_index_of_minimum_abs_error(error_array):
 
 def get_indices_around_minimum_abs_error(error_array):
     check.array_type(error_array)
-    check.length_is_greater_or_equal_to_N(error_array, 3)
+    check.length_is_greater_or_equal_to_n(error_array, 3)
 
     check_single_minimum(error_array)
 
@@ -32,7 +32,7 @@ def get_indices_around_minimum_abs_error(error_array):
 
 def check_single_minimum(y_array):
     check.array_type(y_array)
-    check.length_is_greater_or_equal_to_N(y_array, 3)
+    check.length_is_greater_or_equal_to_n(y_array, 3)
 
     N = len(y_array)
     num_slope_changes = 0
@@ -62,7 +62,7 @@ SLOPE_POSITIVE = +1
 
 def get_range_length(error_array):
     check.array_type(error_array)
-    check.length_is_greater_or_equal_to_N(error_array, 2)
+    check.length_is_greater_or_equal_to_n(error_array, 2)
 
     N = len(error_array)
     minimum_error = float("inf")
