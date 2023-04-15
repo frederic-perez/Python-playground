@@ -1,27 +1,34 @@
-'module docstring should be here'
+"""module docstring should be here"""
+
 
 # Code based on
 # https://stackoverflow.com/questions/21008858/formatting-floats-in-a-numpy-array
 # and on
 # https://stackoverflow.com/questions/2440692/formatting-floats-in-python-without-superfluous-zeros
 #
-float_formatter = lambda x: "{0:.3f}".format(x).rstrip('0').rstrip('.')
-float_HQ_formatter = lambda x: "{0:.21f}".format(x).rstrip('0').rstrip('.')
+def float_formatter(x):
+    return "{0:.3f}".format(x).rstrip('0').rstrip('.')
+
+
+def float_hq_formatter(x):
+    return "{0:.21f}".format(x).rstrip('0').rstrip('.')
+
 
 def floats_formatter(array):
     result = ''
-    LENGTH = len(array)
-    for i in range(0, LENGTH):
+    length = len(array)
+    for i in range(0, length):
         result += float_formatter(array[i])
-        if i != LENGTH - 1:
+        if i != length - 1:
             result += ' '
     return result
 
-def floats_HQ_formatter(array):
+
+def floats_hq_formatter(array):
     result = ''
-    LENGTH = len(array)
-    for i in range(0, LENGTH):
-        result += float_HQ_formatter(array[i])
-        if i != LENGTH - 1:
+    length = len(array)
+    for i in range(0, length):
+        result += float_hq_formatter(array[i])
+        if i != length - 1:
             result += ' '
     return result

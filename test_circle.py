@@ -45,14 +45,14 @@ class Test_Circle(unittest.TestCase):
         NEGATIVE_RADIUS = -7
         self.assertRaises(ValueError, Circle, CENTER, NEGATIVE_RADIUS)
 
-    def test_Given2CirclesCreatedEqually_WhenComparision_ThenReturnTrue(self):
+    def test_Given2CirclesCreatedEqually_WhenComparison_ThenReturnTrue(self):
         CENTER = [1, 3]
         RADIUS = 3.
         self.assertEqual(Circle(CENTER, RADIUS), Circle(CENTER, RADIUS))
         CIRCLE = Circle(CENTER, RADIUS)
         self.assertEqual(CIRCLE, Circle(CENTER, RADIUS))
 
-    def test_Given2CirclesCreatedNotEqually_WhenComparision_ThenReturnFalse(self):
+    def test_Given2CirclesCreatedNotEqually_WhenComparison_ThenReturnFalse(self):
         POINT_A = [1, 3]
         RADIUS = 3.
         self.assertNotEqual(Circle(POINT_A, RADIUS), Circle(POINT_A, RADIUS + 1.))
