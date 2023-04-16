@@ -50,3 +50,8 @@ def length_is_greater_or_equal_to_n(arrangement, n):
     length: int = len(arrangement)
     if not length >= n:
         raise ValueError('The arrangement should have at least %d element(s)', n)
+
+
+def number_is_positive(number):
+    if not number > 0:
+        raise ValueError('The number %d should be positive', number)

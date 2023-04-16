@@ -8,8 +8,7 @@ from sphere import Sphere
 
 class OpticalSphere(Sphere):
     def __init__(self, radius):
-        center = np.zeros(3)
-        Sphere.__init__(self, center, radius)
+        Sphere.__init__(self, center=np.zeros(3), radius=radius)
         self.N = 1.53
         return
 
@@ -32,15 +31,14 @@ class OpticalSphere(Sphere):
 
 
 def print_optical_info(radius):
-    optical_sphere = OpticalSphere(radius)
+    optical_sphere = OpticalSphere(radius=radius)
     print("OPTICAL_SPHERE:", optical_sphere)
     print("  |- surface power is {} diopter(s)".format(float_formatter(optical_sphere.get_surface_power())))
     print("  '- base curve is {} diopter(s)".format(float_formatter(optical_sphere.get_base_curve())))
     print()
 
 
-if __name__ == '__main__':
-    
+def main():
     radius = 530  # 530 mm is the radius of a 1 diopter curve
     print_optical_info(radius)
 
@@ -52,3 +50,7 @@ if __name__ == '__main__':
 
     radius = 123.456789
     print_optical_info(radius)
+
+
+if __name__ == '__main__':
+    main()

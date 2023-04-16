@@ -20,25 +20,26 @@ import unittest
 from circle import Circle, get_circle, get_best_fit_circle
 from epsilon import epsilon_distance, equal_in_practice, zero_in_practice
 
+
 class Test_Circle(unittest.TestCase):
 
     def test_GivenAnEmptyCenter_When_Circle_ThenExceptionIsRaised(self):
-        RADIUS = 3.
-        self.assertRaises(TypeError, Circle, None, RADIUS)
+        radius = 3.
+        self.assertRaises(TypeError, Circle, center=None, radius=radius)
 
     def test_GivenA1DCenterPoint_When_Circle_ThenExceptionIsRaised(self):
-        CENTER_1D = [1]
-        RADIUS = 3.
-        self.assertRaises(ValueError, Circle, CENTER_1D, RADIUS)
+        center_1_d = [1]
+        radius = 3.
+        self.assertRaises(ValueError, Circle, center=center_1_d, radius=radius)
 
     def test_GivenAMissingRadius_When_Circle_ThenExceptionIsRaised(self):
-        CENTER = [1, 3]
-        self.assertRaises(TypeError, Circle, CENTER)
+        center = [1, 3]
+        self.assertRaises(TypeError, Circle, center=center)
 
     def test_GivenAZeroRadius_When_Circle_ThenExceptionIsRaised(self):
-        CENTER = [1, 3]
-        ZERO_RADIUS = 0
-        self.assertRaises(ValueError, Circle, CENTER, ZERO_RADIUS)
+        center = [1, 3]
+        zero_radius = 0
+        self.assertRaises(ValueError, Circle, center, zero_radius)
 
     def test_GivenANegativeRadius_When_Circle_ThenExceptionIsRaised(self):
         CENTER = [1, 3]

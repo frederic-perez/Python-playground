@@ -142,14 +142,14 @@ class Test_Sphere_get_MSE(unittest.TestCase):
         CENTER = [1, 2, 3]
         RADIUS = 7
         SPHERE = Sphere(CENTER, RADIUS)
-        self.assertRaises(ValueError, SPHERE.get_MSE, ())
+        self.assertRaises(ValueError, SPHERE.get_mse, ())
 
     def test_GivenASphereAndPointsOnSurface_When_get_MSE_ThenReturn0(self):
         CENTER = [1, 2, 3]
         RADIUS = 7
         SPHERE = Sphere(CENTER, RADIUS)
         POINTS = get_sample_points_on_the_surface(SPHERE)
-        self.assertTrue(zero_in_practice(SPHERE.get_MSE(POINTS)))
+        self.assertTrue(zero_in_practice(SPHERE.get_mse(POINTS)))
 
     def test_GivenASphereAndPointsOn2xRadius_When_get_MSE_ThenReturnRadiusSquared(self):
         CENTER = [1, 2, 3]
@@ -157,7 +157,7 @@ class Test_Sphere_get_MSE(unittest.TestCase):
         SPHERE = Sphere(CENTER, RADIUS)
         TWO_RADIUS = 2*RADIUS
         POINTS = get_sample_points_on_the_surface(Sphere(CENTER, TWO_RADIUS))
-        self.assertTrue(equal_in_practice(SPHERE.get_MSE(POINTS), RADIUS*RADIUS))
+        self.assertTrue(equal_in_practice(SPHERE.get_mse(POINTS), RADIUS * RADIUS))
 
 class Test_Sphere_get_mean_signed_distance(unittest.TestCase):
 

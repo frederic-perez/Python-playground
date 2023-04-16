@@ -344,7 +344,7 @@ def get_sorted_points(points):
     return sorted_points
 
 
-def get_spheres_given_series_of_4_points_and_study_variability(points):
+def get_spheres_given_series_of_4_points_and_study_variability(contour_id, points):
     check.is_an_array(points)
     check.length_is_greater_or_equal_to_n(points, 4)
     delta = int(len(points) / 4)
@@ -354,7 +354,7 @@ def get_spheres_given_series_of_4_points_and_study_variability(points):
     min_distance_between_points_compared = float("inf")
     max_distance_between_points_compared = float("-inf")
     sorted_points = get_sorted_points(points)
-    save_ply_file('data/_contour-' + contour_ID + '-debug--sorted-points.ply', sorted_points)
+    save_ply_file('data/_contour-' + contour_id + '-debug--sorted-points.ply', sorted_points)
     for i in range(delta):
         four_points[0] = sorted_points[i]
         four_points[1] = sorted_points[i + delta]
@@ -389,16 +389,15 @@ def study_contour(contour_id, sphere):
 
     _, _ = get_distances_to_sphere_and_scaled_normals(points, sphere)
 
-    get_spheres_given_series_of_4_points_and_study_variability(points)
+    get_spheres_given_series_of_4_points_and_study_variability(contour_id, points)
 
 
-if __name__ == '__main__':
-
+def main():
     np.random.seed(42)
 
-    FILENAME_IN = 'data/points-in.xyz'
-    FILENAME_OUT = 'data/points-out.ply'
-    save_as_ply(FILENAME_IN, FILENAME_OUT)
+    filename_in = 'data/points-in.xyz'
+    filename_out = 'data/points-out.ply'
+    save_as_ply(filename_in, filename_out)
 
     print()
     play_with_a_saddle()
@@ -409,19 +408,23 @@ if __name__ == '__main__':
     print()
     play_with_a_saddle_like_whatnot_42_with_noise()
 
-    CONTOUR_ID_AND_SPHERE_ARRAY = [
-        ['90', Sphere([-21.71, 61.51, -11.40], 131.9)],
-        ['91', Sphere([-21.64, 93.65, -12.88], 131.95)],
-        ['92', Sphere([-20.67, 61.48, -13.44], 131.95)],
-        ['93', Sphere([-21.17, 61.87, -11.40], 131.95)],
-        ['94', Sphere([-21.64, 62.29, -11.56], 131.955)],
-        ['95', Sphere([-24.09, 93.39, -11.27], 131.95)],
-        ['96', Sphere([-21.64, 61.44, -14.06], 132.77)],
-        ['97', Sphere([-21.64, 62.10, -10.70], 131.96)],
-        ['98', Sphere([-21.64, 62.29, -10.70], 131.95)],
-        ['99', Sphere([-20.68, 62.34, -10.70], 131.95)]
+    contour_id_and_sphere_array = [
+        ['90', Sphere(center=[-21.71, 61.51, -11.40], radius=131.9)],
+        ['91', Sphere(center=[-21.64, 93.65, -12.88], radius=131.95)],
+        ['92', Sphere(center=[-20.67, 61.48, -13.44], radius=131.95)],
+        ['93', Sphere(center=[-21.17, 61.87, -11.40], radius=131.95)],
+        ['94', Sphere(center=[-21.64, 62.29, -11.56], radius=131.955)],
+        ['95', Sphere(center=[-24.09, 93.39, -11.27], radius=131.95)],
+        ['96', Sphere(center=[-21.64, 61.44, -14.06], radius=132.77)],
+        ['97', Sphere(center=[-21.64, 62.10, -10.70], radius=131.96)],
+        ['98', Sphere(center=[-21.64, 62.29, -10.70], radius=131.95)],
+        ['99', Sphere(center=[-20.68, 62.34, -10.70], radius=131.95)]
     ]
-    for contour_ID_and_sphere in CONTOUR_ID_AND_SPHERE_ARRAY:
-        contour_ID, sphere = contour_ID_and_sphere
-        study_contour(contour_ID, sphere)
+    for contour_id_and_sphere in contour_id_and_sphere_array:
+        contour_id, sphere = contour_id_and_sphere
+        study_contour(contour_id, sphere)
         print()
+
+
+if __name__ == '__main__':
+    main()
