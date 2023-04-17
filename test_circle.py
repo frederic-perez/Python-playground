@@ -231,9 +231,9 @@ class Test_get_best_fit_circle(unittest.TestCase):
         points = []
         for _ in range(3):
             points.append(point)
-            for use_MSE in [True, False]:
+            for use_mse in [True, False]:
                 for num_samples in range(4, 10):
-                    self.assertRaises(ValueError, get_best_fit_circle, points, x_center, radius, use_MSE, num_samples)
+                    self.assertRaises(ValueError, get_best_fit_circle, points, x_center, radius, use_mse, num_samples)
 
     def test_Given4PointsInTopOfCircleC_When_get_best_fit_circle_ThenResultIsC(self):
         center = [0, 0]
@@ -246,9 +246,9 @@ class Test_get_best_fit_circle(unittest.TestCase):
             radians = math.radians(angle)
             points.append([center[0] + radius*math.cos(radians), center[1] + radius*math.sin(radians)])
 
-        for use_MSE in [True, False]:
+        for use_mse in [True, False]:
             for num_samples in range(4, 10):
-                result = get_best_fit_circle(points, x_center, radius, use_MSE, num_samples)
+                result = get_best_fit_circle(points, x_center, radius, use_mse, num_samples)
                 self.assertEqual(circle, result)
 
     def test_Given4PointsInBottomOfCircleC_When_get_best_fit_circle_ThenResultIsC(self):
