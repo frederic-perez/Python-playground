@@ -14,31 +14,34 @@ or, for individual test classes (sorted as appearing in this file):
 import unittest
 from epsilon import epsilon_distance, zero_in_practice, equal_in_practice
 
+
 class Test_zero_in_practice(unittest.TestCase):
 
     def test_GivenAFloatVeryCloseToZero_When_zero_in_practice_ThenReturnTrue(self):
-        F = epsilon_distance/2.
-        self.assertTrue(zero_in_practice(F))
+        f = epsilon_distance/2.
+        self.assertTrue(zero_in_practice(f))
  
     def test_GivenAFarEnoughFromZero_When_zero_in_practice_ThenReturnFalse(self):
-        F = 2.*epsilon_distance
-        self.assertFalse(zero_in_practice(F))
+        f = 2.*epsilon_distance
+        self.assertFalse(zero_in_practice(f))
+
 
 class Test_equal_in_practice(unittest.TestCase):
 
     def test_GivenAFloat_When_test_equal_in_practice_ThenReturnTrue(self):
-        F = 3.
-        self.assertTrue(equal_in_practice(F, F))
+        f = 3.
+        self.assertTrue(equal_in_practice(f, f))
 
     def test_GivenAFloatAndA2ndVeryClose_When_test_equal_in_practice_ThenReturnTrue(self):
-        F_1 = 3.
-        F_2 = F_1 + epsilon_distance/2.
-        self.assertTrue(equal_in_practice(F_1, F_2))
+        f_1 = 3.
+        f_2 = f_1 + epsilon_distance/2.
+        self.assertTrue(equal_in_practice(f_1, f_2))
  
     def test_GivenAFloatAndA2ndFarEnough_When_test_equal_in_practice_ThenReturnFalse(self):
-        F_1 = 3.
-        F_2 = F_1 + 2.*epsilon_distance
-        self.assertFalse(equal_in_practice(F_1, F_2))
+        f_1 = 3.
+        f_2 = f_1 + 2.*epsilon_distance
+        self.assertFalse(equal_in_practice(f_1, f_2))
+
 
 if __name__ == '__main__':
     unittest.main()

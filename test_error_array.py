@@ -7,25 +7,27 @@ Run the tests by executing, for all test classes:
 """
 
 import unittest
-from error_array import check_single_minimum, get_index_of_minimum_abs_error, get_indices_around_minimum_abs_error, get_range_length
+from error_array import check_single_minimum, get_index_of_minimum_abs_error, get_indices_around_minimum_abs_error,\
+    get_range_length
+
 
 class Test_get_index_of_minimum_abs_error(unittest.TestCase):
 
     def test_GivenANotAnArray_When_get_index_of_minimum_abs_error_ThenExceptionIsRaised(self):
-        ERRORS = 'error'
-        self.assertRaises(TypeError, get_index_of_minimum_abs_error, ERRORS)
+        errors = 'error'
+        self.assertRaises(TypeError, get_index_of_minimum_abs_error, errors)
 
     def test_GivenAnEmptyArray_When_get_index_of_minimum_abs_error_ThenExceptionIsRaised(self):
-        ERRORS = []
-        self.assertRaises(ValueError, get_index_of_minimum_abs_error, ERRORS)
+        errors = []
+        self.assertRaises(ValueError, get_index_of_minimum_abs_error, errors)
 
     def test_GivenAnArrayOf1Element_When_get_index_of_minimum_abs_error_ThenReturn0(self):
-        ERRORS = [7]
-        self.assertEqual(get_index_of_minimum_abs_error(ERRORS), 0)
+        errors = [7]
+        self.assertEqual(get_index_of_minimum_abs_error(errors), 0)
  
     def test_GivenAnArrayOfEqualElements_When_get_index_of_minimum_abs_error_ThenReturn0(self):
-        ERRORS = [7, 7, 7]
-        self.assertEqual(get_index_of_minimum_abs_error(ERRORS), 0)
+        errors = [7, 7, 7]
+        self.assertEqual(get_index_of_minimum_abs_error(errors), 0)
 
     def test_GivenAnArrayOfAscendingAbsoluteValues_When_get_index_of_minimum_abs_error_ThenReturn0(self):
         for errors in [[1, 3, 5], [-1, -3, -5]]:
@@ -39,23 +41,24 @@ class Test_get_index_of_minimum_abs_error(unittest.TestCase):
         for errors in [[5, 1, 3], [-5, -1, -3]]:
             self.assertEqual(get_index_of_minimum_abs_error(errors), (len(errors) - 1)/2)
 
+
 class Test_get_indices_around_minimum_abs_error(unittest.TestCase):
 
     def test_GivenANotAnArray_When_get_indices_around_minimum_abs_error_ThenExceptionIsRaised(self):
-        ERRORS = 'error'
-        self.assertRaises(TypeError, get_indices_around_minimum_abs_error, ERRORS)
+        errors = 'error'
+        self.assertRaises(TypeError, get_indices_around_minimum_abs_error, errors)
 
     def test_GivenAnEmptyArray_When_get_indices_around_minimum_abs_error_ThenExceptionIsRaised(self):
-        ERRORS = []
-        self.assertRaises(ValueError, get_indices_around_minimum_abs_error, ERRORS)
+        errors = []
+        self.assertRaises(ValueError, get_indices_around_minimum_abs_error, errors)
 
     def test_GivenAnArrayWithLessThan3Elements_When_get_indices_around_minimum_abs_error_ThenExceptionIsRaised(self):
         self.assertRaises(ValueError, get_indices_around_minimum_abs_error, [1])
         self.assertRaises(ValueError, get_indices_around_minimum_abs_error, [1, 2])
 
     def test_GivenAnArrayOfEqualElements_When_get_indices_around_minimum_abs_error_ThenReturn0And1(self):
-        ERRORS = [7, 7, 7]
-        self.assertEqual(get_indices_around_minimum_abs_error(ERRORS), (0, 1))
+        errors = [7, 7, 7]
+        self.assertEqual(get_indices_around_minimum_abs_error(errors), (0, 1))
 
     def test_GivenAnArrayOfAscendingAbsoluteValues_When_get_indices_around_minimum_abs_error_ThenReturn0And1(self):
         for errors in [[1, 3, 5], [-1, -3, -5]]:
@@ -72,6 +75,7 @@ class Test_get_indices_around_minimum_abs_error(unittest.TestCase):
             idx_center = (n - 1)/2
             self.assertEqual(get_indices_around_minimum_abs_error(errors), (idx_center - 1, idx_center + 1))
 
+
 class Test_check_single_minimum(unittest.TestCase):
 
     def test_GivenANotAnArray_When_check_single_minimum_ThenExceptionIsRaised(self):
@@ -79,18 +83,19 @@ class Test_check_single_minimum(unittest.TestCase):
             self.assertRaises(TypeError, check_single_minimum, parameter)
 
     def test_GivenAnArrayWithFewerThan3Elements_When_check_single_minimum_ThenReturn0(self):
-        Y_ARRAYS = [[], [1], [1, 2]]
-        for y_array in Y_ARRAYS:
+        y_arrays = [[], [1], [1, 2]]
+        for y_array in y_arrays:
             self.assertRaises(ValueError, check_single_minimum, y_array)
 
     def test_GivenAnArrayWithTheMinimumElementBeingThe1st_When_check_single_minimum_ThenReturn0(self):
-        Y_ARRAYS = [[1, 1, 1], [1, 1, 2], [1, 2, 2]]
-        for y_array in Y_ARRAYS:
+        y_arrays = [[1, 1, 1], [1, 1, 2], [1, 2, 2]]
+        for y_array in y_arrays:
             self.assertEqual(check_single_minimum(y_array), None)
 
     def test_GivenAnArrayWithTheMinimumElementBeingThe3rd_When_check_single_minimum_ThenReturn0(self):
-        Y_ARRAY = [8, 2, 1, 6, 24]
-        self.assertEqual(check_single_minimum(Y_ARRAY), None)
+        y_array = [8, 2, 1, 6, 24]
+        self.assertEqual(check_single_minimum(y_array), None)
+
 
 class Test_get_range_length(unittest.TestCase):
 
@@ -99,20 +104,21 @@ class Test_get_range_length(unittest.TestCase):
             self.assertRaises(TypeError, get_range_length, parameter)
 
     def test_GivenAnArrayWithLessThan2Elements_When_get_range_ThenExceptionIsRaised(self):
-        Y_ARRAYS = [[], [1]]
-        for y_array in Y_ARRAYS:
+        y_arrays = [[], [1]]
+        for y_array in y_arrays:
             self.assertRaises(ValueError, get_range_length, y_array)
 
     def test_GivenAnArrayWithARepeatedK_When_get_range_ThenReturn0(self):
-        Y_ARRAYS = [[0, 0], [7, 7], [9, 9, 9, 9]]
-        for y_array in Y_ARRAYS:
+        y_arrays = [[0, 0], [7, 7], [9, 9, 9, 9]]
+        for y_array in y_arrays:
             self.assertEqual(get_range_length(y_array), 0)
 
     def test_GivenAnArrayWithRangeR_When_get_range_ThenReturnR(self):
-        Y_ARRAYS = [[0, 3], [-3, 0], [0, 3, 1, 2]]
-        RANGE = 3
-        for y_array in Y_ARRAYS:
-            self.assertEqual(get_range_length(y_array), RANGE)
+        y_arrays = [[0, 3], [-3, 0], [0, 3, 1, 2]]
+        expected_range = 3
+        for y_array in y_arrays:
+            self.assertEqual(get_range_length(y_array), expected_range)
+
 
 if __name__ == '__main__':
     unittest.main()
