@@ -213,25 +213,25 @@ def get_best_fit_sphere_for_radius_range(points, center_x_and_z, y_range, radius
         for j in range(num_samples):
             radius[j] = radius_min + delta*j
             sphere = get_best_fit_sphere(points, center_x_and_z, y_range, radius[j], use_mse, num_samples)
-            ERROR[j] = sphere.get_mse(points) if use_mse else sphere.get_mean_signed_distance(points)
+            error[j] = sphere.get_mse(points) if use_mse else sphere.get_mean_signed_distance(points)
             # print("i =", i, "j =", j, "| radius =", radius[j], "| error =", error[j])
-            if zero_in_practice(ERROR[j]):
+            if zero_in_practice(error[j]):
                 return sphere
 
-        error_range_length = get_range_length(ERROR)
+        error_range_length = get_range_length(error)
         if spy_error_range_length:
             print(">>> Debug: i = {:d}: error_range_length = {:.3E}".format(i, error_range_length))
         if zero_in_practice(error_range_length, epsilon):
             return sphere
 
-        idx_min, idx_max = get_indices_around_minimum_abs_error(ERROR)
+        idx_min, idx_max = get_indices_around_minimum_abs_error(error)
         radius_min, radius_max = radius[idx_min], radius[idx_max]
         # print("idx_min is", idx_min, "idx_max is", idx_max, "radius range:", radius_min, radius_max)
 
         i = i + 1
         done =\
             equal_in_practice(radius[idx_min], radius[idx_max])\
-            or equal_in_practice(ERROR[idx_min], ERROR[idx_max])\
+            or equal_in_practice(error[idx_min], error[idx_max])\
             or i == 50
 
     return get_best_fit_sphere(points, center_x_and_z, y_range, radius[idx_min], use_mse, num_samples)

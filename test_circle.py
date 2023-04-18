@@ -76,14 +76,16 @@ class Test_Circle(unittest.TestCase):
             and equal_in_practice(center[1], returned_center[1])
         self.assertTrue(equal_centers)
 
-    def test_GivenCircleAndPointEqualToCenterPlusRadiusForY_When_get_signed_distance_to_circumference_ThenReturnZero(self):
+    def test_GivenCircleAndPointEqualToCenterPlusRadiusForY_When_get_signed_distance_to_circumference_ThenReturnZero(
+            self):
         center = [1, 2]
         radius = 8
         circle = Circle(center, radius)
         point = center + np.array([0, radius])
         self.assertTrue(zero_in_practice(circle.get_signed_distance_to_circumference(point)))
 
-    def test_GivenCircleAndPointEqualToCenterPlus2RadiusForY_When_get_signed_distance_to_circumference_ThenReturnRadius(self):
+    def test_GivenCircleAndPointEqualToCenterPlus2RadiusForY_When_get_signed_distance_to_circumference_ThenReturnRadius(
+            self):
         center = [1, 2]
         radius = 8
         circle = Circle(center, radius)
@@ -202,7 +204,7 @@ class Test_get_circle(unittest.TestCase):
         points = [point, point, point]
         self.assertRaises(ArithmeticError, get_circle, points)
 
-    def test_Given3CollinealPoints_When_get_circle_ThenExceptionIsRaised(self):
+    def test_Given3CollinearPoints_When_get_circle_ThenExceptionIsRaised(self):
         delta = 1.5
         points = []
         for i in [1, 2, 3]:

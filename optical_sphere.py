@@ -32,7 +32,7 @@ class OpticalSphere(Sphere):
 
 def print_optical_info(radius):
     optical_sphere = OpticalSphere(radius=radius)
-    print("OPTICAL_SPHERE:", optical_sphere)
+    print("optical_sphere:", optical_sphere)
     print("  |- surface power is {} diopter(s)".format(float_formatter(optical_sphere.get_surface_power())))
     print("  '- base curve is {} diopter(s)".format(float_formatter(optical_sphere.get_base_curve())))
     print()

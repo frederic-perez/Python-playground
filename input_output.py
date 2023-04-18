@@ -272,7 +272,7 @@ def play_with_a_saddle_like_whatnot_42_with_noise():
     sphere_center_x_and_z = [saddle_offset[0], saddle_offset[2]]
     sphere_y_range = [0, 500]
     sphere_radius = 106  # 6.8
-    # sphere = Sphere(SPHERE_CENTER, sphere_radius)
+    # sphere = Sphere(sphere_center, sphere_radius)
     use_mse = True
     num_samples = 9
     sphere = \
