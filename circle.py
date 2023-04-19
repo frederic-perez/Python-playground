@@ -11,11 +11,11 @@ from formatting import float_formatter
 
 class Circle(object):
     def __init__(self, center, radius):
-        check.array_type(center)
+        check.tuple_type(center)
         check.length_is_equal_to_n(center, 2)
         if radius <= 0:
             raise ValueError('Radius value {} is out of range'.format(float_formatter(radius)))
-        self.center = np.array(center, np.float_)
+        self.center = (float(center[0]), float(center[1]))
         self.radius = radius
         return
 
@@ -91,7 +91,7 @@ def get_circle(points):
     x = (bc*(points[1][1] - points[2][1]) - cd*(points[0][1] - points[1][1])) / determinant
     y = ((points[0][0] - points[1][0]) * cd - (points[1][0] - points[2][0]) * bc) / determinant
 
-    center = [x, y]
+    center = (x, y)
     radius = math.sqrt((x - points[0][0]) ** 2 + (y - points[0][1]) ** 2)
 
     return Circle(center, radius)
@@ -141,7 +141,7 @@ def get_best_fit_circle(points, x_center, radius, use_mse, num_samples):  # num_
         delta = (y_max - y_min)/(num_samples - 1.)
         for j in range(num_samples):
             y[j] = y_min + delta*j
-            circle = Circle([x_center, y[j]], radius)
+            circle = Circle((x_center, y[j]), radius)
             error[j] = circle.get_mse(points) if use_mse else circle.get_mean_signed_distance(points)
             # print('i = {}, j = {} | y = {} | error = {}'.format(i, j, y[j], error[j]))
             if zero_in_practice(error[j]):
@@ -154,15 +154,22 @@ def get_best_fit_circle(points, x_center, radius, use_mse, num_samples):  # num_
         i = i + 1
         done = equal_in_practice(y[idx_min], y[idx_max]) or equal_in_practice(error[idx_min], error[idx_max]) or i == 50
 
-    return Circle([x_center, y[idx_min]], radius)
+    return Circle((x_center, y[idx_min]), radius)
+
+
+def main():
+    center = (1.1111, 2.2222)
+    radius = 3.3333
+    circle = Circle(center, radius)
+    print('circle is', circle)
+    circle.spy('Spying circle')
+
+    try:
+        negative_radius = -1.23456
+        bad_circle = Circle(center, negative_radius)
+    except ValueError as error:
+        print('ValueError exception was expected: ' + str(error))
 
 
 if __name__ == '__main__':
-    CENTER = [1.1111, 2.2222]
-    RADIUS = 3.3333
-    CIRCLE = Circle(CENTER, RADIUS)
-    print('CIRCLE is', CIRCLE)
-    CIRCLE.spy('Spying CIRCLE')
-
-    NEGATIVE_RADIUS = -1.23456
-    BAD_CIRCLE = Circle(CENTER, NEGATIVE_RADIUS)
+    main()

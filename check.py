@@ -10,6 +10,15 @@ def is_an_array(arrangement):
     return hasattr(arrangement, "__len__") and not isinstance(arrangement, str)
 
 
+def tuple_type(arrangement):
+    if not is_a_tuple(arrangement):
+        raise TypeError('The arrangement should be a tuple')
+
+
+def is_a_tuple(arrangement):
+    return isinstance(arrangement, tuple)
+
+
 def not_empty(arrangement):
     if arrangement.__len__() == 0:
         raise ValueError('The arrangement should not be empty')

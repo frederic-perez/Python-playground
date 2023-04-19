@@ -8,7 +8,7 @@ Run the tests by executing, for all test classes:
 or, for individual test classes (sorted as appearing in this file):
 
   $ python -m unittest -v test_sphere.Test_Sphere
-  $ python -m unittest -v test_sphere.Test_Sphere_get_MSE
+  $ python -m unittest -v test_sphere.Test_Sphere_get_mse
   $ python -m unittest -v test_sphere.Test_Sphere_get_mean_signed_distance
   $ python -m unittest -v test_sphere.Test_get_sphere
   $ python -m unittest -v test_sphere.Test_get_best_fit_sphere
@@ -141,20 +141,20 @@ def get_sample_points_on_the_surface(sphere):
 
 class Test_Sphere_get_mse(unittest.TestCase):
 
-    def test_GivenASphereAndZeroPoints_When_get_MSE_ThenExceptionIsRaised(self):
+    def test_GivenASphereAndZeroPoints_When_get_mse_ThenExceptionIsRaised(self):
         center = [1, 2, 3]
         radius = 7
         sphere = Sphere(center, radius)
         self.assertRaises(ValueError, sphere.get_mse, ())
 
-    def test_GivenASphereAndPointsOnSurface_When_get_MSE_ThenReturn0(self):
+    def test_GivenASphereAndPointsOnSurface_When_get_mse_ThenReturn0(self):
         center = [1, 2, 3]
         radius = 7
         sphere = Sphere(center, radius)
         points = get_sample_points_on_the_surface(sphere)
         self.assertTrue(zero_in_practice(sphere.get_mse(points)))
 
-    def test_GivenASphereAndPointsOn2xRadius_When_get_MSE_ThenReturnRadiusSquared(self):
+    def test_GivenASphereAndPointsOn2xRadius_When_get_mse_ThenReturnRadiusSquared(self):
         center = [1, 2, 3]
         radius = 7
         sphere = Sphere(center, radius)
