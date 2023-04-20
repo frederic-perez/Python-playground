@@ -10,7 +10,9 @@ A place for continuous learning of Python and software engineering through exper
 
 ### Learning
 
-- [Learn Python - Full Course for Beginners [Tutorial]](https://www.youtube.com/watch?v=rfscVS0vtbw) (4:26:51)
+- YouTube videos by [freeCodeCamp.org](https://www.youtube.com/@freecodecamp):
+  - [Learn Python - Full Course for Beginners [Tutorial]](https://www.youtube.com/watch?v=rfscVS0vtbw) (4:26:51)
+  - [Intermediate Python Programming Course](https://www.youtube.com/watch?v=HGOBQPFzWKo) (5:55:46)
 - kaggle.com’s [learn/python](https://www.kaggle.com/learn/python)
 - tutorialspoint.com’s [Python Tutorial](https://www.tutorialspoint.com/python)
 - [Python Tutorials playlist](https://www.youtube.com/playlist?list=PL-osiE80TeTt2d9bfVyTiXJA-UTHn6WwU), by Corey Schafer » GitHub [code_snippets](https://github.com/CoreyMSchafer/code_snippets)
