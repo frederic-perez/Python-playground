@@ -207,7 +207,7 @@ class Test_get_circle(unittest.TestCase):
     def test_Given3CollinearPoints_When_get_circle_ThenExceptionIsRaised(self):
         delta = 1.5
         points = []
-        for i in [1, 2, 3]:
+        for i in 1, 2, 3:
             points.append([i*delta, 0])
         self.assertRaises(ArithmeticError, get_circle, points)
 
@@ -217,7 +217,7 @@ class Test_get_circle(unittest.TestCase):
         circle = Circle(center, radius)
 
         points = []
-        for angle in [30, 45, 60]:
+        for angle in 30, 45, 60:
             radians = math.radians(angle)
             points.append([center[0] + radius*math.cos(radians), center[1] + radius*math.sin(radians)])
 
@@ -233,7 +233,7 @@ class Test_get_best_fit_circle(unittest.TestCase):
         points = []
         for _ in range(3):
             points.append(point)
-            for use_mse in [True, False]:
+            for use_mse in True, False:
                 for num_samples in range(4, 10):
                     self.assertRaises(ValueError, get_best_fit_circle, points, x_center, radius, use_mse, num_samples)
 
@@ -244,11 +244,11 @@ class Test_get_best_fit_circle(unittest.TestCase):
         x_center = center[0]
 
         points = []
-        for angle in (30, 60, 120, 150):
+        for angle in 30, 60, 120, 150:
             radians = math.radians(angle)
             points.append([center[0] + radius*math.cos(radians), center[1] + radius*math.sin(radians)])
 
-        for use_mse in (True, False):
+        for use_mse in True, False:
             for num_samples in range(4, 10):
                 result = get_best_fit_circle(points, x_center, radius, use_mse, num_samples)
                 self.assertEqual(circle, result)
@@ -260,11 +260,11 @@ class Test_get_best_fit_circle(unittest.TestCase):
         x_center = center[0]
 
         points = []
-        for angle in (-30, -60, -120, -150):
+        for angle in -30, -60, -120, -150:
             radians = math.radians(angle)
             points.append([center[0] + radius*math.cos(radians), center[1] + radius*math.sin(radians)])
 
-        for use_mse in (True, False):
+        for use_mse in True, False:
             for num_samples in range(4, 10):
                 result = get_best_fit_circle(points, x_center, radius, use_mse, num_samples)
                 self.assertEqual(circle, result)
@@ -276,11 +276,11 @@ class Test_get_best_fit_circle(unittest.TestCase):
         x_center = center[0]
 
         points = []
-        for angle in (30, 60, 120, 150, -30, -60, -120, -150):
+        for angle in 30, 60, 120, 150, -30, -60, -120, -150:
             radians = math.radians(angle)
             points.append([center[0] + radius*math.cos(radians), center[1] + radius*math.sin(radians)])
 
-        for use_mse in [True, False]:
+        for use_mse in True, False:
             for num_samples in range(4, 10):
                 result = get_best_fit_circle(points, x_center, radius, use_mse, num_samples)
                 epsilon = 1e-5
@@ -294,12 +294,12 @@ class Test_get_best_fit_circle(unittest.TestCase):
         delta_y = 0.001
 
         points = []
-        for angle in (5, 60, 120, 185):
+        for angle in 5, 60, 120, 185:
             radians = math.radians(angle)
             points.append([center[0] + radius*math.cos(radians), center[1] + radius*math.sin(radians) + delta_y])
             points.append([center[0] + radius*math.cos(radians), center[1] + radius*math.sin(radians) - delta_y])
 
-        for use_mse in (True, False):
+        for use_mse in True, False:
             for num_samples in range(8, 10):
                 result = get_best_fit_circle(points, x_center, radius, use_mse, num_samples)
                 epsilon = 1e-6

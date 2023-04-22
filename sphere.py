@@ -11,7 +11,7 @@ from formatting import float_formatter
 
 class Sphere(object):
     def __init__(self, center, radius):
-        check.array_type(center)
+        check.tuple_type(center)
         check.length_is_equal_to_n(center, 3)
         if radius <= 0:
             raise ValueError('Radius value {} is out of range'.format(float_formatter(radius)))
@@ -105,7 +105,7 @@ def get_sphere(points):
     x = .5 * minor_12 / minor_11
     y = -.5 * minor_13 / minor_11
     z = .5 * minor_14 / minor_11
-    center = [x, y, z]
+    center = x, y, z
     radius = math.sqrt(x * x + y * y + z * z - minor_15 / minor_11)
     return Sphere(center, radius)
 
@@ -165,7 +165,7 @@ def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_mse, num_sa
         delta = (y_max - y_min)/(num_samples - 1.)
         for j in range(num_samples):
             y[j] = y_min + delta*j
-            sphere = Sphere([x_center, y[j], z_center], radius)
+            sphere = Sphere((x_center, y[j], z_center), radius)
             error[j] = sphere.get_mse(points) if use_mse else sphere.get_mean_signed_distance(points)
             # print("i =", i, "j =", j, "| y =", y[j], "| error =", error[j])
             if zero_in_practice(error[j]):
@@ -182,7 +182,7 @@ def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_mse, num_sa
         i = i + 1
         done = equal_in_practice(y[idx_min], y[idx_max]) or equal_in_practice(error[idx_min], error[idx_max]) or i == 50
 
-    return Sphere([x_center, y[idx_min], z_center], radius)
+    return Sphere((x_center, y[idx_min], z_center), radius)
 
 
 def get_best_fit_sphere_for_radius_range(points, center_x_and_z, y_range, radius_range, use_mse, num_samples):

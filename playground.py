@@ -62,32 +62,31 @@ def decompress_7z_file(filename, output_directory):
 def main():
     play_with_numpy_random_numbers()
 
-    array_of_description_and_points = [
+    array_of_description_and_points = \
         ('4 straight crosshair points from whatnot 42', [
             [-35.3025, 0.6357,   3.8584],
             [-35.0932, 1.3599, -43.2535],
             [-09.054, -0.958,  -19.6768],
             [-62.0412, 5.9778, -19.7658]
-        ]),
+        ]), \
         ('4 rotated crosshair points from whatnot 42', [
             [-58.7767,  4.9348,    -3.7779],
             [-13.3565, -0.644701, -29.8066],
             [-16.4319, -0.999301,   1.6949],
             [-55.543,   4.7384,   -37.1852]
-        ]),
+        ]), \
         ('4 straight crosshair points from whatnot 46', [
             [-36.9284,  2.1009,  -1.0189],
             [-37.0922,  2.2078, -51.4502],
             [-10.4147, -0.1741, -26.0583],
             [-65.5153,  8.0756, -26.2123]
-        ]),
+        ]), \
         ('4 rotated crosshair points from whatnot 46', [
             [-56.2434, 5.6835, -8.3162],
             [-15.5323, 0.0641003, -37.5089],
             [-54.5831, 5.3886, -44.8675],
             [-18.2069, 0.2075, -3.8871]
         ])
-    ]
     for description, points in array_of_description_and_points:
         get_sphere_given_4_points(description, points)
 

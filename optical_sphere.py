@@ -8,7 +8,7 @@ from sphere import Sphere
 
 class OpticalSphere(Sphere):
     def __init__(self, radius):
-        Sphere.__init__(self, center=np.zeros(3), radius=radius)
+        Sphere.__init__(self, center=(0, 0, 0), radius=radius)
         self.N = 1.53
         return
 
