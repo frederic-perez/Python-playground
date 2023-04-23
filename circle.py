@@ -10,17 +10,19 @@ from formatting import float_formatter
 
 
 class Circle(object):
-    center: tuple
+    center: tuple[float, float]
     radius: float
 
-    def __init__(self, center, radius):
+    def __new__(cls, center, radius):
         check.tuple_type(center)
         check.length_is_equal_to_n(center, 2)
         if radius <= 0:
             raise ValueError('Radius value {} is out of range'.format(float_formatter(radius)))
+        return object.__new__(cls)
+
+    def __init__(self, center, radius):
         self.center = float(center[0]), float(center[1])
         self.radius = radius
-        return
 
     def __eq__(self, other, epsilon=epsilon_distance):
         return \
@@ -39,7 +41,6 @@ class Circle(object):
   
     def spy(self, message):
         print('{}: {}'.format(message, self))
-        return
 
     def get_signed_distance_to_circumference(self, point):
         point_in_np = np.array(point, np.float_)
@@ -169,7 +170,7 @@ def main():
 
     try:
         negative_radius = -1.23456
-        bad_circle = Circle(center, negative_radius)
+        Circle(center, negative_radius)
     except ValueError as error:
         print('ValueError exception was expected: ' + str(error))
 

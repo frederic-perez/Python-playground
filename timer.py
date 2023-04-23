@@ -7,6 +7,8 @@ import time
 
 
 class Timer:
+    start: float
+
     def __init__(self):
         self.start = time.time()
 

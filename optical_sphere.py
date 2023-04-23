@@ -1,16 +1,19 @@
 """module docstring should be here"""
 
-import numpy as np
 from formatting import float_formatter
 
 from sphere import Sphere
 
 
 class OpticalSphere(Sphere):
+    N: float
+
+    def __new__(cls, radius):
+        return object.__new__(cls)
+
     def __init__(self, radius):
         Sphere.__init__(self, center=(0, 0, 0), radius=radius)
         self.N = 1.53
-        return
 
     def __str__(self):
         return 'OpticalSphere(radius: {} mm, n: {})'.format(float_formatter(self.radius), float_formatter(self.N))
@@ -27,7 +30,6 @@ class OpticalSphere(Sphere):
 
     def spy(self, message):
         print('{}: {}'.format(message, self))
-        return
 
 
 def print_optical_info(radius):

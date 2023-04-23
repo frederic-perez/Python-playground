@@ -10,14 +10,19 @@ from formatting import float_formatter
 
 
 class Sphere(object):
-    def __init__(self, center, radius):
+    center: tuple[float, float, float]
+    radius: float
+
+    def __new__(cls, center, radius):
         check.tuple_type(center)
         check.length_is_equal_to_n(center, 3)
         if radius <= 0:
             raise ValueError('Radius value {} is out of range'.format(float_formatter(radius)))
-        self.center = np.array(center, np.float_)
+        return object.__new__(cls)
+
+    def __init__(self, center, radius):
+        self.center = center
         self.radius = radius
-        return
 
     def __eq__(self, other, epsilon=epsilon_distance):
         return \
@@ -37,7 +42,6 @@ class Sphere(object):
   
     def spy(self, message):
         print('{}: {}'.format(message, self))
-        return
 
     def get_signed_distance_to_surface(self, point):
         point_in_np = np.array(point, np.float_)
