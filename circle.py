@@ -10,12 +10,15 @@ from formatting import float_formatter
 
 
 class Circle(object):
+    center: tuple
+    radius: float
+
     def __init__(self, center, radius):
         check.tuple_type(center)
         check.length_is_equal_to_n(center, 2)
         if radius <= 0:
             raise ValueError('Radius value {} is out of range'.format(float_formatter(radius)))
-        self.center = (float(center[0]), float(center[1]))
+        self.center = float(center[0]), float(center[1])
         self.radius = radius
         return
 
@@ -91,7 +94,7 @@ def get_circle(points):
     x = (bc*(points[1][1] - points[2][1]) - cd*(points[0][1] - points[1][1])) / determinant
     y = ((points[0][0] - points[1][0]) * cd - (points[1][0] - points[2][0]) * bc) / determinant
 
-    center = (x, y)
+    center = x, y
     radius = math.sqrt((x - points[0][0]) ** 2 + (y - points[0][1]) ** 2)
 
     return Circle(center, radius)
@@ -158,7 +161,7 @@ def get_best_fit_circle(points, x_center, radius, use_mse, num_samples):  # num_
 
 
 def main():
-    center = (1.1111, 2.2222)
+    center = 1.1111, 2.2222
     radius = 3.3333
     circle = Circle(center, radius)
     print('circle is', circle)

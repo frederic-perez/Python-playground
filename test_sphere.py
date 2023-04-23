@@ -142,20 +142,20 @@ def get_sample_points_on_the_surface(sphere):
 class Test_Sphere_get_mse(unittest.TestCase):
 
     def test_GivenASphereAndZeroPoints_When_get_mse_ThenExceptionIsRaised(self):
-        center = (1, 2, 3)
+        center = 1, 2, 3
         radius = 7
         sphere = Sphere(center, radius)
         self.assertRaises(ValueError, sphere.get_mse, ())
 
     def test_GivenASphereAndPointsOnSurface_When_get_mse_ThenReturn0(self):
-        center = (1, 2, 3)
+        center = 1, 2, 3
         radius = 7
         sphere = Sphere(center, radius)
         points = get_sample_points_on_the_surface(sphere)
         self.assertTrue(zero_in_practice(sphere.get_mse(points)))
 
     def test_GivenASphereAndPointsOn2xRadius_When_get_mse_ThenReturnRadiusSquared(self):
-        center = (1, 2, 3)
+        center = 1, 2, 3
         radius = 7
         sphere = Sphere(center, radius)
         two_radius = 2*radius
@@ -206,7 +206,7 @@ class Test_get_sphere(unittest.TestCase):
 
     def test_GivenAPointP_4x_When_get_sphere_ThenExceptionIsRaised(self):
         point = [1, 3, 6]
-        points = (point, point, point, point)
+        points = point, point, point, point
         self.assertRaises(ArithmeticError, get_sphere, points)
 
     def test_Given4CollinearPoints_When_get_sphere_ThenExceptionIsRaised(self):
