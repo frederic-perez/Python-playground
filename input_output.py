@@ -216,7 +216,7 @@ def play_with_a_saddle():
         saddle_offset)
     save_xyz_file(saddle_filename_xyz, saddle_points)
     saddle_filename_ply = 'data/saddle.ply'
-    sphere_center = np.array([0, 0, 0], np.float_)
+    sphere_center = 0, 0, 0
     sphere_radius = 6.8
     sphere = Sphere(sphere_center, sphere_radius)
     save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(
@@ -242,7 +242,7 @@ def play_with_a_saddle_with_noise():
         saddle_max_noise)
     save_xyz_file(saddle_filename_xyz, saddle_points)
     saddle_filename_ply = 'data/saddle-with-noise.ply'
-    sphere_center = [0, 0, 0]
+    sphere_center = 0, 0, 0
     sphere_radius = 6.8
     sphere = Sphere(sphere_center, sphere_radius)
     save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(
@@ -382,16 +382,6 @@ def get_spheres_given_series_of_4_points_and_study_variability(contour_id, point
         min_distance_between_points_compared, max_distance_between_points_compared))
 
 
-def study_contour(contour_id, sphere):
-    print('\nstudy_contour({}, {}) starts...'.format(contour_id, sphere))
-    filename_contour_xyz = 'data/_contour-' + contour_id + '.xyz'
-    points = read_xyz_file(filename_contour_xyz)
-
-    _, _ = get_distances_to_sphere_and_scaled_normals(points, sphere)
-
-    get_spheres_given_series_of_4_points_and_study_variability(contour_id, points)
-
-
 def main():
     np.random.seed(42)
 
@@ -407,23 +397,6 @@ def main():
 
     print()
     play_with_a_saddle_like_whatnot_42_with_noise()
-
-    contour_id_and_sphere_array = [
-        ['90', Sphere(center=[-21.71, 61.51, -11.40], radius=131.9)],
-        ['91', Sphere(center=[-21.64, 93.65, -12.88], radius=131.95)],
-        ['92', Sphere(center=[-20.67, 61.48, -13.44], radius=131.95)],
-        ['93', Sphere(center=[-21.17, 61.87, -11.40], radius=131.95)],
-        ['94', Sphere(center=[-21.64, 62.29, -11.56], radius=131.955)],
-        ['95', Sphere(center=[-24.09, 93.39, -11.27], radius=131.95)],
-        ['96', Sphere(center=[-21.64, 61.44, -14.06], radius=132.77)],
-        ['97', Sphere(center=[-21.64, 62.10, -10.70], radius=131.96)],
-        ['98', Sphere(center=[-21.64, 62.29, -10.70], radius=131.95)],
-        ['99', Sphere(center=[-20.68, 62.34, -10.70], radius=131.95)]
-    ]
-    for contour_id_and_sphere in contour_id_and_sphere_array:
-        contour_id, sphere = contour_id_and_sphere
-        study_contour(contour_id, sphere)
-        print()
 
 
 if __name__ == '__main__':

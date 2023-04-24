@@ -242,15 +242,17 @@ def get_best_fit_sphere_for_radius_range(points, center_x_and_z, y_range, radius
 
 
 def main():
-    center = [1.11111, 2.22222, 3.33333]
+    center = 1.11111, 2.22222, 3.33333
     radius = 4.44444
     sphere = Sphere(center=center, radius=radius)
     print('sphere is', sphere)
     sphere.spy('Spying sphere')
 
     negative_radius = -1.23456
-    bad_sphere = Sphere(center=center, radius=negative_radius)
-    print('bad_sphere is', bad_sphere)
+    try:
+        bad_sphere = Sphere(center=center, radius=negative_radius)
+    except ValueError:
+        print('ValueError exception caught, as expected')
 
 
 if __name__ == '__main__':
