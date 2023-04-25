@@ -26,7 +26,7 @@ class Test_timer(unittest.TestCase):
         result_trimmed = result.replace("\"", "")
         it_is_close_enough = float(result_trimmed) - x_milliseconds <= 0.003
         if not it_is_close_enough:
-            print("Too bad: result is {}, too far from {}".format(result, x_milliseconds))
+            print(f'Too bad: result is {result}, too far from {x_milliseconds}')
         self.assertTrue(it_is_close_enough)
 
 

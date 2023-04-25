@@ -18,7 +18,7 @@ def play_with_numpy_random_numbers():
     np.random.seed(42)
     num_points = 2
     points = np.random.rand(num_points, 3)
-    logger.info("points = {}".format(points))
+    logger.info(f'points = {points}')
 
 
 def average(*numbers):
@@ -32,14 +32,14 @@ def average(*numbers):
 
 def get_sphere_given_4_points(description, points):
     sphere = get_sphere(points)
-    logger.info('Sphere given %s: %s', description, sphere)
+    logger.info(f'Sphere given {description}: {sphere}')
 
 
 def get_git_version():
     command = 'git --version'
     timer = Timer()
     result = subprocess.call(command, shell=True)  # returns the exit code in unix
-    logger.info('Command `%s` took %s and returned %d', command, timer.get_duration_string(), result)
+    logger.info(f'Command `{command}` took {timer.get_duration_string()} and returned {result}')
 
 
 def download_file_using_curl(url, output_filename):
@@ -47,16 +47,16 @@ def download_file_using_curl(url, output_filename):
     timer = Timer()
     result = subprocess.call(command, shell=True)  # returns the exit code in unix
     if result == 0:
-        logger.info('File `%s` has been downloaded in %s', output_filename, timer.get_duration_string())
+        logger.info(f'File `{output_filename}` has been downloaded in {timer.get_duration_string()}')
     else:
-        logger.error('Failed to download file `%s`', output_filename)
+        logger.error(f'Failed to download file `{output_filename}`')
 
 
 def decompress_7z_file(filename, output_directory):
     command = '7z x ' + filename + ' -o' + output_directory
     timer = Timer()
     result = subprocess.call(command, shell=True)  # returns the exit code in unix
-    logger.info('Command `%s` took %s and returned %d', command, timer.get_duration_string(), result)
+    logger.info(f'Command `{command}` took {timer.get_duration_string()} and returned {result}')
 
 
 def main():

@@ -34,33 +34,33 @@ See https://en.cppreference.com/w/cpp/language/operator_comparison.
 def length_is_equal_to_n(arrangement, n):
     length: int = len(arrangement)
     if not length == n:
-        raise ValueError('The arrangement should have exactly %d element(s)', n)
+        raise ValueError(f'The arrangement should have exactly {n} element(s)')
 
 
 def length_is_less_than_n(arrangement, n):
     length: int = len(arrangement)
     if not length < n:
-        raise ValueError('The arrangement should have less than %d element(s)', n)
+        raise ValueError(f'The arrangement should have less than {n} element(s)')
 
 
 def length_is_less_or_equal_to_n(arrangement, n):
     length: int = len(arrangement)
     if not length <= n:
-        raise ValueError('The arrangement should have at most %d element(s)', n)
+        raise ValueError(f'The arrangement should have at most {n} element(s)')
 
 
 def length_is_greater_than_n(arrangement, n):
     length: int = len(arrangement)
     if not length > n:
-        raise ValueError('The arrangement should have more than %d element(s)', n)
+        raise ValueError(f'The arrangement should have more than {n} element(s)')
 
 
 def length_is_greater_or_equal_to_n(arrangement, n):
     length: int = len(arrangement)
     if not length >= n:
-        raise ValueError('The arrangement should have at least %d element(s)', n)
+        raise ValueError(f'The arrangement should have at least {n} element(s)')
 
 
 def number_is_positive(number):
     if not number > 0:
-        raise ValueError('The number %d should be positive', number)
+        raise ValueError(f'The number {number} should be positive')

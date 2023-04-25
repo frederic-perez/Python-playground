@@ -13,7 +13,7 @@ def equal_in_practice(float_1, float_2, epsilon=epsilon_distance):
 
 def main():
     f = 12.3456789e-5
-    print('zero_in_practice({}) returns {}'.format(f, zero_in_practice(f)))
+    print(f'zero_in_practice({f}) returns {zero_in_practice(f)}')
 
     
 if __name__ == '__main__':

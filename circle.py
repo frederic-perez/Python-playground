@@ -6,7 +6,6 @@ import numpy as np
 import check
 from epsilon import epsilon_distance, zero_in_practice, equal_in_practice
 from error_array import get_indices_around_minimum_abs_error
-from formatting import float_formatter
 
 
 class Circle(object):
@@ -17,7 +16,7 @@ class Circle(object):
         check.tuple_type(center)
         check.length_is_equal_to_n(center, 2)
         if radius <= 0:
-            raise ValueError('Radius value {} is out of range'.format(float_formatter(radius)))
+            raise ValueError(f'Radius value {radius} is out of range')
         return object.__new__(cls)
 
     def __init__(self, center, radius):
@@ -31,7 +30,7 @@ class Circle(object):
             and equal_in_practice(self.radius, other.radius, epsilon)
 
     def __str__(self):
-        return 'Circle(center={}, radius={})'.format(self.center, float_formatter(self.radius))
+        return f'Circle(center={self.center}, radius={self.radius})'
 
     def get_radius(self):
         return self.radius
@@ -40,7 +39,7 @@ class Circle(object):
         return self.center
   
     def spy(self, message):
-        print('{}: {}'.format(message, self))
+        print(f'{message}: {self}')
 
     def get_signed_distance_to_circumference(self, point):
         point_in_np = np.array(point, np.float_)
@@ -147,13 +146,13 @@ def get_best_fit_circle(points, x_center, radius, use_mse, num_samples):  # num_
             y[j] = y_min + delta*j
             circle = Circle((x_center, y[j]), radius)
             error[j] = circle.get_mse(points) if use_mse else circle.get_mean_signed_distance(points)
-            # print('i = {}, j = {} | y = {} | error = {}'.format(i, j, y[j], error[j]))
+            # print(f'i = {i}, j = {j} | y = {y[j]} | error = {error[j]}')
             if zero_in_practice(error[j]):
                 return circle
       
         idx_min, idx_max = get_indices_around_minimum_abs_error(error)
         y_min, y_max = y[idx_min], y[idx_max]
-        # print('idx_min = {}, idx_max = {}, y range: {} {}'.format(idx_min, idx_max, y_min, y_max))
+        # print('idx_min = {idx_min}, idx_max = {idx_max}, y range: {y_min} {y_max}')
 
         i = i + 1
         done = equal_in_practice(y[idx_min], y[idx_max]) or equal_in_practice(error[idx_min], error[idx_max]) or i == 50
@@ -165,14 +164,14 @@ def main():
     center = 1.1111, 2.2222
     radius = 3.3333
     circle = Circle(center, radius)
-    print('circle is', circle)
+    print(f'circle is {circle}')
     circle.spy('Spying circle')
 
     try:
         negative_radius = -1.23456
         Circle(center, negative_radius)
     except ValueError as error:
-        print('ValueError exception was expected: ' + str(error))
+        print(f'ValueError exception was expected: {error}')
 
 
 if __name__ == '__main__':
