@@ -6,6 +6,7 @@ import numpy as np
 import check
 from epsilon import epsilon_distance, zero_in_practice, equal_in_practice
 from error_array import get_indices_around_minimum_abs_error
+from formatting import format_float, format_floats
 
 
 class Circle(object):
@@ -16,7 +17,7 @@ class Circle(object):
         check.tuple_type(center)
         check.length_is_equal_to_n(center, 2)
         if radius <= 0:
-            raise ValueError(f'Radius value {radius} is out of range')
+            raise ValueError(f'Radius value {format_float(radius)} is out of range')
         return object.__new__(cls)
 
     def __init__(self, center, radius):
@@ -30,7 +31,10 @@ class Circle(object):
             and equal_in_practice(self.radius, other.radius, epsilon)
 
     def __str__(self):
-        return f'Circle(center={self.center}, radius={self.radius})'
+        c_x = format_float(self.center[0])
+        c_y = format_float(self.center[1])
+        r = format_float(self.radius)
+        return f'Circle(center=({c_x}, {c_y}), radius={r})'
 
     def get_radius(self):
         return self.radius
@@ -152,7 +156,7 @@ def get_best_fit_circle(points, x_center, radius, use_mse, num_samples):  # num_
       
         idx_min, idx_max = get_indices_around_minimum_abs_error(error)
         y_min, y_max = y[idx_min], y[idx_max]
-        # print('idx_min = {idx_min}, idx_max = {idx_max}, y range: {y_min} {y_max}')
+        # print(f'idx_min = {idx_min}, idx_max = {idx_max}, y range: {y_min} {y_max}')
 
         i = i + 1
         done = equal_in_practice(y[idx_min], y[idx_max]) or equal_in_practice(error[idx_min], error[idx_max]) or i == 50

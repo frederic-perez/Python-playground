@@ -6,7 +6,7 @@ import numpy as np
 import check
 from epsilon import epsilon_distance, zero_in_practice, equal_in_practice
 from error_array import get_indices_around_minimum_abs_error, get_range_length
-from formatting import float_formatter
+from formatting import format_float
 
 
 class Sphere(object):
@@ -17,7 +17,7 @@ class Sphere(object):
         check.tuple_type(center)
         check.length_is_equal_to_n(center, 3)
         if radius <= 0:
-            raise ValueError('Radius value {} is out of range'.format(float_formatter(radius)))
+            raise ValueError(f'Radius value {format_float(radius)} is out of range')
         return object.__new__(cls)
 
     def __init__(self, center, radius):
@@ -32,7 +32,11 @@ class Sphere(object):
             and equal_in_practice(self.radius, other.radius, epsilon)
 
     def __str__(self):
-        return 'Sphere(center={}, radius={})'.format(self.center, float_formatter(self.radius))
+        c_x = format_float(self.center[0])
+        c_y = format_float(self.center[1])
+        c_z = format_float(self.center[2])
+        r = format_float(self.radius)
+        return f'Sphere(center=({c_x}, {c_y}, {c_z}), radius={r})'
 
     def get_radius(self):
         return self.radius
@@ -41,7 +45,7 @@ class Sphere(object):
         return self.center
   
     def spy(self, message):
-        print('{}: {}'.format(message, self))
+        print(f'{message}: {self}')
 
     def get_signed_distance_to_surface(self, point):
         point_in_np = np.array(point, np.float_)
@@ -171,7 +175,7 @@ def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_mse, num_sa
             y[j] = y_min + delta*j
             sphere = Sphere((x_center, y[j], z_center), radius)
             error[j] = sphere.get_mse(points) if use_mse else sphere.get_mean_signed_distance(points)
-            # print("i =", i, "j =", j, "| y =", y[j], "| error =", error[j])
+            # print(f'i = {i}, j = {j}, | y = {y[j]} | error = {error[j]}')
             if zero_in_practice(error[j]):
                 return sphere
 
@@ -181,7 +185,7 @@ def get_best_fit_sphere(points, center_x_and_z, y_range, radius, use_mse, num_sa
 
         idx_min, idx_max = get_indices_around_minimum_abs_error(error)
         y_min, y_max = y[idx_min], y[idx_max]
-        # print("i =", i, "| idx_min is", idx_min, "idx_max is", idx_max, "y range:", y_min, y_max)
+        # print(f'i = {i} | idx_min is {idx_min}, idx_max is {idx_max}, y range: {y_min}, {y_max}')
 
         i = i + 1
         done = equal_in_practice(y[idx_min], y[idx_max]) or equal_in_practice(error[idx_min], error[idx_max]) or i == 50
@@ -218,19 +222,19 @@ def get_best_fit_sphere_for_radius_range(points, center_x_and_z, y_range, radius
             radius[j] = radius_min + delta*j
             sphere = get_best_fit_sphere(points, center_x_and_z, y_range, radius[j], use_mse, num_samples)
             error[j] = sphere.get_mse(points) if use_mse else sphere.get_mean_signed_distance(points)
-            # print("i =", i, "j =", j, "| radius =", radius[j], "| error =", error[j])
+            # print(f'i = {i}, j = {j} | radius = {radius[j]} | error = {error[j]}')
             if zero_in_practice(error[j]):
                 return sphere
 
         error_range_length = get_range_length(error)
         if spy_error_range_length:
-            print(">>> Debug: i = {:d}: error_range_length = {:.3E}".format(i, error_range_length))
+            print(f'>>> Debug: i = {i:d}: error_range_length = {error_range_length:.3E}')
         if zero_in_practice(error_range_length, epsilon):
             return sphere
 
         idx_min, idx_max = get_indices_around_minimum_abs_error(error)
         radius_min, radius_max = radius[idx_min], radius[idx_max]
-        # print("idx_min is", idx_min, "idx_max is", idx_max, "radius range:", radius_min, radius_max)
+        # print(f'idx_min is {idx_min}, idx_max is {idx_max}, radius range: {radius_min}, {radius_max}')
 
         i = i + 1
         done =\
@@ -245,14 +249,14 @@ def main():
     center = 1.11111, 2.22222, 3.33333
     radius = 4.44444
     sphere = Sphere(center=center, radius=radius)
-    print('sphere is', sphere)
+    print(f'sphere is {sphere}')
     sphere.spy('Spying sphere')
 
     negative_radius = -1.23456
     try:
         bad_sphere = Sphere(center=center, radius=negative_radius)
-    except ValueError:
-        print('ValueError exception caught, as expected')
+    except ValueError as error:
+        print(f'ValueError exception caught, as expected: {error}')
 
 
 if __name__ == '__main__':

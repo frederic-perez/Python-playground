@@ -5,7 +5,7 @@ import numpy as np
 import os.path
 
 import check
-from formatting import float_formatter, floats_formatter, floats_hq_formatter
+from formatting import format_float, format_floats, format_floats_hq
 from sphere import Sphere, get_best_fit_sphere, get_sphere
 
 
@@ -14,7 +14,7 @@ def get_saddle_points(num_points, a, b, radius_x, radius_z, offset_xyz, max_nois
     a_sqr = a ** 2
     b_sqr = b ** 2
     for i in range(num_points):
-        # print("i is", i)
+        # print(f'i is {i}')
         alpha = i * 2 * math.pi / num_points
         x = radius_x * math.sin(alpha)
         z = radius_z * math.cos(alpha)
@@ -31,8 +31,8 @@ def get_saddle_points(num_points, a, b, radius_x, radius_z, offset_xyz, max_nois
 
 
 def get_distances_to_sphere_and_scaled_normals(points, sphere):
-    function_name = 'get_distances_to_sphere_and_scaled_normals:'
-    # print(FUNCTION_NAME, "sphere is", sphere)
+    function_name = 'get_distances_to_sphere_and_scaled_normals'
+    print(f'{function_name}: sphere is {sphere}')
     num_points = len(points)
     distances = [0] * num_points
     scaled_normals = np.random.rand(num_points, 3)
@@ -44,7 +44,7 @@ def get_distances_to_sphere_and_scaled_normals(points, sphere):
         distance = sphere.get_signed_distance_to_surface(point)
         max_negative_distance = min(max_negative_distance, distance)
         max_positive_distance = max(max_positive_distance, distance)
-        # print("distance for point", i, '=', point, "is", distance)
+        # print(f'{function_name}: distance for point {i} = {point} is {format_float(distance)}')
         distances[i] = distance
         scaled_normal = np.zeros(3)
         vector = center - point
@@ -52,30 +52,29 @@ def get_distances_to_sphere_and_scaled_normals(points, sphere):
         for k in range(3):
             scaled_normal[k] = distance * vector[k] / magnitude
         scaled_normals[i] = scaled_normal
-    print(function_name,
-          "max_negative_distance is {:.3f} | max_positive_distance is {:.3f}".format(
-              max_negative_distance, max_positive_distance))
+    print(f'{function_name}: max_negative_distance is {format_float(max_negative_distance)} | \
+max_positive_distance is {format_float(max_positive_distance)}')
     return distances, scaled_normals
 
 
-np.set_printoptions(formatter={'float_kind': float_formatter})
+np.set_printoptions(formatter={'float_kind': format_float})
 
 
 def save_xyz_file(filename_xyz, points):
     file_out = open(filename_xyz, 'w')
 
     for point in points:
-        print("{}".format(floats_formatter(point)), file=file_out)
+        print(f'{format_floats(point)}', file=file_out)
 
     file_out.close()
 
 
 def print_a_few_points(points):
-    function_name = 'print_a_few_points:'
-    print(function_name, "point #", 0, "is", points[0])
-    print(function_name, "...")
+    function_name = 'print_a_few_points'
+    print(f'{function_name}: point #0 is {format_floats(points[0])}')
+    print(f'{function_name}: ...')
     last_index = len(points) - 1
-    print(function_name, "point #", last_index, "is", points[last_index])
+    print(f'{function_name}: point #{last_index} is {format_floats(points[last_index])}')
 
 
 def read_xyz_file(filename_xyz):
@@ -107,7 +106,7 @@ def read_xyz_file(filename_xyz):
             i += 1
     file_in.close()
 
-    do_print_a_few_points = False
+    do_print_a_few_points = True
     if do_print_a_few_points:
         print_a_few_points(points)
 
@@ -127,8 +126,7 @@ def save_ply_file(filename_ply, points):
                                                     "end_header\n")
     file_out.write(header)
     for point in points:
-        # print("{}".format(floats_formatter(point)), file=file_out)
-        print("{}".format(floats_hq_formatter(point)), file=file_out)
+        print(f'{format_floats_hq(point)}', file=file_out)
     file_out.close()
 
 
@@ -166,11 +164,7 @@ def save_ply_file_with_distances_and_scaled_normals(filename_ply, points, distan
         point = points[i]
         distance = distances[i]
         scaled_normal = scaled_normals[i]
-        print("{} {} 0 {}".format(
-            floats_formatter(point),
-            float_formatter(distance),
-            floats_formatter(scaled_normal)),
-            file=file_out)
+        print(f'{format_floats(point)} {format_float(distance)} 0 {format_floats(scaled_normal)}', file=file_out)
     file_out.close()
 
 
@@ -277,7 +271,7 @@ def play_with_a_saddle_like_whatnot_42_with_noise():
     num_samples = 9
     sphere = \
         get_best_fit_sphere(saddle_points, sphere_center_x_and_z, sphere_y_range, sphere_radius, use_mse, num_samples)
-    print("Best fit sphere for the saddle like whatnot-42 is", sphere)
+    print(f'Best fit sphere for the saddle like whatnot-42 is {sphere}')
     save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(
         saddle_filename_xyz, sphere, saddle_filename_ply)
 
@@ -367,19 +361,18 @@ def get_spheres_given_series_of_4_points_and_study_variability(contour_id, point
         if max_distance_between_4_points > max_distance_between_points_compared:
             max_distance_between_points_compared = max_distance_between_4_points
         sphere = get_sphere(four_points)
-        # print(
-        #    "Sphere #{} given 4 points for indices {} {} {} {} is {}".format(i, i, i + delta, i + 2*delta, i + 3*delta,
-        #                                                                     sphere))
+        # print(f'Sphere #{i} given 4 points for indices {i} {i + delta} {i + 2*delta} {i + 3*delta} is {sphere}')
         sphere_centers.append(sphere.get_center())
         sphere_radii.append(sphere.get_radius())
     bounding_box = get_bounding_box(sphere_centers)
     print('From the set of spheres given 4 points', )
-    print('  the variability of the centers is [{:.3f}, {:.3f}] [{:.3f}, {:.3f}] [{:.3f}, {:.3f}]'.format(
-        bounding_box[0][0], bounding_box[0][1], bounding_box[1][0], bounding_box[1][1], bounding_box[2][0],
-        bounding_box[2][1]))
-    print('  the variability of the radii is [{:.1f}, {:.1f}]'.format(min(sphere_radii), max(sphere_radii)))
-    print('and the min and max distances between the sets of 4 points been used are {:.3f} and {:.3f}'.format(
-        min_distance_between_points_compared, max_distance_between_points_compared))
+    print(f'  the variability of the centers is \
+[{format_float(bounding_box[0][0])}, {format_float(bounding_box[0][1])}] \
+[{format_float(bounding_box[1][0])}, {format_float(bounding_box[1][1])}] \
+[{format_float(bounding_box[2][0])}, {format_float(bounding_box[2][1])}]')
+    print(f'  the variability of the radii is [{min(sphere_radii):.1f}, {max(sphere_radii):.1f}]')
+    print(f'  and the min and max distances between the sets of 4 points been used are \
+{format_float(min_distance_between_points_compared)} and {format_float(max_distance_between_points_compared)}')
 
 
 def main():
@@ -389,13 +382,13 @@ def main():
     filename_out = 'data/points-out.ply'
     save_as_ply(filename_in, filename_out)
 
-    print()
+    print('Gonna call `play_with_a_saddle()`:')
     play_with_a_saddle()
 
-    print()
+    print('Gonna call `play_with_a_saddle_with_noise()`:')
     play_with_a_saddle_with_noise()
 
-    print()
+    print('Gonna call `play_with_a_saddle_like_whatnot_42_with_noise()`:')
     play_with_a_saddle_like_whatnot_42_with_noise()
 
 

@@ -1,6 +1,6 @@
 """module docstring should be here"""
 
-from formatting import float_formatter
+from formatting import format_float
 
 from sphere import Sphere
 
@@ -16,7 +16,7 @@ class OpticalSphere(Sphere):
         self.N = 1.53
 
     def __str__(self):
-        return 'OpticalSphere(radius: {} mm, n: {})'.format(float_formatter(self.radius), float_formatter(self.N))
+        return f'OpticalSphere(radius: {format_float(self.radius)} mm, n: {format_float(self.N)})'
 
     def get_n(self):
         return self.N
@@ -29,15 +29,14 @@ class OpticalSphere(Sphere):
         return 1000*(self.N - n_vacuum)/self.radius
 
     def spy(self, message):
-        print('{}: {}'.format(message, self))
+        print(f'{self}: {message}')
 
 
 def print_optical_info(radius):
     optical_sphere = OpticalSphere(radius=radius)
-    print("optical_sphere:", optical_sphere)
-    print("  |- surface power is {} diopter(s)".format(float_formatter(optical_sphere.get_surface_power())))
-    print("  '- base curve is {} diopter(s)".format(float_formatter(optical_sphere.get_base_curve())))
-    print()
+    print(f'optical_sphere: {optical_sphere}')
+    print(f'  |- surface power is {format_float(optical_sphere.get_surface_power())} diopter(s)')
+    print(f"  '- base curve is {format_float(optical_sphere.get_base_curve())} diopter(s)")
 
 
 def main():
