@@ -48,7 +48,7 @@ def check_single_minimum(y_array):
            and previous_slope != current_slope:
             num_slope_changes += 1
             if num_slope_changes > 1:
-                raise ValueError('y_array = `%s` has more than one slope change', y_array)
+                raise ValueError(f'y_array = `{y_array}` has more than one slope change')
         if current_slope != SLOPE_LEVEL:
             previous_slope = current_slope
 

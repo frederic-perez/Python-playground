@@ -7,11 +7,11 @@
 # https://stackoverflow.com/questions/2440692/formatting-floats-in-python-without-superfluous-zeros
 #
 def format_float(x):
-    return "{0:.3f}".format(x).rstrip('0').rstrip('.')
+    return '{0:.3f}'.format(x).rstrip('0').rstrip('.')
 
 
 def format_float_hq(x):
-    return "{0:.21f}".format(x).rstrip('0').rstrip('.')
+    return '{0:.21f}'.format(x).rstrip('0').rstrip('.')
 
 
 def format_floats(array):

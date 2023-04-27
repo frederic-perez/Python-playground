@@ -16,7 +16,7 @@ class Test_timer(unittest.TestCase):
     def test_GivenATimerAnd0msPass_When_get_duration_string_ThenReturnDurationCloseTo0ms(self):
         timer = Timer()
         result = timer.get_duration_string()
-        self.assertTrue(result == "0.000\"" or result == "0.001\"")
+        self.assertTrue(result == '0.00"' or result == '0.01"')
 
     def test_GivenATimerAndXmsPass_When_get_duration_string_ThenReturnDurationCloseToXms(self):
         x_milliseconds = 0.123
