@@ -4,19 +4,20 @@ https://stackoverflow.com/questions/7370801/measure-time-elapsed-in-python
 """
 
 import time
+from timeit import default_timer
 
 
 class Timer:
     start: float
 
     def __init__(self):
-        self.start = time.time()
+        self.start = default_timer()
 
     def restart(self):
-        self.start = time.time()
+        self.start = default_timer()
 
-    def get_duration_string(self):
-        duration = time.time() - self.start
+    def elapsed(self):
+        duration = default_timer() - self.start
         _, cs = divmod(duration, 1)
         cs = 100*round(cs, 2)  # ms = 1000*round(ms, 3) if we want ms instead of cs
         m, s = divmod(duration, 60)
@@ -43,8 +44,9 @@ class Timer:
 def main():
     timer = Timer()
     time.sleep(.12345678)  # 61.2345678)
-    duration_string = timer.get_duration_string()
-    print(f'`main` took {duration_string}')
+    print(f'First `sleep` took {timer.elapsed()}')
+    timer.restart()
+    print(f'After `restart` {timer.elapsed()} have passed')
 
 
 if __name__ == '__main__':

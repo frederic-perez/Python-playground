@@ -39,7 +39,7 @@ def get_git_version():
     command = 'git --version'
     timer = Timer()
     result = subprocess.call(command, shell=True)  # returns the exit code in unix
-    logger.info(f'Command `{command}` took {timer.get_duration_string()} and returned {result}')
+    logger.info(f'Command `{command}` took {timer.elapsed()} and returned {result}')
 
 
 def download_file_using_curl(url, output_filename):
@@ -47,7 +47,7 @@ def download_file_using_curl(url, output_filename):
     timer = Timer()
     result = subprocess.call(command, shell=True)  # returns the exit code in unix
     if result == 0:
-        logger.info(f'File `{output_filename}` has been downloaded in {timer.get_duration_string()}')
+        logger.info(f'File `{output_filename}` has been downloaded in {timer.elapsed()}')
     else:
         logger.error(f'Failed to download file `{output_filename}`')
 
@@ -56,7 +56,7 @@ def decompress_7z_file(filename, output_directory):
     command = '7z x ' + filename + ' -o' + output_directory
     timer = Timer()
     result = subprocess.call(command, shell=True)  # returns the exit code in unix
-    logger.info(f'Command `{command}` took {timer.get_duration_string()} and returned {result}')
+    logger.info(f'Command `{command}` took {timer.elapsed()} and returned {result}')
 
 
 def main():
