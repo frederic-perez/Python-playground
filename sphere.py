@@ -254,7 +254,7 @@ def main():
 
     negative_radius = -1.23456
     try:
-        bad_sphere = Sphere(center=center, radius=negative_radius)
+        Sphere(center=center, radius=negative_radius)
     except ValueError as error:
         print(f'ValueError exception caught, as expected: {error}')
 

@@ -6,7 +6,7 @@ import numpy as np
 import check
 from epsilon import epsilon_distance, zero_in_practice, equal_in_practice
 from error_array import get_indices_around_minimum_abs_error
-from formatting import format_float, format_floats
+from formatting import format_float
 
 
 class Circle(object):

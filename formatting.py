@@ -35,7 +35,7 @@ def format_floats_hq(array):
 
 
 def main():
-    for f in 12.3456789000000, 12.0003456789000, 12345.6789, -0.000001: # trailing zeros are not printed
+    for f in 12.3456789000000, 12.0003456789000, 12345.6789, -0.000001:  # trailing zeros are not printed
         print('f being ' + str(f) + ':')
         print('  » {} (using `.format(format_float(f)`)'.format(format_float(f)))
         print(f'  » {f:.3f} (using just 3 decimals with .3f)')
