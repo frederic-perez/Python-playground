@@ -9,15 +9,25 @@ from timeit import default_timer
 
 class Timer:
     start: float
+    elapsed: str
 
     def __init__(self):
-        self.start = default_timer()
+        self._start = default_timer()
+        self._elapsed = ''
+
+    def __enter__(self):
+        self._start = default_timer()
+        self._elapsed = ''
+        return self
+
+    def __exit__(self, the_type, the_value, the_traceback):
+        self.set_elapsed()
 
     def restart(self):
-        self.start = default_timer()
+        self._start = default_timer()
 
-    def elapsed(self):
-        duration = default_timer() - self.start
+    def set_elapsed(self):
+        duration = default_timer() - self._start
         _, cs = divmod(duration, 1)
         cs = 100*round(cs, 2)  # ms = 1000*round(ms, 3) if we want ms instead of cs
         m, s = divmod(duration, 60)
@@ -35,18 +45,28 @@ class Timer:
         # https://english.stackexchange.com/questions/114205/english-notation-for-hour-minutes-and-seconds
         #
         if h > 0:
-            return f"{h}h {m}' {s}.{cs:02g}\""
-        if m > 0:
-            return f"{m}' {s}.{cs:02g}\""
-        return f'{s}.{cs:02g}"'
+            self._elapsed = f"{h}h {m}' {s}.{cs:02g}\""
+        elif m > 0:
+            self._elapsed = f"{m}' {s}.{cs:02g}\""
+        else:
+            self._elapsed = f'{s}.{cs:02g}"'
+
+    def elapsed(self):
+        self.set_elapsed()
+        return self._elapsed
 
 
 def main():
     timer = Timer()
     time.sleep(.12345678)  # 61.2345678)
     print(f'First `sleep` took {timer.elapsed()}')
+
     timer.restart()
     print(f'After `restart` {timer.elapsed()} have passed')
+
+    with Timer() as timer_for_context:
+        time.sleep(.2468)
+    print(f'After context {timer_for_context.elapsed()} have passed')
 
 
 if __name__ == '__main__':
