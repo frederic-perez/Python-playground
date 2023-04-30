@@ -21,6 +21,11 @@ A place for continuous learning of Python and software engineering through exper
 - tutorialspoint.com’s [Python Tutorial](https://www.tutorialspoint.com/python)
 - [Python Tutorials playlist](https://www.youtube.com/playlist?list=PL-osiE80TeTt2d9bfVyTiXJA-UTHn6WwU), by Corey Schafer » GitHub [code_snippets](https://github.com/CoreyMSchafer/code_snippets)
 
+### Python online
+
+- https://www.programiz.com/python-programming/online-compiler/
+- https://www.online-python.com
+
 ### Coding fundamentals
 
 - SOLID Python
@@ -35,7 +40,6 @@ A place for continuous learning of Python and software engineering through exper
 ### Others
 
 - [Awesome Python Typing](https://github.com/typeddjango/awesome-python-typing): Collection of awesome Python types, stubs, plugins, and tools to work with them.
-- [Execute Python Online](https://www.tutorialspoint.com/python3_terminal_online.php)
 - [The Hitchhiker’s Guide to Packaging](https://the-hitchhikers-guide-to-packaging.readthedocs.io/en/latest/)
 - [The Hitchhiker’s Guide to Python](https://docs.python-guide.org/), with its [Code Style](https://docs.python-guide.org/writing/style/)
 - python.org's [Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/)
