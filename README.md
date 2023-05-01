@@ -26,6 +26,10 @@ A place for continuous learning of Python and software engineering through exper
 - https://www.programiz.com/python-programming/online-compiler/
 - https://www.online-python.com
 
+### Python in `ParaView`
+
+- [Python calculator](https://docs.paraview.org/en/latest/UsersGuide/filteringData.html#python-calculator)
+
 ### Coding fundamentals
 
 - SOLID Python
