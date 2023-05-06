@@ -10,7 +10,13 @@ image = vtk.vtkImageData.SafeDownCast(input_data)
 point_data = image.GetPointData()
 scalar_array = image.GetPointData().GetArray(0)
 #print(scalar_array)
+max_label = int(scalar_array.GetRange()[1])
 num_tuples = scalar_array.GetNumberOfTuples()
+print(f'» max_label = {max_label}; #tuples = {num_tuples:,}')
 scalar_array_np = vtk.util.numpy_support.vtk_to_numpy(scalar_array)
-num_ones = np.count_nonzero(scalar_array_np == 1)
-print(f'#ones = {num_ones:,}, {100*num_ones/num_tuples:.1f}% of {num_tuples:,} tuples')
+for label in range(0, max_label + 1):
+    acc = np.count_nonzero(scalar_array_np == label)
+    if label == 0:
+        print(f'» Background: #"{label}"s = {acc:,} ({100*acc/num_tuples:.1f}%)')
+    else:
+        print(f'» #"{label}"s = {acc:,} ({100*acc/num_tuples:.1f}%)')
