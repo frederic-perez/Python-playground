@@ -27,20 +27,16 @@ for i in range(1, numpy_array.shape[0]-1):
     for j in range(1, numpy_array.shape[1]-1):
         for k in range(1, numpy_array.shape[2]-1):
             # Check if value of voxel is the same as its neighbors
-            if numpy_array[i,j,k] == numpy_array[i-1,j,k] and numpy_array[i,j,k] == numpy_array[i+1,j,k] and numpy_array[i,j,k] == numpy_array[i,j-1,k] and numpy_array[i,j,k] == numpy_array[i,j+1,k] and numpy_array[i,j,k] == numpy_array[i,j,k-1] and numpy_array[i,j,k] == numpy_array[i,j,k+1]:
+            if numpy_array[i, j, k] == numpy_array[i-1, j, k] \
+                    and numpy_array[i, j, k] == numpy_array[i+1, j, k] \
+                    and numpy_array[i, j, k] == numpy_array[i, j-1, k] \
+                    and numpy_array[i, j, k] == numpy_array[i, j+1, k] \
+                    and numpy_array[i, j, k] == numpy_array[i, j, k-1] \
+                    and numpy_array[i, j, k] == numpy_array[i, j, k+1]:
                 # Set value of voxel to zero in copy of numpy array
-                copy_numpy_array[i,j,k] = 0
+                copy_numpy_array[i, j, k] = 0
 
-# Convert the copy of the numpy array back to a VTK image data structure
-vtk_copy_image = vtk.vtkStructuredPoints()
-vtk_copy_image.SetDimensions(copy_numpy_array.shape)
-vtk_copy_image.SetSpacing(1, 1, 1)
-vtk_copy_image.SetOrigin(0, 0, 0)
-vtk_copy_image.AllocateScalars(vtk_image.GetPointData().GetScalars().GetDataType(), 1)
-vtk.util.numpy_support.numpy_to_vtk(copy_numpy_array.ravel(order='F'), deep=True, array=vtk_copy_image.GetPointData().GetScalars())
-
-# Set the new scalar data on the output
-output = self.GetOutput()
-output.PointData.append(new_data, 'New Scalar Array')
-
-print('done')
+# Overwrite the original array
+new_array = vtk.util.numpy_support.numpy_to_vtk(copy_numpy_array.ravel(order='F'), deep=True)
+for i in range(num_tuples):
+    array.SetTuple1(i, new_array.GetTuple1(i))
