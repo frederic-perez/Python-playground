@@ -36,7 +36,6 @@ for i in range(1, numpy_array.shape[0]-1):
                 # Set value of voxel to zero in copy of numpy array
                 copy_numpy_array[i, j, k] = 0
 
-# Overwrite the original array
-new_array = vtk.util.numpy_support.numpy_to_vtk(copy_numpy_array.ravel(order='F'), deep=True)
-for i in range(num_tuples):
-    array.SetTuple1(i, new_array.GetTuple1(i))
+final_array = copy_numpy_array.reshape(num_tuples)
+print(final_array.shape)
+output.PointData.append(final_array, "hollowed")
