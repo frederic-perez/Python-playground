@@ -36,6 +36,6 @@ for i in range(1, numpy_array.shape[0]-1):
                 # Set value of voxel to zero in copy of numpy array
                 copy_numpy_array[i, j, k] = 0
 
-final_array = copy_numpy_array.reshape(num_tuples)
+final_array = copy_numpy_array.reshape(num_tuples, order='F')
 print(final_array.shape)
 output.PointData.append(final_array, "hollowed")
