@@ -15,7 +15,7 @@ num_tuples = array.GetNumberOfTuples()
 print(f'» max_label = {max_label}; #tuples = {num_tuples:,}')
 
 # Convert the VTK image to a numpy array
-numpy_array = vtk.util.numpy_support.vtk_to_numpy(image.GetPointData().GetScalars()).reshape(image.GetDimensions(), order='F')
+numpy_array = vtk.util.numpy_support.vtk_to_numpy(array).reshape(image.GetDimensions(), order='F')
 
 # Create a copy of the numpy array
 copy_numpy_array = np.copy(numpy_array)
