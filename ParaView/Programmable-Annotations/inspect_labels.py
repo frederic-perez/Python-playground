@@ -1,7 +1,5 @@
 """module docstring should be here"""
 
-import vtk
-from vtk.util.numpy_support import vtk_to_numpy
 import numpy as np
 
 input_data = self.GetInputDataObject(0, 0)

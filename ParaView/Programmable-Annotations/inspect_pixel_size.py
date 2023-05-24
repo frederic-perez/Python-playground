@@ -1,7 +1,5 @@
 """module docstring should be here"""
 
-import vtk
-
 # Get the input image
 input_data = self.GetInputDataObject(0, 0)
 image = vtk.vtkImageData.SafeDownCast(input_data)
