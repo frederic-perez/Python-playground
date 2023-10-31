@@ -19,6 +19,7 @@ A place for continuous learning of Python and software engineering through exper
     - [21 MORE nooby Python habits](https://www.youtube.com/watch?v=E8NijUYfyus)
 - kaggle.com’s [learn/python](https://www.kaggle.com/learn/python)
 - tutorialspoint.com’s [Python Tutorial](https://www.tutorialspoint.com/python)
+- [Python for complete beginners](https://www.techwithtim.net/tutorials/python-programming/beginner-python-tutorials)
 - [Python Tutorials playlist](https://www.youtube.com/playlist?list=PL-osiE80TeTt2d9bfVyTiXJA-UTHn6WwU), by Corey Schafer » GitHub [code_snippets](https://github.com/CoreyMSchafer/code_snippets)
 
 ### Python online
