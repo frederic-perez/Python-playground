@@ -7,10 +7,10 @@ import numpy as np
 
 input_data = self.GetInputDataObject(0, 0)
 image = vtk.vtkImageData.SafeDownCast(input_data)
-#print(image)
+# print(image)
 point_data = image.GetPointData()
 array = image.GetPointData().GetArray(0)
-#print(array)
+# print(array)
 max_label = int(array.GetRange()[1])
 num_tuples = array.GetNumberOfTuples()
 print(f'» max_label = {max_label}; #tuples = {num_tuples:,}')
