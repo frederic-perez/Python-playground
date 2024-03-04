@@ -8,8 +8,8 @@ from timeit import default_timer
 
 
 class Timer:
-    start: float
-    elapsed: str
+    _start: float
+    _elapsed: str
 
     def __init__(self):
         self._start = default_timer()
@@ -28,8 +28,10 @@ class Timer:
 
     def set_elapsed(self):
         duration = default_timer() - self._start
-        _, cs = divmod(duration, 1)
-        cs = 100*round(cs, 2)  # ms = 1000*round(ms, 3) if we want ms instead of cs
+        _, reminder_of_s = divmod(duration, 1)
+        ds = 10*round(reminder_of_s, 1)  # if we want ds
+        # cs = 100*round(remainder_of_s, 2)  # if we want cs
+        # ms = 1000*round(remainder_of_s, 3)  # if we want ms
         m, s = divmod(duration, 60)
         h, m = divmod(m, 60)
 
@@ -41,15 +43,12 @@ class Timer:
         s = int(s)
         # print(f'» types of h, m, s, and cs are {type(h)}, {type(m)}, {type(s)}, and {type(s)}')  # all <class 'int'>
 
-        # We use primes for compact representation of duration See
-        # https://english.stackexchange.com/questions/114205/english-notation-for-hour-minutes-and-seconds
-        #
         if h > 0:
-            self._elapsed = f"{h}h {m}' {s}.{cs:02g}\""
+            self._elapsed = f"{h} hours {m} minutes {s}.{ds:01g} seconds"
         elif m > 0:
-            self._elapsed = f"{m}' {s}.{cs:02g}\""
+            self._elapsed = f"{m} minutes {s}.{ds:01g} seconds"
         else:
-            self._elapsed = f'{s}.{cs:02g}"'
+            self._elapsed = f'{s}.{ds:01g} seconds'
 
     def elapsed(self):
         self.set_elapsed()
