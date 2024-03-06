@@ -23,7 +23,7 @@ class PlatonicSolid(Enum):
 PlatonicSolidValues = tuple(member.value for member in PlatonicSolid)  # tuple is a MUST to reuse object
 
 
-def help_for_enum_class(enum_class):
+def help_for_parser(enum_class):
     return '{ ' + ', '.join(member.value for member in enum_class) + ' }'
 
 
@@ -39,6 +39,11 @@ class Fruit(Enum):
     pear = 'pear'
 
 
+class OnOff(Enum):
+    on = 'on'
+    off = 'off'
+
+
 def create_parser():
     # Create ArgumentParser instance
     parser = argparse.ArgumentParser(
@@ -50,26 +55,28 @@ def create_parser():
 
     # 1) Positional argument(s)
     #
-    parser.add_argument('word')
-    parser.add_argument('number')
+    parser.add_argument('word', type=str)
+    parser.add_argument('integer', type=int)
+    parser.add_argument('float', type=float)
 
     # 2) File selection
     #
     parser.add_argument(
-        '-i', '--input-file', dest='input_file', required=True, help='read input from FILE', metavar='FILE')
+        '-i', '--input-file', dest='input_file', required=True, type=str, help='read input from FILE', metavar='FILE')
     parser.add_argument(
-        '-o', '--output-file', dest='output_file', required=True, help='write output to FILE', metavar='FILE')
+        '-o', '--output-file', dest='output_file', required=True, type=str, help='write output to FILE', metavar='FILE')
 
     # 3) Operation flags/parameters
     #
-    parser.add_argument('-u', '--username', dest='username', required=True, help='your username')
-    parser.add_argument('--platonic-solid', dest='platonic_solid', help=help_for_enum_class(PlatonicSolid))
-    parser.add_argument('--color', dest='color', help=help_for_enum_class(Color))
-    parser.add_argument('--fruit', dest='fruit', help=help_for_enum_class(Fruit))
+    parser.add_argument('-u', '--username', dest='username', required=True, type=str, help='your username')
+    parser.add_argument('--platonic-solid', dest='platonic_solid', type=str, default=PlatonicSolid.hexahedron.value,
+                        help=help_for_parser(PlatonicSolid))
+    parser.add_argument('--color', dest='color', type=str, default=Color.red.value, help=help_for_parser(Color))
+    parser.add_argument('--fruit', dest='fruit', type=str, default=Fruit.apple.value, help=help_for_parser(Fruit))
 
     # 4) Informative output
     #
-    parser.add_argument('-v', '--verbose', help='{ on, off }')  # TODO: Create, set and use args.verbose_bool
+    parser.add_argument('-v', '--verbose', type=str, default=OnOff.off.value, help=help_for_parser(OnOff))  # TODO: Use args.verbose_bool
 
     return parser
 
@@ -86,7 +93,8 @@ def check_arguments(args):
 def output_arguments(args):
     print('Positional argument(s):')
     print(f'   word is {args.word}')
-    print(f'   number is {args.number}')
+    print(f'   integer is {args.integer}')
+    print(f'   float is {args.float}')
     print('')
     print('File selection:')
     print(f'  --input-file {args.input_file}')
@@ -115,8 +123,9 @@ def deal_with_the_cli_parsing():
 
 
 def do_the_actual_work(args):
-    print(f'Capitalization of {args.word} is {args.word.upper()}.')
-    print(f'The square of {args.number} is {int(args.number) * int(args.number)}.')
+    print(f'Capitalization of the word {args.word} is {args.word.upper()}.')
+    print(f'The square of the integer {args.integer} is {args.integer * args.integer}.')
+    print(f'The square of the float {args.float} is {args.integer * args.float}.')
 
 
 def main():
