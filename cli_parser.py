@@ -9,27 +9,28 @@ Info on argparse:
 
 from enum import Enum
 import argparse
+import sys
 
 
 class PlatonicSolid(Enum):
-    tetrahedron = "tetrahedron"
-    octahedron = "octahedron"
-    icosahedron = "icosahedron"
-    hexahedron = "hexahedron"
-    dodecahedron = "dodecahedron"
+    tetrahedron = 'tetrahedron'
+    octahedron = 'octahedron'
+    icosahedron = 'icosahedron'
+    hexahedron = 'hexahedron'
+    dodecahedron = 'dodecahedron'
 
 
-PossiblePlatonicSolids = (member.value for member in PlatonicSolid)
+PlatonicSolidValues = tuple(member.value for member in PlatonicSolid)  # tuple is a MUST to reuse object
 
 
-def help_of_possible_enum_values(enum_class):
+def help_for_enum_class(enum_class):
     return '{ ' + ', '.join(member.value for member in enum_class) + ' }'
 
 
 class Color(Enum):
-    red = "red"
-    green = "green"
-    blue = "blue"
+    red = 'red'
+    green = 'green'
+    blue = 'blue'
 
 
 class Fruit(Enum):
@@ -62,9 +63,9 @@ def create_parser():
     # 3) Operation flags/parameters
     #
     parser.add_argument('-u', '--username', dest='username', required=True, help='your username')
-    parser.add_argument('--platonic-solid', dest='platonic_solid', help=help_of_possible_enum_values(PlatonicSolid))
-    parser.add_argument('--color', dest='color', help=help_of_possible_enum_values(Color))
-    parser.add_argument('--fruit', dest='fruit', help=help_of_possible_enum_values(Fruit))
+    parser.add_argument('--platonic-solid', dest='platonic_solid', help=help_for_enum_class(PlatonicSolid))
+    parser.add_argument('--color', dest='color', help=help_for_enum_class(Color))
+    parser.add_argument('--fruit', dest='fruit', help=help_for_enum_class(Fruit))
 
     # 4) Informative output
     #
@@ -86,30 +87,41 @@ def output_arguments(args):
     print('Positional argument(s):')
     print(f'   word is {args.word}')
     print(f'   number is {args.number}')
-    print('\nFile selection:')
+    print('')
+    print('File selection:')
     print(f'  --input-file {args.input_file}')
     print(f'  --output-file {args.output_file}')
-    print('\nOperation flags/parameters:')
+    print('')
+    print('Operation flags/parameters:')
     print(f'  --username {args.username}')
     print(f'  --platonic-solid {args.platonic_solid}')
     print(f'  --color {args.color}')
     print(f'  --fruit {args.fruit}')
-    print('\nInformative output:')
+    print('')
+    print('Informative output:')
     print(f'   --verbose {args.verbose}')
     print('')
 
 
-def main():
+def deal_with_the_cli_parsing():
     parser = create_parser()
     args = parser.parse_args()  # Parse known command-line options
     succeeded = check_arguments(args)
     if not succeeded:
         parser.print_help()
+        sys.exit(1)
     output_arguments(args)
+    return args
 
-    # Do "the job"
+
+def do_the_actual_work(args):
     print(f'Capitalization of {args.word} is {args.word.upper()}.')
     print(f'The square of {args.number} is {int(args.number) * int(args.number)}.')
+
+
+def main():
+    args = deal_with_the_cli_parsing()
+    do_the_actual_work(args)
 
 
 if __name__ == '__main__':
