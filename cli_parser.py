@@ -50,7 +50,9 @@ epilog_text = \
      f'1) python {prog_name} word 2 -3 4.5 -i in.txt -o out.txt -u Jane\n'
      f'2) python {prog_name} -i in.txt word -o out.txt 2 -u Jane -3 4.5 # notice the interspersed mandatory arguments\n'
      f'3) python {prog_name} word 2 -3 4.5 -i in -o out -u user --platonic-solid {PlatonicSolid.icosahedron.value}'
-     f' --color {Color.green.value} --fruit {Fruit.pear.value} --suggested-window-position 6 7')
+     f' --color {Color.green.value} --fruit {Fruit.pear.value} --suggested-window-position 6 7\n'
+     f'4) python {prog_name} word 2 -3 4.5 @response-file-1.txt\n'
+     f'5) python {prog_name} @response-file-1.txt @response-file-2.txt -u Eve\n')
 
 
 # Custom type function for negative integer
@@ -79,6 +81,7 @@ def create_parser():
         allow_abbrev=False,
         description='A simple Python script to learn about parsing using the argparse module.',
         formatter_class=argparse.RawTextHelpFormatter,  # to preserve newlines and other formatting
+        fromfile_prefix_chars='@',
         epilog=epilog_text)
 
     # Define known command-line options

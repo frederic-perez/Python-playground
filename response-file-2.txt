@@ -1,0 +1,11 @@
+--username
+God
+--platonic-solid
+dodecahedron
+--suggested-window-position
+42
+66
+word
+2
+-3
+4.5

@@ -1,0 +1,15 @@
+-i
+in
+-o
+out
+-u
+user
+--platonic-solid
+icosahedron
+--color
+green
+--fruit
+pear
+--suggested-window-position
+6
+7
