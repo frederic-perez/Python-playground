@@ -51,7 +51,7 @@ epilog_text = \
      f'2) python {prog_name} -i in.txt word -o out.txt 2 -u Jane -3 4.5 # notice the interspersed mandatory arguments\n'
      f'3) python {prog_name} word 2 -3 4.5 -i in -o out -u user --platonic-solid {PlatonicSolid.icosahedron.value}'
      f' --color {Color.green.value} --fruit {Fruit.pear.value} --suggested-window-position 6 7\n'
-     f'4) python {prog_name} word 2 -3 4.5 @response-file-1.txt\n'
+     f'4) python {prog_name} word 2 -3 4.5 @response-file-1.txt --dry-run\n'
      f'5) python {prog_name} @response-file-1.txt @response-file-2.txt -u Eve\n')
 
 
@@ -135,6 +135,9 @@ def create_parser():
         type=unsigned_integer, nargs=2,
         required=False, default=(1, 1),
         help='in (unsigned integer) pixels, with `1 1` being the top-left corner (optional)')
+    operation_flags_and_parameters.add_argument(
+        '--dry-run', dest='dry_run', action='store_true',
+        help='simulate the execution without applying any changes')  # flag
 
     # 4) Informative output
     #
@@ -167,6 +170,7 @@ def output_arguments(args):
     print(f'  --color {args.color}')
     print(f'  --fruit {args.fruit}')
     print(f'  --suggested-window-position {args.suggested_window_position[0]} {args.suggested_window_position[1]}')
+    print('  --dry-run') if args.dry_run else print('  # --dry-run was not requested')
     print('')
     print('4) Informative output:')
     print(f'   --verbose {args.verbose}')
