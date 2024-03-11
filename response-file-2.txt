@@ -5,7 +5,7 @@ dodecahedron
 --suggested-window-position
 42
 66
-word
+spam
 2
 -3
 4.5

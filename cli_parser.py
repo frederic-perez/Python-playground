@@ -47,11 +47,11 @@ epilog_text = \
     (f'Parse a set of example mandatory and optional CLI arguments, capitalizing `word`,\n'
      'and squaring all the input numbers.\n\n'
      'Usage examples:\n'
-     f'1) python {prog_name} word 2 -3 4.5 -i in.txt -o out.txt -u Jane\n'
-     f'2) python {prog_name} -i in.txt word -o out.txt 2 -u Jane -3 4.5 # notice the interspersed mandatory arguments\n'
-     f'3) python {prog_name} word 2 -3 4.5 -i in -o out -u user --platonic-solid {PlatonicSolid.icosahedron.value}'
+     f'1) python {prog_name} spam 2 -3 4.5 -i in.txt -o out.txt -u Jane\n'
+     f'2) python {prog_name} -i in.txt spam -o out.txt 2 -u Jane -3 4.5 # notice the interspersed mandatory arguments\n'
+     f'3) python {prog_name} spam 2 -3 4.5 -i in -o out -u user --platonic-solid {PlatonicSolid.icosahedron.value}'
      f' --color {Color.green.value} --fruit {Fruit.pear.value} --suggested-window-position 6 7\n'
-     f'4) python {prog_name} word 2 -3 4.5 @response-file-1.txt --dry-run\n'
+     f'4) python {prog_name} spam 2 -3 4.5 @response-file-1.txt --dry-run\n'
      f'5) python {prog_name} @response-file-1.txt @response-file-2.txt -u Eve\n')
 
 

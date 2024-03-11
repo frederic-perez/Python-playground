@@ -1,7 +1,7 @@
 -i
-in
+in.txt
 -o
-out
+out.txt
 -u
 user
 --platonic-solid
