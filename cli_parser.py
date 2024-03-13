@@ -41,9 +41,9 @@ class OnOff(Enum):
     off = 'off'
 
 
-prog_name: Final = os.path.basename(__file__)
+prog_name: Final[str] = os.path.basename(__file__)
 
-epilog_text = \
+epilog_text: Final[str] = \
     (f'Parse a set of example mandatory and optional CLI arguments, capitalizing `word`,\n'
      'and squaring all the input numbers.\n\n'
      'Usage examples:\n'
@@ -56,7 +56,7 @@ epilog_text = \
 
 
 # Custom type function for negative integer
-def negative_integer(value):
+def negative_integer(value: str) -> int:
     int_value = int(value)
     if int_value >= 0:
         raise argparse.ArgumentTypeError(f"{value} is not a negative integer")
@@ -64,7 +64,7 @@ def negative_integer(value):
 
 
 # Custom type function for unsigned integer
-def unsigned_integer(value):
+def unsigned_integer(value: str) -> int:
     try:
         int_value = int(value)
     except ValueError:
@@ -74,7 +74,7 @@ def unsigned_integer(value):
     return int_value
 
 
-def create_parser():
+def create_parser() -> argparse.ArgumentParser:
     # Create ArgumentParser instance
     parser = argparse.ArgumentParser(
         add_help=False,  # disable the default help argument provided by argparse
@@ -93,6 +93,7 @@ def create_parser():
     positional.add_argument('integer', metavar='<integer>', type=int)
     positional.add_argument('negative_integer', metavar='<negative integer>', type=negative_integer)
     positional.add_argument('float', metavar='<float>', type=float)
+
     # 2) File selection (mandatory)
     #
     file_selection = parser.add_argument_group('2) File selection (mandatory)')
@@ -151,7 +152,7 @@ def create_parser():
     return parser
 
 
-def output_arguments(args):
+def output_arguments(args: argparse.Namespace) -> None:
     print(f'{prog_name} was called with the following options:')
     print('')
     print('1) Mandatory positional argument(s):')
@@ -177,7 +178,7 @@ def output_arguments(args):
     print('')
 
 
-def deal_with_the_cli_parsing():
+def deal_with_the_cli_parsing() -> argparse.Namespace:
     parser = create_parser()
     try:
         args = parser.parse_args()  # Parse known command-line options
@@ -192,7 +193,7 @@ def deal_with_the_cli_parsing():
     return args
 
 
-def do_the_actual_work(args):
+def do_the_actual_work(args: argparse.Namespace) -> None:
     print(f'Capitalization of the word {args.word} is {args.word.upper()}.')
     print(f'The square of the integer {args.integer} is {args.integer * args.integer}.')
     print(f'The square of the negative integer {args.negative_integer} is'
@@ -203,7 +204,7 @@ def do_the_actual_work(args):
 def main():
     timer = Timer()
 
-    args = deal_with_the_cli_parsing()
+    args: argparse.Namespace = deal_with_the_cli_parsing()
 
     if args.verbose == OnOff.on.value:
         print(f'The actual work is about to start...')
