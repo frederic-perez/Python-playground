@@ -204,7 +204,7 @@ def do_the_actual_work(args: argparse.Namespace) -> None:
 def main():
     timer = Timer()
 
-    args: argparse.Namespace = deal_with_the_cli_parsing()
+    args = deal_with_the_cli_parsing()
 
     if args.verbose == OnOff.on.value:
         print(f'The actual work is about to start...')

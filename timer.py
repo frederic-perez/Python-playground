@@ -11,22 +11,22 @@ class Timer:
     _start: float
     _elapsed: str
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._start = default_timer()
         self._elapsed = ''
 
-    def __enter__(self):
+    def __enter__(self) -> 'Timer':
         self._start = default_timer()
         self._elapsed = ''
         return self
 
-    def __exit__(self, the_type, the_value, the_traceback):
+    def __exit__(self, the_type, the_value, the_traceback) -> None:
         self.set_elapsed()
 
-    def restart(self):
+    def restart(self) -> None:
         self._start = default_timer()
 
-    def set_elapsed(self):
+    def set_elapsed(self) -> None:
         duration = default_timer() - self._start
         _, reminder_of_s = divmod(duration, 1)
         ds = 10*round(reminder_of_s, 1)  # if we want ds
@@ -50,7 +50,7 @@ class Timer:
         else:
             self._elapsed = f'{s}.{ds:01g} seconds'
 
-    def elapsed(self):
+    def elapsed(self) -> str:
         self.set_elapsed()
         return self._elapsed
 

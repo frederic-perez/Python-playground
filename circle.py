@@ -9,40 +9,43 @@ from error_array import get_indices_around_minimum_abs_error
 from formatting import format_float
 
 
+TupleOf2Floats = tuple[float, float]
+
+
 class Circle(object):
-    center: tuple[float, float]
+    center: TupleOf2Floats
     radius: float
 
-    def __new__(cls, center, radius):
+    def __new__(cls, center: TupleOf2Floats, radius: int | float):
         check.tuple_type(center)
         check.length_is_equal_to_n(center, 2)
         if radius <= 0:
             raise ValueError(f'Radius value {format_float(radius)} is out of range')
         return object.__new__(cls)
 
-    def __init__(self, center, radius):
+    def __init__(self, center: TupleOf2Floats, radius: int | float):
         self.center = float(center[0]), float(center[1])
-        self.radius = radius
+        self.radius = float(radius)
 
-    def __eq__(self, other, epsilon=epsilon_distance):
+    def __eq__(self, other, epsilon: float = epsilon_distance) -> bool:
         return \
             equal_in_practice(self.center[0], other.center[0], epsilon) \
             and equal_in_practice(self.center[1], other.center[1], epsilon) \
             and equal_in_practice(self.radius, other.radius, epsilon)
 
-    def __str__(self):
+    def __str__(self) -> str:
         c_x = format_float(self.center[0])
         c_y = format_float(self.center[1])
         r = format_float(self.radius)
         return f'Circle(center=({c_x}, {c_y}), radius={r})'
 
-    def get_radius(self):
+    def get_radius(self) -> float:
         return self.radius
 
-    def get_center(self):
+    def get_center(self) -> TupleOf2Floats:
         return self.center
   
-    def spy(self, message):
+    def spy(self, message: str) -> None:
         print(f'{message}: {self}')
 
     def get_signed_distance_to_circumference(self, point):
