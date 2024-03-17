@@ -2,28 +2,32 @@
 
 import math
 import numpy as np
+# import numpy.typing as npt
 
 import check
 from epsilon import epsilon_distance, zero_in_practice, equal_in_practice
 from error_array import get_indices_around_minimum_abs_error
 from formatting import format_float
+from typing import Sequence, TypeAlias
 
 
-TupleOf2Floats = tuple[float, float]
+Number: TypeAlias = int | float
+TupleOf2Floats: TypeAlias = tuple[float, float]
+TupleOf2Numbers: TypeAlias = tuple[Number, Number]
 
 
 class Circle(object):
     center: TupleOf2Floats
     radius: float
 
-    def __new__(cls, center: TupleOf2Floats, radius: int | float):
+    def __new__(cls, center: TupleOf2Numbers, radius: Number) -> 'Circle':
         check.tuple_type(center)
         check.length_is_equal_to_n(center, 2)
         if radius <= 0:
             raise ValueError(f'Radius value {format_float(radius)} is out of range')
         return object.__new__(cls)
 
-    def __init__(self, center: TupleOf2Floats, radius: int | float):
+    def __init__(self, center: TupleOf2Numbers, radius: Number) -> None:
         self.center = float(center[0]), float(center[1])
         self.radius = float(radius)
 
@@ -48,36 +52,36 @@ class Circle(object):
     def spy(self, message: str) -> None:
         print(f'{message}: {self}')
 
-    def get_signed_distance_to_circumference(self, point):
+    def get_signed_distance_to_circumference(self, point: TupleOf2Numbers) -> float:
         point_in_np = np.array(point, np.float_)
-        return np.linalg.norm(self.center - point_in_np) - self.radius
+        return float(np.linalg.norm(self.center - point_in_np)) - self.radius
   
-    def point_is_on_circumference(self, point):
+    def point_is_on_circumference(self, point: TupleOf2Numbers) -> bool:
         distance = self.get_signed_distance_to_circumference(point)
         return zero_in_practice(distance)
 
-    def get_mse(self, points):
+    def get_mse(self, points: Sequence[TupleOf2Numbers]) -> float:
         check.array_type(points)
         check.not_empty(points)
 
-        acc_squared_error = 0
+        acc_squared_error: float = 0
         for point in points:
             error = self.get_signed_distance_to_circumference(point)
             squared_error = error*error
             acc_squared_error += squared_error
         return acc_squared_error / len(points)
 
-    def get_mean_signed_distance(self, points):
+    def get_mean_signed_distance(self, points: Sequence[TupleOf2Numbers]) -> float:
         check.array_type(points)
         check.not_empty(points)
 
-        acc_signed_distance = 0
+        acc_signed_distance: float = 0
         for point in points:
             acc_signed_distance += self.get_signed_distance_to_circumference(point)
         return acc_signed_distance / len(points)
 
 
-def get_circle(points):
+def get_circle(points: Sequence[TupleOf2Numbers]) -> Circle:
     """
     Code adapted from https://stackoverflow.com/questions/52990094
     on February 18, 2019
@@ -98,16 +102,16 @@ def get_circle(points):
     cd = (temp - points[2][0]**2 - points[2][1]**2) / 2
 
     # Center of circle
-    x = (bc*(points[1][1] - points[2][1]) - cd*(points[0][1] - points[1][1])) / determinant
-    y = ((points[0][0] - points[1][0]) * cd - (points[1][0] - points[2][0]) * bc) / determinant
+    x: float = (bc*(points[1][1] - points[2][1]) - cd*(points[0][1] - points[1][1])) / determinant
+    y: float = ((points[0][0] - points[1][0]) * cd - (points[1][0] - points[2][0]) * bc) / determinant
 
-    center = x, y
-    radius = math.sqrt((x - points[0][0]) ** 2 + (y - points[0][1]) ** 2)
+    center: TupleOf2Floats = x, y
+    radius: float = math.sqrt((x - points[0][0]) ** 2 + (y - points[0][1]) ** 2)
 
     return Circle(center, radius)
 
 
-def get_y_min_and_y_max(points, x_center, radius):
+def get_y_min_and_y_max(points: Sequence[TupleOf2Numbers], x_center: Number, radius: Number) -> TupleOf2Floats:
     """
     Solving these equations:
       (x - x_p)^2 + (y - y_p)^2 = R^2, and
@@ -135,7 +139,8 @@ def get_y_min_and_y_max(points, x_center, radius):
     return y_min, y_max
 
 
-def get_best_fit_circle(points, x_center, radius, use_mse, num_samples):  # num_samples = 9):
+def get_best_fit_circle(points: Sequence[TupleOf2Numbers], x_center: Number, radius: Number, use_mse: bool,
+                        num_samples: int) -> Circle:  # num_samples = 9):
     check.array_type(points)
     check.length_is_greater_than_n(points, 3)
 
@@ -144,9 +149,9 @@ def get_best_fit_circle(points, x_center, radius, use_mse, num_samples):  # num_
     y = [0.] * num_samples
     error = [0.] * num_samples
 
-    done = False
-    i = 0
-    idx_min = 0
+    done: bool = False
+    i: int = 0
+    idx_min: int = 0
     while not done:
         delta = (y_max - y_min)/(num_samples - 1.)
         for j in range(num_samples):
@@ -159,7 +164,7 @@ def get_best_fit_circle(points, x_center, radius, use_mse, num_samples):  # num_
       
         idx_min, idx_max = get_indices_around_minimum_abs_error(error)
         y_min, y_max = y[idx_min], y[idx_max]
-        # print(f'idx_min = {idx_min}, idx_max = {idx_max}, y range: {y_min} {y_max}')
+        # print(f"idx_min = {idx_min}, idx_max = {idx_max}, y range: {y_min} {y_max}")
 
         i = i + 1
         done = equal_in_practice(y[idx_min], y[idx_max]) or equal_in_practice(error[idx_min], error[idx_max]) or i == 50
