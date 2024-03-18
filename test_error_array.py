@@ -9,6 +9,7 @@ Run the tests by executing, for all test classes:
 import unittest
 from error_array import check_single_minimum, get_index_of_minimum_abs_error, get_indices_around_minimum_abs_error,\
     get_range_length
+from typing import Any
 
 
 class Test_get_index_of_minimum_abs_error(unittest.TestCase):
@@ -49,7 +50,7 @@ class Test_get_indices_around_minimum_abs_error(unittest.TestCase):
         self.assertRaises(TypeError, get_indices_around_minimum_abs_error, errors)
 
     def test_GivenAnEmptyArray_When_get_indices_around_minimum_abs_error_ThenExceptionIsRaised(self):
-        errors = []
+        errors: list[Any] = []
         self.assertRaises(ValueError, get_indices_around_minimum_abs_error, errors)
 
     def test_GivenAnArrayWithLessThan3Elements_When_get_indices_around_minimum_abs_error_ThenExceptionIsRaised(self):

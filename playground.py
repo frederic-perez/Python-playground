@@ -26,8 +26,8 @@ def average(*numbers):
     if not numbers:
         raise ValueError('numbers should not be empty')
 
-    numbers = [float(number) for number in numbers]
-    return sum(numbers) / float(len(numbers))
+    numbers_list = [float(number) for number in numbers]
+    return sum(numbers_list) / float(len(numbers_list))
 
 
 def get_sphere_given_4_points(description, points):
@@ -92,13 +92,13 @@ def main():
 
     get_git_version()
 
-    filename_and_url_array = [
-      # ['data/_L.7z', 'https://uccbc8e1809ffe6c06563a47e1bb66.dl.dropboxusercontent.com/cd/0/get/A.../file#'],
-      # ['data/_M.7z', 'https://uc26a4adfaf1d3cdc9423283971b37.dl.dropboxusercontent.com/cd/0/get/A.../file#']
-      # ['data/_C54.xml', 'https://uc7b36b201202ac7cc04d68a05a966.dl.dropboxusercontent.com/cd/0/get/A.../file#'],
-      # ['data/_F.stl', 'https://uc9961f6bd3472cdc89cd193cf4f37.dl.dropboxusercontent.com/cd/0/get/A.../file#'],
-      # ['data/_L.stl', 'https://uc0a059daf35cb3466bfa34ee51666.dl.dropboxusercontent.com/cd/0/get/A.../file#'],
-      # ['data/_R.stl', 'https://uc0dfa07f6b21b5c7d4102e78bb537.dl.dropboxusercontent.com/cd/0/get/A.../file#']
+    filename_and_url_array: list[tuple[str, str]] = [
+      # ('data/_L.7z', 'https://uccbc8e1809ffe6c06563a47e1bb66.dl.dropboxusercontent.com/cd/0/get/A.../file#'),
+      # ('data/_M.7z', 'https://uc26a4adfaf1d3cdc9423283971b37.dl.dropboxusercontent.com/cd/0/get/A.../file#')
+      # ('data/_C54.xml', 'https://uc7b36b201202ac7cc04d68a05a966.dl.dropboxusercontent.com/cd/0/get/A.../file#'),
+      # ('data/_F.stl', 'https://uc9961f6bd3472cdc89cd193cf4f37.dl.dropboxusercontent.com/cd/0/get/A.../file#'),
+      # ('data/_L.stl', 'https://uc0a059daf35cb3466bfa34ee51666.dl.dropboxusercontent.com/cd/0/get/A.../file#'),
+      # ('data/_R.stl', 'https://uc0dfa07f6b21b5c7d4102e78bb537.dl.dropboxusercontent.com/cd/0/get/A.../file#')
     ]
     for filename_and_url in filename_and_url_array:
         filename, url = filename_and_url

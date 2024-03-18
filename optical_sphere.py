@@ -40,17 +40,17 @@ def print_optical_info(radius):
 
 
 def main():
-    radius = 530  # 530 mm is the radius of a 1 diopter curve
-    print_optical_info(radius)
+    radius_int = 530  # 530 mm is the radius of a 1 diopter curve
+    print_optical_info(radius_int)
 
-    radius = 106
-    print_optical_info(radius)
+    radius_int = 106
+    print_optical_info(radius_int)
 
-    radius = 53
-    print_optical_info(radius)
+    radius_int = 53
+    print_optical_info(radius_int)
 
-    radius = 123.456789
-    print_optical_info(radius)
+    radius_float = 123.456789
+    print_optical_info(radius_float)
 
 
 if __name__ == '__main__':

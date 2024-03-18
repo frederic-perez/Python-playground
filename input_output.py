@@ -7,6 +7,7 @@ import os.path
 import check
 from formatting import format_float, format_floats, format_floats_hq
 from sphere import Sphere, get_best_fit_sphere, get_sphere
+from typing import Any
 
 
 def get_saddle_points(num_points, a, b, radius_x, radius_z, offset_xyz, max_noise=0.):
@@ -292,8 +293,8 @@ def get_center(bounding_box):
 
 
 def get_min_and_max_distances_between_points(points):
-    min_distance = float("inf")
-    max_distance = float("-inf")
+    min_distance: float | np.floating[Any] = float("inf")
+    max_distance: float | np.floating[Any] = float("-inf")
     num_points = len(points)
     for i in range(num_points):
         for j in range(i + 1, num_points):
@@ -307,7 +308,7 @@ def get_min_and_max_distances_between_points(points):
 
 
 def get_index_of_closest_point(point, points, indices_to_skip):
-    min_distance = float("inf")
+    min_distance: float | np.floating[Any] = float("inf")
     index = -1
     num_points = len(points)
     for i in range(num_points):
