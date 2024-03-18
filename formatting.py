@@ -1,20 +1,22 @@
 """module docstring should be here"""
 
+from typing import Any, Sequence
+
 
 # Code based on
 # https://stackoverflow.com/questions/21008858/formatting-floats-in-a-numpy-array
 # and on
 # https://stackoverflow.com/questions/2440692/formatting-floats-in-python-without-superfluous-zeros
 #
-def format_float(x):
+def format_float(x: float) -> str:
     return '{0:.3f}'.format(x).rstrip('0').rstrip('.')
 
 
-def format_float_hq(x):
+def format_float_hq(x: float) -> str:
     return '{0:.21f}'.format(x).rstrip('0').rstrip('.')
 
 
-def format_floats(array):
+def format_floats(array: Sequence) -> str:
     result = ''
     length = len(array)
     for i in range(0, length):
@@ -24,7 +26,7 @@ def format_floats(array):
     return result
 
 
-def format_floats_hq(array):
+def format_floats_hq(array: Sequence) -> str:
     result = ''
     length = len(array)
     for i in range(0, length):

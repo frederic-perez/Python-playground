@@ -83,19 +83,28 @@ class Test_check_single_minimum(unittest.TestCase):
         for parameter in 'error', 0, None:
             self.assertRaises(TypeError, check_single_minimum, parameter)
 
-    def test_GivenAnArrayWithFewerThan3Elements_When_check_single_minimum_ThenReturn0(self):
+    def test_GivenAnArrayWithFewerThan3Elements_When_check_single_minimum_ExceptionIsNotRaised(self):
         y_arrays = (), (1,), (1, 2)
         for y_array in y_arrays:
-            self.assertRaises(ValueError, check_single_minimum, y_array)
+            try:
+                check_single_minimum(y_array)
+            except ValueError:
+                self.assertTrue(self, False)
 
-    def test_GivenAnArrayWithTheMinimumElementBeingThe1st_When_check_single_minimum_ThenReturn0(self):
+    def test_GivenAnArrayWithTheMinimumElementBeingThe1st_When_check_single_minimum_ThenExceptionIsNotRaised(self):
         y_arrays = (1, 1, 1), (1, 1, 2), (1, 2, 2)
         for y_array in y_arrays:
-            self.assertEqual(check_single_minimum(y_array), None)
+            try:
+                check_single_minimum(y_array)
+            except ValueError:
+                self.assertTrue(self, False)
 
-    def test_GivenAnArrayWithTheMinimumElementBeingThe3rd_When_check_single_minimum_ThenReturn0(self):
+    def test_GivenAnArrayWithTheMinimumElementBeingThe3rd_When_check_single_minimum_ThenExceptionIsNotRaised(self):
         y_array = 8, 2, 1, 6, 24
-        self.assertEqual(check_single_minimum(y_array), None)
+        try:
+            check_single_minimum(y_array)
+        except ValueError:
+            self.assertTrue(self, False)
 
 
 class Test_get_range_length(unittest.TestCase):

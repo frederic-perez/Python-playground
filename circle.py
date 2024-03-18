@@ -2,7 +2,6 @@
 
 import math
 import numpy as np
-# import numpy.typing as npt
 
 import check
 from epsilon import epsilon_distance, zero_in_practice, equal_in_practice
@@ -14,6 +13,20 @@ from typing import Sequence, TypeAlias
 Number: TypeAlias = int | float
 TupleOf2Floats: TypeAlias = tuple[float, float]
 TupleOf2Numbers: TypeAlias = tuple[Number, Number]
+
+
+def as_tuple_of_2_floats(a: np.ndarray) -> TupleOf2Floats:
+    # Ensure the input has exactly two elements
+    if len(a) != 2:
+        raise ValueError("The input array-like must have exactly two elements.")
+
+    # Convert each element to float if possible
+    try:
+        result = (float(a[0]), float(a[1]))
+    except ValueError:
+        raise ValueError("Both elements of the input array-like must be convertible to floats.")
+
+    return result
 
 
 class Circle(object):

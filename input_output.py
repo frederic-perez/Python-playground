@@ -2,6 +2,7 @@
 
 import math
 import numpy as np
+import numpy.typing as npt
 import os.path
 
 import check
@@ -9,8 +10,8 @@ from formatting import format_float, format_floats, format_floats_hq
 from sphere import Sphere, get_best_fit_sphere, get_sphere
 from typing import Any
 
-
-def get_saddle_points(num_points, a, b, radius_x, radius_z, offset_xyz, max_noise=0.):
+def get_saddle_points(num_points: int, a: float, b: float, radius_x: float, radius_z: float,
+                      offset_xyz: tuple[float, float, float], max_noise: float = 0) -> npt.NDArray:
     points = np.random.rand(num_points, 3)
     a_sqr = a ** 2
     b_sqr = b ** 2
@@ -201,7 +202,7 @@ def play_with_a_saddle():
     saddle_b = 4
     saddle_radius_x = 5
     saddle_radius_z = 5
-    saddle_offset = [0, 4, 0]
+    saddle_offset = 0, 4, 0
     saddle_points = get_saddle_points(
         num_saddle_points,
         saddle_a,
@@ -225,7 +226,7 @@ def play_with_a_saddle_with_noise():
     saddle_b = 4
     saddle_radius_x = 5
     saddle_radius_z = 5
-    saddle_offset = [0, 0, 4]
+    saddle_offset = 0, 0, 4
     saddle_max_noise = .15
     saddle_points = get_saddle_points(
         num_saddle_points,
@@ -251,7 +252,7 @@ def play_with_a_saddle_like_whatnot_42_with_noise():
     saddle_b = 20  # 15
     saddle_radius_x = 22  # 26
     saddle_radius_z = 26  # 22
-    saddle_offset = [-35, 0, -20]
+    saddle_offset = -35, 0, -20
     saddle_max_noise = .5
     saddle_points = get_saddle_points(
         num_saddle_points,

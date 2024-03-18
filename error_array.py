@@ -2,8 +2,10 @@
 
 import check
 
+from typing import Final, Sequence
 
-def get_index_of_minimum_abs_error(error_array):
+
+def get_index_of_minimum_abs_error(error_array: Sequence) -> int:
     check.array_type(error_array)
     check.not_empty(error_array)
 
@@ -18,7 +20,7 @@ def get_index_of_minimum_abs_error(error_array):
     return index
 
 
-def get_indices_around_minimum_abs_error(error_array):
+def get_indices_around_minimum_abs_error(error_array: Sequence) -> tuple[int, int]:
     check.array_type(error_array)
     check.length_is_greater_or_equal_to_n(error_array, 3)
 
@@ -33,7 +35,7 @@ def get_indices_around_minimum_abs_error(error_array):
     return index - 1, index + 1
 
 
-def check_single_minimum(y_array):
+def check_single_minimum(y_array: Sequence) -> None:
     check.array_type(y_array)
     check.length_is_greater_or_equal_to_n(y_array, 3)
 
@@ -53,7 +55,7 @@ def check_single_minimum(y_array):
             previous_slope = current_slope
 
 
-def get_slope(y0, y1):
+def get_slope(y0: float, y1: float) -> int:
     if y0 > y1:
         return SLOPE_NEGATIVE
     elif y0 < y1:
@@ -61,12 +63,12 @@ def get_slope(y0, y1):
     return SLOPE_LEVEL
 
 
-SLOPE_NEGATIVE = -1
-SLOPE_LEVEL = 0
-SLOPE_POSITIVE = +1
+SLOPE_NEGATIVE: Final[int] = -1  # TODO: Use an Enum-derived type for these constants
+SLOPE_LEVEL: Final[int] = 0
+SLOPE_POSITIVE: Final[int] = +1
 
 
-def get_range_length(error_array):
+def get_range_length(error_array: Sequence) -> float:
     check.array_type(error_array)
     check.length_is_greater_or_equal_to_n(error_array, 2)
 
