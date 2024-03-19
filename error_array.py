@@ -2,7 +2,8 @@
 
 import check
 
-from typing import Final, Sequence
+from enum import Enum
+from typing import Sequence
 
 
 def get_index_of_minimum_abs_error(error_array: Sequence) -> int:
@@ -35,6 +36,20 @@ def get_indices_around_minimum_abs_error(error_array: Sequence) -> tuple[int, in
     return index - 1, index + 1
 
 
+class Slope(Enum):
+    negative = -1
+    level = 0
+    positive = +1
+
+
+def get_slope(y0: float, y1: float) -> Slope:
+    if y0 > y1:
+        return Slope.negative
+    elif y0 < y1:
+        return Slope.positive
+    return Slope.level
+
+
 def check_single_minimum(y_array: Sequence) -> None:
     check.array_type(y_array)
     check.length_is_greater_or_equal_to_n(y_array, 3)
@@ -45,27 +60,14 @@ def check_single_minimum(y_array: Sequence) -> None:
     for i in range(2, n):
         current_slope = get_slope(y_array[i - 1], y_array[i])
         # print(f'i = {i}, current_slope = {current_slope}, num_slope_changes = {num_slope_changes}')
-        if previous_slope != SLOPE_LEVEL \
-           and current_slope != SLOPE_LEVEL \
+        if previous_slope != Slope.level \
+           and current_slope != Slope.level \
            and previous_slope != current_slope:
             num_slope_changes += 1
             if num_slope_changes > 1:
                 raise ValueError(f'y_array = `{y_array}` has more than one slope change')
-        if current_slope != SLOPE_LEVEL:
+        if current_slope != Slope.level:
             previous_slope = current_slope
-
-
-def get_slope(y0: float, y1: float) -> int:
-    if y0 > y1:
-        return SLOPE_NEGATIVE
-    elif y0 < y1:
-        return SLOPE_POSITIVE
-    return SLOPE_LEVEL
-
-
-SLOPE_NEGATIVE: Final[int] = -1  # TODO: Use an Enum-derived type for these constants
-SLOPE_LEVEL: Final[int] = 0
-SLOPE_POSITIVE: Final[int] = +1
 
 
 def get_range_length(error_array: Sequence) -> float:

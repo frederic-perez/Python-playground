@@ -7,7 +7,7 @@ Run the tests by executing, for all test classes:
 """
 
 import unittest
-from error_array import check_single_minimum, get_index_of_minimum_abs_error, get_indices_around_minimum_abs_error,\
+from error_array import check_single_minimum, get_index_of_minimum_abs_error, get_indices_around_minimum_abs_error, \
     get_range_length
 from typing import Any
 
