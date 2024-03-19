@@ -36,7 +36,7 @@ A place for continuous learning of Python and software engineering through exper
 - SOLID Python
 - Python Design Patterns
 - Testing+
-  - python.org's [unittest](https://docs.python.org/3/library/unittest.html) documentation
+  - python.org’s [unittest](https://docs.python.org/3/library/unittest.html) documentation
   - Blog posts by [Jan Giacomelli](https://testdriven.io/authors/giacomelli/) (posts on [Python](https://testdriven.io/blog/topics/python/)):
     - [Testing in Python](https://testdriven.io/blog/testing-python/)
     - [Modern Test-Driven Development in Python](https://testdriven.io/blog/modern-tdd/)
@@ -45,9 +45,18 @@ A place for continuous learning of Python and software engineering through exper
 ### Others
 
 - [Awesome Python Typing](https://github.com/typeddjango/awesome-python-typing): Collection of awesome Python types, stubs, plugins, and tools to work with them.
+- mypy: Static Typing for Python
+  - [mypy-lang.org](https://mypy-lang.org/)
+  - [GitHub – python/mypy](https://github.com/python/mypy)
+  - [stackoverflow’s How do Python functions handle the types of parameters that you pass in?](https://stackoverflow.com/questions/2489669/how-do-python-functions-handle-the-types-of-parameters-that-you-pass-in)
+  - [Introducing Mypy, an Experimental Optional Static Type Checker for Python
+](https://www.linuxjournal.com/content/introducing-mypy-experimental-optional-static-type-checker-python), by Reuven M. Lerner on May 13, 2019
+  - [Python’s Mypy—Advanced Usage](https://www.linuxjournal.com/content/pythons-mypy-advanced-usage), by Reuven M. Lerner on June 24, 2019
+  - [Python’s Mypy: Callables and Generators](https://www.linuxjournal.com/content/pythons-mypy-callables-and-generators), by Reuven M. Lerner on July 29, 2019
+  - Also, [numpy typing](https://numpy.org/devdocs/reference/typing.html), with a mypy plugin
 - [The Hitchhiker’s Guide to Packaging](https://the-hitchhikers-guide-to-packaging.readthedocs.io/en/latest/)
 - [The Hitchhiker’s Guide to Python](https://docs.python-guide.org/), with its [Code Style](https://docs.python-guide.org/writing/style/)
-- python.org's [Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/)
+- python.org’s [Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/)
 - [Scientific Python Library Development Guide](https://learn.scientific-python.org/development/)
 
 ## References and influencing material
