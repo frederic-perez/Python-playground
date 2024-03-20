@@ -1,6 +1,6 @@
 """module docstring should be here"""
 
-from typing import Any, Sequence
+from typing import Final, Sequence
 
 
 # Code based on
@@ -18,7 +18,7 @@ def format_float_hq(x: float) -> str:
 
 def format_floats(array: Sequence) -> str:
     result = ''
-    length = len(array)
+    length: Final[int] = len(array)
     for i in range(0, length):
         result += format_float(array[i])
         if i != length - 1:
@@ -28,7 +28,7 @@ def format_floats(array: Sequence) -> str:
 
 def format_floats_hq(array: Sequence) -> str:
     result = ''
-    length = len(array)
+    length: Final[int] = len(array)
     for i in range(0, length):
         result += format_float_hq(array[i])
         if i != length - 1:

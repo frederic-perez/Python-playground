@@ -8,19 +8,20 @@ import os.path
 import check
 from formatting import format_float, format_floats, format_floats_hq
 from sphere import Sphere, get_best_fit_sphere, get_sphere
-from typing import Any
+from typing import Any, Final, Sequence
+
 
 def get_saddle_points(num_points: int, a: float, b: float, radius_x: float, radius_z: float,
                       offset_xyz: tuple[float, float, float], max_noise: float = 0) -> npt.NDArray:
     points = np.random.rand(num_points, 3)
-    a_sqr = a ** 2
-    b_sqr = b ** 2
+    a_sqr: Final[float] = a ** 2
+    b_sqr: Final[float] = b ** 2
     for i in range(num_points):
         # print(f'i is {i}')
         alpha = i * 2 * math.pi / num_points
-        x = radius_x * math.sin(alpha)
-        z = radius_z * math.cos(alpha)
-        y = z * z / b_sqr - x * x / a_sqr  # https://en.wikipedia.org/wiki/Paraboloid
+        x: float = radius_x * math.sin(alpha)
+        z: float = radius_z * math.cos(alpha)
+        y: float = z * z / b_sqr - x * x / a_sqr  # https://en.wikipedia.org/wiki/Paraboloid
         point = np.zeros(3)
         point[0] = x + offset_xyz[0]
         point[1] = y + offset_xyz[1]
@@ -71,7 +72,7 @@ def save_xyz_file(filename_xyz, points):
     file_out.close()
 
 
-def print_a_few_points(points):
+def print_a_few_points(points: npt.NDArray) -> None:
     function_name = 'print_a_few_points'
     print(f'{function_name}: point #0 is {format_floats(points[0])}')
     print(f'{function_name}: ...')
@@ -79,7 +80,7 @@ def print_a_few_points(points):
     print(f'{function_name}: point #{last_index} is {format_floats(points[last_index])}')
 
 
-def read_xyz_file(filename_xyz):
+def read_xyz_file(filename_xyz) -> npt.NDArray:
     file_in = open(filename_xyz, 'r')
     num_points = 0
     for line in file_in:
@@ -170,7 +171,7 @@ def save_ply_file_with_distances_and_scaled_normals(filename_ply, points, distan
     file_out.close()
 
 
-def save_as_ply(filename_xyz_in, filename_ply_out):
+def save_as_ply(filename_xyz_in: str, filename_ply_out: str) -> None:
     if not filename_xyz_in:
         raise ValueError('Input filename should not be empty')
     if not os.path.exists(filename_xyz_in):
@@ -182,7 +183,8 @@ def save_as_ply(filename_xyz_in, filename_ply_out):
     save_ply_file(filename_ply_out, points)
 
 
-def save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(filename_xyz_in, sphere, filename_ply_out):
+def save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(
+        filename_xyz_in: str, sphere: Sphere, filename_ply_out: str):
     if not filename_xyz_in:
         raise ValueError('Input filename should not be empty')
     if not os.path.exists(filename_xyz_in):
@@ -195,15 +197,15 @@ def save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(filename
     save_ply_file_with_distances_and_scaled_normals(filename_ply_out, points, distances, scaled_normals)
 
 
-def play_with_a_saddle():
-    saddle_filename_xyz = 'data/saddle.xyz'
-    num_saddle_points = 10  # 100
-    saddle_a = 8
-    saddle_b = 4
-    saddle_radius_x = 5
-    saddle_radius_z = 5
-    saddle_offset = 0, 4, 0
-    saddle_points = get_saddle_points(
+def play_with_a_saddle() -> None:
+    saddle_filename_xyz: Final = 'data/saddle.xyz'
+    num_saddle_points: Final = 10  # 100
+    saddle_a: Final = 8
+    saddle_b: Final = 4
+    saddle_radius_x: Final = 5
+    saddle_radius_z: Final = 5
+    saddle_offset: Final = 0, 4, 0
+    saddle_points: Final = get_saddle_points(
         num_saddle_points,
         saddle_a,
         saddle_b,
@@ -211,10 +213,10 @@ def play_with_a_saddle():
         saddle_radius_z,
         saddle_offset)
     save_xyz_file(saddle_filename_xyz, saddle_points)
-    saddle_filename_ply = 'data/saddle.ply'
-    sphere_center = 0, 0, 0
-    sphere_radius = 6.8
-    sphere = Sphere(sphere_center, sphere_radius)
+    saddle_filename_ply: Final = 'data/saddle.ply'
+    sphere_center: Final = 0, 0, 0
+    sphere_radius: Final = 6.8
+    sphere: Final = Sphere(sphere_center, sphere_radius)
     save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(
         saddle_filename_xyz, sphere, saddle_filename_ply)
 
@@ -380,8 +382,8 @@ def get_spheres_given_series_of_4_points_and_study_variability(contour_id, point
 def main():
     np.random.seed(42)
 
-    filename_in = 'data/points-in.xyz'
-    filename_out = 'data/points-out.ply'
+    filename_in: Final[str] = 'data/points-in.xyz'
+    filename_out: Final[str] = 'data/points-out.ply'
     save_as_ply(filename_in, filename_out)
 
     print('Gonna call `play_with_a_saddle()`:')

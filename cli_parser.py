@@ -181,7 +181,7 @@ def output_arguments(args: argparse.Namespace) -> None:
 def deal_with_the_cli_parsing() -> argparse.Namespace:
     parser = create_parser()
     try:
-        args = parser.parse_args()  # Parse known command-line options
+        args: Final = parser.parse_args()  # Parse known command-line options
     except SystemExit:
         sys.exit(1)
     except argparse.ArgumentError as e:
@@ -194,7 +194,7 @@ def deal_with_the_cli_parsing() -> argparse.Namespace:
 
 
 def do_the_actual_work(args: argparse.Namespace) -> None:
-    print(f'Capitalization of the word {args.word} is {args.word.upper()}.')
+    print(f'The capitalization of the word \"{args.word}\" is \"{args.word.upper()}.\"')
     print(f'The square of the integer {args.integer} is {args.integer * args.integer}.')
     print(f'The square of the negative integer {args.negative_integer} is'
           f' {args.negative_integer * args.negative_integer}.')
@@ -204,7 +204,7 @@ def do_the_actual_work(args: argparse.Namespace) -> None:
 def main():
     timer = Timer()
 
-    args = deal_with_the_cli_parsing()
+    args: Final = deal_with_the_cli_parsing()
 
     if args.verbose == OnOff.on.value:
         print(f'The actual work is about to start...')

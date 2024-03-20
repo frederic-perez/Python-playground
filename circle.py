@@ -7,7 +7,7 @@ import check
 from epsilon import epsilon_distance, zero_in_practice, equal_in_practice
 from error_array import get_indices_around_minimum_abs_error
 from formatting import format_float
-from typing import Sequence, TypeAlias
+from typing import Final, Sequence, TypeAlias
 
 
 Number: TypeAlias = int | float
@@ -186,14 +186,14 @@ def get_best_fit_circle(points: Sequence[TupleOf2Numbers], x_center: Number, rad
 
 
 def main():
-    center = 1.1111, 2.2222
-    radius = 3.3333
+    center: Final[TupleOf2Floats] = 1.1111, 2.2222
+    radius: Final[float] = 3.3333
     circle = Circle(center, radius)
     print(f'circle is {circle}')
     circle.spy('Spying circle')
 
     try:
-        negative_radius = -1.23456
+        negative_radius: Final[float] = -1.23456
         Circle(center, negative_radius)
     except ValueError as error:
         print(f'ValueError exception was expected: {error}')

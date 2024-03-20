@@ -14,8 +14,8 @@ def equal_in_practice(float_1: float, float_2: float, epsilon: float = epsilon_d
 
 
 def main():
-    f: Final[float] = 12.3456789e-5
-    print(f'zero_in_practice({f}) returns {zero_in_practice(f)}')
+    for f in 12.3456789e-5, 1e-11, 1e-13:
+        print(f'zero_in_practice({f}) returns {zero_in_practice(f)}')
 
     
 if __name__ == '__main__':

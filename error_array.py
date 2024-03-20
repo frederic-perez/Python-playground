@@ -3,14 +3,14 @@
 import check
 
 from enum import Enum
-from typing import Sequence
+from typing import Final, Sequence
 
 
 def get_index_of_minimum_abs_error(error_array: Sequence) -> int:
     check.array_type(error_array)
     check.not_empty(error_array)
 
-    n = len(error_array)
+    n: Final[int] = len(error_array)
     index = 0
     minimum_abs_error = float("inf")
     for i in range(n):
@@ -27,8 +27,8 @@ def get_indices_around_minimum_abs_error(error_array: Sequence) -> tuple[int, in
 
     check_single_minimum(error_array)
 
-    n = len(error_array)
-    index = get_index_of_minimum_abs_error(error_array)
+    n: Final[int] = len(error_array)
+    index: Final[int] = get_index_of_minimum_abs_error(error_array)
     if index == 0:
         return 0, 1
     elif index == n - 1:
@@ -54,7 +54,7 @@ def check_single_minimum(y_array: Sequence) -> None:
     check.array_type(y_array)
     check.length_is_greater_or_equal_to_n(y_array, 3)
 
-    n = len(y_array)
+    n: Final[int] = len(y_array)
     num_slope_changes = 0
     previous_slope = get_slope(y_array[0], y_array[1])
     for i in range(2, n):
@@ -74,7 +74,7 @@ def get_range_length(error_array: Sequence) -> float:
     check.array_type(error_array)
     check.length_is_greater_or_equal_to_n(error_array, 2)
 
-    n = len(error_array)
+    n: Final[int] = len(error_array)
     minimum_error = float("inf")
     maximum_error = float("-inf")
     for i in range(n):
