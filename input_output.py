@@ -6,9 +6,9 @@ import numpy.typing as npt
 import os.path
 
 import check
-from formatting import format_float, format_floats, format_floats_hq
+from formatting import format_float, format_floats, format_floats_hq, format_np_floating
 from sphere import Sphere, get_best_fit_sphere, get_sphere
-from typing import Any, Final, Sequence
+from typing import Any, Final
 
 
 def get_saddle_points(num_points: int, a: float, b: float, radius_x: float, radius_z: float,
@@ -60,7 +60,7 @@ max_positive_distance is {format_float(max_positive_distance)}')
     return distances, scaled_normals
 
 
-np.set_printoptions(formatter={'float_kind': format_float})
+np.set_printoptions(formatter={'float_kind': format_np_floating})
 
 
 def save_xyz_file(filename_xyz, points):
