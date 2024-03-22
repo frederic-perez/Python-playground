@@ -7,7 +7,7 @@ from typing import Final, Sequence
 
 
 def get_index_of_minimum_abs_error(error_array: Sequence) -> int:
-    check.array_type(error_array)
+    check.arrangement_type(error_array)
     check.not_empty(error_array)
 
     n: Final[int] = len(error_array)
@@ -22,7 +22,7 @@ def get_index_of_minimum_abs_error(error_array: Sequence) -> int:
 
 
 def get_indices_around_minimum_abs_error(error_array: Sequence) -> tuple[int, int]:
-    check.array_type(error_array)
+    check.arrangement_type(error_array)
     check.length_is_greater_or_equal_to_n(error_array, 3)
 
     check_single_minimum(error_array)
@@ -51,7 +51,7 @@ def get_slope(y0: float, y1: float) -> Slope:
 
 
 def check_single_minimum(y_array: Sequence) -> None:
-    check.array_type(y_array)
+    check.arrangement_type(y_array)
     check.length_is_greater_or_equal_to_n(y_array, 3)
 
     n: Final[int] = len(y_array)
@@ -71,7 +71,7 @@ def check_single_minimum(y_array: Sequence) -> None:
 
 
 def get_range_length(error_array: Sequence) -> float:
-    check.array_type(error_array)
+    check.arrangement_type(error_array)
     check.length_is_greater_or_equal_to_n(error_array, 2)
 
     n: Final[int] = len(error_array)

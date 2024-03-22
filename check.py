@@ -1,15 +1,20 @@
 """module docstring should be here"""
 
-from typing import Sequence
+import numpy.typing as npt
+
+from typing import Final, Sequence, TypeAlias
 
 
-def array_type(sequence: Sequence) -> None:
-    if not is_an_array(sequence):
-        raise TypeError('The arrangement should be an array')
+Arrangement: TypeAlias = Sequence | npt.NDArray
 
 
-def is_an_array(sequence: Sequence) -> bool:
-    return hasattr(sequence, "__len__") and not isinstance(sequence, str)
+def arrangement_type(arrangement: Arrangement) -> None:
+    if not is_an_arrangement(arrangement):
+        raise TypeError('The arrangement should be an Arrangement')
+
+
+def is_an_arrangement(arrangement: Arrangement) -> bool:
+    return hasattr(arrangement, "__len__") and not isinstance(arrangement, str)
 
 
 def tuple_type(arrangement: tuple) -> None:
@@ -21,9 +26,9 @@ def is_a_tuple(arrangement: tuple) -> bool:
     return isinstance(arrangement, tuple)
 
 
-def not_empty(sequence: Sequence) -> None:
-    if sequence.__len__() == 0:
-        raise ValueError('The sequence should not be empty')
+def not_empty(arrangement: Arrangement) -> None:
+    if arrangement.__len__() == 0:
+        raise ValueError('The arrangement should not be empty')
 
 
 """
@@ -33,34 +38,34 @@ See https://en.cppreference.com/w/cpp/language/operator_comparison.
 """
 
 
-def length_is_equal_to_n(sequence: Sequence, n: int) -> None:
-    length = len(sequence)
+def length_is_equal_to_n(arrangement: Arrangement, n: int) -> None:
+    length: Final = len(arrangement)
     if not length == n:
-        raise ValueError(f'The sequence should have exactly {n} element(s)')
+        raise ValueError(f'The arrangement should have exactly {n} element(s)')
 
 
-def length_is_less_than_n(sequence: Sequence, n: int) -> None:
-    length = len(sequence)
+def length_is_less_than_n(arrangement: Arrangement, n: int) -> None:
+    length: Final = len(arrangement)
     if not length < n:
-        raise ValueError(f'The sequence should have less than {n} element(s)')
+        raise ValueError(f'The arrangement should have less than {n} element(s)')
 
 
-def length_is_less_or_equal_to_n(sequence: Sequence, n: int) -> None:
-    length = len(sequence)
+def length_is_less_or_equal_to_n(arrangement: Arrangement, n: int) -> None:
+    length: Final = len(arrangement)
     if not length <= n:
-        raise ValueError(f'The sequence should have at most {n} element(s)')
+        raise ValueError(f'The arrangement should have at most {n} element(s)')
 
 
-def length_is_greater_than_n(sequence: Sequence, n: int) -> None:
-    length = len(sequence)
+def length_is_greater_than_n(arrangement: Arrangement, n: int) -> None:
+    length: Final = len(arrangement)
     if not length > n:
-        raise ValueError(f'The sequence should have more than {n} element(s)')
+        raise ValueError(f'The arrangement should have more than {n} element(s)')
 
 
-def length_is_greater_or_equal_to_n(sequence: Sequence, n: int) -> None:
-    length = len(sequence)
+def length_is_greater_or_equal_to_n(arrangement: Arrangement, n: int) -> None:
+    length: Final = len(arrangement)
     if not length >= n:
-        raise ValueError(f'The sequence should have at least {n} element(s)')
+        raise ValueError(f'The arrangement should have at least {n} element(s)')
 
 
 def number_is_positive(number: int | float) -> None:

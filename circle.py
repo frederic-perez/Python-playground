@@ -74,7 +74,7 @@ class Circle(object):
         return zero_in_practice(distance)
 
     def get_mse(self, points: Sequence[TupleOf2Numbers]) -> float:
-        check.array_type(points)
+        check.arrangement_type(points)
         check.not_empty(points)
 
         acc_squared_error: float = 0
@@ -85,7 +85,7 @@ class Circle(object):
         return acc_squared_error / len(points)
 
     def get_mean_signed_distance(self, points: Sequence[TupleOf2Numbers]) -> float:
-        check.array_type(points)
+        check.arrangement_type(points)
         check.not_empty(points)
 
         acc_signed_distance: float = 0
@@ -154,7 +154,7 @@ def get_y_min_and_y_max(points: Sequence[TupleOf2Numbers], x_center: Number, rad
 
 def get_best_fit_circle(points: Sequence[TupleOf2Numbers], x_center: Number, radius: Number, use_mse: bool,
                         num_samples: int) -> Circle:  # num_samples = 9):
-    check.array_type(points)
+    check.arrangement_type(points)
     check.length_is_greater_than_n(points, 3)
 
     y_min, y_max = get_y_min_and_y_max(points, x_center, radius)

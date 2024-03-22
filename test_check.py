@@ -14,16 +14,16 @@ from typing import Any
 
 class TestArrayType(unittest.TestCase):
 
-    def test_GivenANotAnArray_When_array_type_ThenExceptionIsRaised(self):
+    def test_GivenANotAnArray_When_arrangement_type_ThenExceptionIsRaised(self):
         errors = 'error'
-        self.assertRaises(TypeError, check.array_type, errors)
+        self.assertRaises(TypeError, check.arrangement_type, errors)
 
 
 class TestIsAnArray(unittest.TestCase):
 
-    def test_GivenANotAnArray_When_is_an_array_ThenReturnFalse(self):
+    def test_GivenANotAnArray_When_is_an_arrangement_ThenReturnFalse(self):
         errors = 'error'
-        self.assertFalse(check.is_an_array(errors))
+        self.assertFalse(check.is_an_arrangement(errors))
 
 
 class TestNotEmpty(unittest.TestCase):
@@ -134,7 +134,8 @@ class TestLengthIsGreaterThanN(unittest.TestCase):
 
 class TestLengthIsGreaterOrEqualToN(unittest.TestCase):
 
-    def test_GivenANotEmptyArrayAndNLowerOrEqualToItsSize_When_length_is_greater_or_equal_to_N_ThenExceptionIsNotRaised(self):
+    def test_GivenANotEmptyArrayAndNLowerOrEqualToItsSize_When_length_is_greater_or_equal_to_N_ThenExceptionIsNotRaised(
+            self):
         array = []
         for i in range(0, 5):
             array.append(i)
