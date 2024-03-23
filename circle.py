@@ -22,7 +22,7 @@ def as_tuple_of_2_floats(a: np.ndarray) -> TupleOf2Floats:
 
     # Convert each element to float if possible
     try:
-        result = (float(a[0]), float(a[1]))
+        result: Final = float(a[0]), float(a[1])
     except ValueError:
         raise ValueError("Both elements of the input array-like must be convertible to floats.")
 
@@ -30,8 +30,8 @@ def as_tuple_of_2_floats(a: np.ndarray) -> TupleOf2Floats:
 
 
 class Circle(object):
-    center: TupleOf2Floats
-    radius: float
+    center: Final[TupleOf2Floats]
+    radius: Final[float]
 
     def __new__(cls, center: TupleOf2Numbers, radius: Number) -> 'Circle':
         check.tuple_type(center)
@@ -51,9 +51,9 @@ class Circle(object):
             and equal_in_practice(self.radius, other.radius, epsilon)
 
     def __str__(self) -> str:
-        c_x = format_float(self.center[0])
-        c_y = format_float(self.center[1])
-        r = format_float(self.radius)
+        c_x: Final[str] = format_float(self.center[0])
+        c_y: Final[str] = format_float(self.center[1])
+        r: Final[str] = format_float(self.radius)
         return f'Circle(center=({c_x}, {c_y}), radius={r})'
 
     def get_radius(self) -> float:
@@ -66,11 +66,11 @@ class Circle(object):
         print(f'{message}: {self}')
 
     def get_signed_distance_to_circumference(self, point: TupleOf2Numbers) -> float:
-        point_in_np = np.array(point, np.float_)
+        point_in_np: Final = np.array(point, np.float_)
         return float(np.linalg.norm(self.center - point_in_np)) - self.radius
   
     def point_is_on_circumference(self, point: TupleOf2Numbers) -> bool:
-        distance = self.get_signed_distance_to_circumference(point)
+        distance: Final = self.get_signed_distance_to_circumference(point)
         return zero_in_practice(distance)
 
     def get_mse(self, points: Sequence[TupleOf2Numbers]) -> float:
@@ -99,6 +99,7 @@ def get_circle(points: Sequence[TupleOf2Numbers]) -> Circle:
     Code adapted from https://stackoverflow.com/questions/52990094
     on February 18, 2019
     """
+    check.arrangement_type(points)
     check.length_is_equal_to_n(points, 3)
 
     a = np.zeros((3, 3))
@@ -106,20 +107,20 @@ def get_circle(points: Sequence[TupleOf2Numbers]) -> Circle:
         a[i][0] = points[i][0]
         a[i][1] = points[i][1]
         a[i][2] = 1
-    determinant = np.linalg.det(a)
+    determinant: Final = np.linalg.det(a)
     if zero_in_practice(determinant):
         raise ArithmeticError('It is impossible to divide by zero')
 
-    temp = points[1][0]**2 + points[1][1]**2
-    bc = (points[0][0]**2 + points[0][1]**2 - temp) / 2
-    cd = (temp - points[2][0]**2 - points[2][1]**2) / 2
+    temp: Final = points[1][0]**2 + points[1][1]**2
+    bc: Final = (points[0][0]**2 + points[0][1]**2 - temp) / 2
+    cd: Final = (temp - points[2][0]**2 - points[2][1]**2) / 2
 
     # Center of circle
-    x: float = (bc*(points[1][1] - points[2][1]) - cd*(points[0][1] - points[1][1])) / determinant
-    y: float = ((points[0][0] - points[1][0]) * cd - (points[1][0] - points[2][0]) * bc) / determinant
+    x: Final = (bc*(points[1][1] - points[2][1]) - cd*(points[0][1] - points[1][1])) / determinant
+    y: Final = ((points[0][0] - points[1][0]) * cd - (points[1][0] - points[2][0]) * bc) / determinant
 
-    center: TupleOf2Floats = x, y
-    radius: float = math.sqrt((x - points[0][0]) ** 2 + (y - points[0][1]) ** 2)
+    center: Final[TupleOf2Floats] = x, y
+    radius: Final = math.sqrt((x - points[0][0]) ** 2 + (y - points[0][1]) ** 2)
 
     return Circle(center, radius)
 
@@ -137,7 +138,7 @@ def get_y_min_and_y_max(points: Sequence[TupleOf2Numbers], x_center: Number, rad
     """
     y_min = float("inf")
     y_max = -float("inf")
-    r_times_r = radius**2
+    r_times_r: Final = radius**2
 
     for point in points:
         discriminant = r_times_r - (x_center - point[0])**2
@@ -162,9 +163,9 @@ def get_best_fit_circle(points: Sequence[TupleOf2Numbers], x_center: Number, rad
     y = [0.] * num_samples
     error = [0.] * num_samples
 
-    done: bool = False
-    i: int = 0
-    idx_min: int = 0
+    done = False
+    i = 0
+    idx_min = 0
     while not done:
         delta = (y_max - y_min)/(num_samples - 1.)
         for j in range(num_samples):
@@ -187,16 +188,16 @@ def get_best_fit_circle(points: Sequence[TupleOf2Numbers], x_center: Number, rad
 
 def main():
     center: Final[TupleOf2Floats] = 1.1111, 2.2222
-    radius: Final[float] = 3.3333
+    radius: Final = 3.3333
     circle = Circle(center, radius)
     print(f'circle is {circle}')
     circle.spy('Spying circle')
 
     try:
-        negative_radius: Final[float] = -1.23456
+        negative_radius: Final = -1.23456
         Circle(center, negative_radius)
     except ValueError as error:
-        print(f'ValueError exception was expected: {error}')
+        print(f'ValueError exception caught, as expected: {error}')
 
 
 if __name__ == '__main__':

@@ -19,7 +19,8 @@ import math
 import numpy as np
 import unittest
 from epsilon import epsilon_distance, equal_in_practice, zero_in_practice
-from sphere import Sphere, get_sphere, get_best_fit_sphere, get_best_fit_sphere_for_radius_range
+from sphere import as_tuple_of_3_floats, get_sphere, get_best_fit_sphere, get_best_fit_sphere_for_radius_range, Sphere
+from typing import Final, TypeAlias
 
 
 class Test_Sphere(unittest.TestCase):
@@ -82,14 +83,14 @@ class Test_Sphere(unittest.TestCase):
         center = 1, 2, 3
         radius = 8
         sphere = Sphere(center, radius)
-        point = center + np.array([0, 0, radius])
+        point = as_tuple_of_3_floats(center + np.array([0, 0, radius]))
         self.assertTrue(zero_in_practice(sphere.get_signed_distance_to_surface(point)))
 
     def test_GivenSphereAndPointEqualToCenterPlus2RadiusForZ_When_get_signed_distance_to_surface_ThenReturnRadius(self):
         center = 1, 2, 3
         radius = 8
         sphere = Sphere(center, radius)
-        point = center + np.array([0, 0, 2*radius])
+        point = as_tuple_of_3_floats(center + np.array([0, 0, 2*radius]))
         self.assertTrue(equal_in_practice(sphere.get_signed_distance_to_surface(point), radius))
 
     def test_GivenSphereAndPointEqualToCenterPlusHalfRadiusForZ_When_get_signed_distance_to_surface_ThenReturnMinusHalfRadius(self):
@@ -97,45 +98,48 @@ class Test_Sphere(unittest.TestCase):
         radius = 8
         half_radius = radius/2
         sphere = Sphere(center, radius)
-        point = center + np.array([0, 0, half_radius])
+        point = as_tuple_of_3_floats(center + np.array([0, 0, half_radius]))
         self.assertTrue(equal_in_practice(sphere.get_signed_distance_to_surface(point), -half_radius))
 
     def test_GivenSphereAndPointEqualToCenterPlusRadiusForX_When_point_is_on_surface_ThenReturnTrue(self):
         center = 1, 2, 3
         radius = 7
         sphere = Sphere(center, radius)
-        point = center + np.array([radius, 0, 0])
+        point = as_tuple_of_3_floats(center + np.array([radius, 0, 0]))
         self.assertTrue(sphere.point_is_on_surface(point))
 
     def test_GivenSphereAndPointAlmostEqualToCenterPlusRadiusForX_When_point_is_on_surface_ThenReturnTrue(self):
         center = 1, 2, 3
         radius = 7
         sphere = Sphere(center, radius)
-        point = center + np.array([radius + epsilon_distance/2., 0, 0])
+        point = as_tuple_of_3_floats(center + np.array([radius + epsilon_distance/2., 0, 0]))
         self.assertTrue(sphere.point_is_on_surface(point))
 
     def test_GivenSphereAndPointFarEnoughToCenterPlusRadiusForX_When_point_is_on_surface_ThenReturnFalse(self):
         center = 1, 2, 3
         radius = 7
         sphere = Sphere(center, radius)
-        point = center + np.array([radius + 2. * epsilon_distance, 0, 0])
+        point = as_tuple_of_3_floats(center + np.array([radius + 2. * epsilon_distance, 0, 0]))
         self.assertFalse(sphere.point_is_on_surface(point))
 
 
-def get_sample_points_on_the_surface(sphere):
+TupleOf3Floats: TypeAlias = tuple[float, float, float]
+
+
+def get_sample_points_on_the_surface(sphere: Sphere) -> list[TupleOf3Floats]:
     # https://en.wikipedia.org/wiki/List_of_common_coordinate_transformations#From_spherical_coordinates
-    center = sphere.get_center()
-    radius = sphere.get_radius()
+    center: Final = sphere.get_center()
+    radius: Final = sphere.get_radius()
     points = []
-    angles_in_degrees = 0, 45, 90, 135, 180, 225, 270, 315
+    angles_in_degrees: Final = 0, 45, 90, 135, 180, 225, 270, 315
     for theta_in_degrees in angles_in_degrees:
         theta = math.radians(theta_in_degrees)
         for phi_in_degrees in angles_in_degrees:
             phi = math.radians(phi_in_degrees)
-            points.append([
+            points.append((
                 center[0] + radius*math.sin(theta)*math.cos(phi),
                 center[1] + radius*math.sin(theta)*math.sin(phi),
-                center[2] + radius*math.cos(theta)])
+                center[2] + radius*math.cos(theta)))
     return points
 
 
@@ -225,11 +229,11 @@ class Test_get_sphere(unittest.TestCase):
         self.assertRaises(ArithmeticError, get_sphere, points)
 
     def test_Given4PointsFrom_31_136_12_106_When_get_sphere_ThenReturnTheSitesResult(self):
-        point_1 = [-34.1186,  1.389,   8.5034]
-        point_2 = [-34.3179,  1.3719, -29.432]
-        point_3 = [-8.7948,  -0.1148, -10.462]
-        point_4 = [-60.527,   5.8305, -10.423]
-        points = [point_1, point_2, point_3, point_4]
+        point_1 = -34.1186,  1.389,   8.5034
+        point_2 = -34.3179,  1.3719, -29.432
+        point_3 = -8.7948,  -0.1148, -10.462
+        point_4 = -60.527,   5.8305, -10.423
+        points = point_1, point_2, point_3, point_4
         sphere_31_136_12_106 = get_sphere(points)
 
         center_from_site = -21.942809924607257, 113.52343730620188, -10.579341367428881
@@ -239,11 +243,11 @@ class Test_get_sphere(unittest.TestCase):
         self.assertEqual(sphere_31_136_12_106, sphere_from_site)
 
     def test_Given4PointsFrom_39_136_10_106_When_get_sphere_ThenReturnTheSitesResult(self):
-        point_1 = [-34.5737, 0.5015,  10.377]
-        point_2 = [-34.4944, 0.4966, -22.06]
-        point_3 = [-8.2244,  0.5713,  -5.6182]
-        point_4 = [-60.996,  4.412,   -5.7822]
-        points = [point_1, point_2, point_3, point_4]
+        point_1 = -34.5737, 0.5015,  10.377
+        point_2 = -34.4944, 0.4966, -22.06
+        point_3 = -8.2244,  0.5713,  -5.6182
+        point_4 = -60.996,  4.412,   -5.7822
+        points = point_1, point_2, point_3, point_4
         sphere_39_136_10_106 = get_sphere(points)
 
         center_from_site = -26.681763623168056, 111.42322500511179, -5.8390596432420425
@@ -272,18 +276,18 @@ class Test_get_best_fit_sphere(unittest.TestCase):
         center = 0, 0, 0
         radius = 3.4
         sphere = Sphere(center, radius)
-        center_x_and_z = [center[0], center[2]]
-        y_range = [-1, 3]
+        center_x_and_z = center[0], center[2]
+        y_range = -1, 3
 
         points = []
         for theta_in_degrees in 30, 60:
             theta = math.radians(theta_in_degrees)
             for phi_in_degrees in 0, 45, 90, 135, 180, 225, 270, 315:
                 phi = math.radians(phi_in_degrees)
-                points.append([
+                points.append((
                     center[0] + radius*math.sin(theta)*math.cos(phi),
                     center[1] + radius*math.cos(theta),
-                    center[2] + radius*math.sin(theta)*math.sin(phi)])
+                    center[2] + radius*math.sin(theta)*math.sin(phi)))
 
         for use_mse in True, False:
             for num_samples in range(4, 10):
@@ -295,18 +299,18 @@ class Test_get_best_fit_sphere(unittest.TestCase):
         center = 0, 0, 0
         radius = 3.4
         sphere = Sphere(center, radius)
-        center_x_and_z = [center[0], center[2]]
-        y_range = [-1, 10]
+        center_x_and_z = center[0], center[2]
+        y_range = -1, 10
 
         points = []
         for theta_in_degrees in 120, 160:
             theta = math.radians(theta_in_degrees)
             for phi_in_degrees in 0, 45, 90, 135, 180, 225, 270, 315:
                 phi = math.radians(phi_in_degrees)
-                points.append([
+                points.append((
                     center[0] + radius*math.sin(theta)*math.cos(phi),
                     center[1] + radius*math.cos(theta),
-                    center[2] + radius*math.sin(theta)*math.sin(phi)])
+                    center[2] + radius*math.sin(theta)*math.sin(phi)))
 
         for use_mse in True, False:
             for num_samples in range(4, 10):
@@ -318,8 +322,8 @@ class Test_get_best_fit_sphere(unittest.TestCase):
         center = 0, 0, 0
         radius = 3.4
         sphere = Sphere(center, radius)
-        center_x_and_z = [center[0], center[2]]
-        y_range = [-10, 20]
+        center_x_and_z = center[0], center[2]
+        y_range = -10, 20
         points = get_sample_points_on_the_surface(sphere)
         for use_mse in True, False:
             for num_samples in range(4, 10):
@@ -331,10 +335,10 @@ class Test_get_best_fit_sphere(unittest.TestCase):
 class Test_get_best_fit_sphere_for_radius_range(unittest.TestCase):
 
     def test_GivenLessThan5Points_When_get_best_fit_sphere_for_radius_range_ThenExceptionIsRaised(self):
-        point = [1, 3]
-        center_x_and_z = [0, 0]
-        y_range = [0, 500]
-        radius_range = [3.1, 3.9]
+        point = 1, 3
+        center_x_and_z = 0, 0
+        y_range = 0, 500
+        radius_range = 3.1, 3.9
         points = []
         for _ in range(5):
             points.append(point)

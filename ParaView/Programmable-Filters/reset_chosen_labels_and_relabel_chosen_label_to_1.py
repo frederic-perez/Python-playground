@@ -2,10 +2,10 @@
 
 input_data = self.GetInputDataObject(0, 0)
 image = vtk.vtkImageData.SafeDownCast(input_data)
-#print(image)
+# print(image)
 point_data = image.GetPointData()
 scalar_array = image.GetPointData().GetArray(0)
-#print(scalar_array)
+# print(scalar_array)
 max_label = int(scalar_array.GetRange()[1])
 num_tuples = scalar_array.GetNumberOfTuples()
 print(f'» max_label = {max_label}; #tuples = {num_tuples:,}')

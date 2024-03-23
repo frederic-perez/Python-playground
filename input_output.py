@@ -7,13 +7,17 @@ import os.path
 
 import check
 from formatting import format_float, format_floats, format_floats_hq, format_np_floating
-from sphere import Sphere, get_best_fit_sphere, get_sphere
-from typing import Any, Final, TypeAlias
+from sphere import as_tuple_of_3_floats, Sphere, get_best_fit_sphere, get_sphere
+from typing import Any, Final, Sequence, TypeAlias
+
+TupleOf2Floats: TypeAlias = tuple[float, float]
+TupleOf3Floats: TypeAlias = tuple[float, float, float]
+BoundingBoxOfFloats: TypeAlias = tuple[TupleOf2Floats, TupleOf2Floats, TupleOf2Floats]
 
 
 def get_saddle_points(num_points: int, a: float, b: float, radius_x: float, radius_z: float,
-                      offset_xyz: tuple[float, float, float], max_noise: float = 0) -> npt.NDArray:
-    points = np.random.rand(num_points, 3)
+                      offset_xyz: TupleOf3Floats, max_noise: float = 0) -> list[TupleOf3Floats]:
+    points = []
     a_sqr: Final[float] = a ** 2
     b_sqr: Final[float] = b ** 2
     for i in range(num_points):
@@ -29,22 +33,22 @@ def get_saddle_points(num_points: int, a: float, b: float, radius_x: float, radi
         if max_noise > 0.:
             for j in range(3):
                 point[j] += max_noise * (np.random.random_sample() - .5)
-        points[i] = point
+        points.append(as_tuple_of_3_floats(point))
     return points
 
 
-def get_distances_to_sphere_and_scaled_normals(points: npt.NDArray, sphere: Sphere) -> tuple[list[int], npt.NDArray]:
+def get_distances_to_sphere_and_scaled_normals(points: npt.NDArray, sphere: Sphere) -> tuple[list[float], npt.NDArray]:
     function_name: Final = get_distances_to_sphere_and_scaled_normals.__name__
     print(f'{function_name}: sphere is {sphere}')
     num_points: Final = len(points)
-    distances = [0] * num_points
+    distances = [0.] * num_points
     scaled_normals = np.random.rand(num_points, 3)
     center: Final = sphere.get_center()
     max_negative_distance = float("inf")
     max_positive_distance = -float("inf")
     for i in range(num_points):
         point = points[i]
-        distance = sphere.get_signed_distance_to_surface(point)
+        distance = sphere.get_signed_distance_to_surface(as_tuple_of_3_floats(point))
         max_negative_distance = min(max_negative_distance, distance)
         max_positive_distance = max(max_positive_distance, distance)
         # print(f'{function_name}: distance for point {i} = {point} is {format_float(distance)}')
@@ -63,7 +67,7 @@ def get_distances_to_sphere_and_scaled_normals(points: npt.NDArray, sphere: Sphe
 np.set_printoptions(formatter={'float_kind': format_np_floating})
 
 
-def save_xyz_file(filename_xyz: str, points: npt.NDArray) -> None:
+def save_xyz_file(filename_xyz: str, points: Sequence[TupleOf3Floats]) -> None:
     file_out = open(filename_xyz, 'w')
 
     for point in points:
@@ -135,7 +139,7 @@ def save_ply_file(filename_ply: str, points: npt.NDArray) -> None:
 
 def save_ply_file_with_distances_and_scaled_normals(filename_ply: str,
                                                     points: npt.NDArray,
-                                                    distances: list[int],
+                                                    distances: list[float],
                                                     scaled_normals: npt.NDArray) -> None:
     """
     Here we use the information given by Cory Quammen (from Kitware)
@@ -271,8 +275,8 @@ def play_with_a_saddle_like_whatnot_42_with_noise() -> None:
     save_xyz_file(saddle_filename_xyz, saddle_points)
     saddle_filename_ply: Final = 'data/saddle-like-whatnot-42-with-noise.ply'
     # sphere_center = [saddle_offset[0], 0, saddle_offset[2]]
-    sphere_center_x_and_z: Final = [saddle_offset[0], saddle_offset[2]]
-    sphere_y_range: Final = [0, 500]
+    sphere_center_x_and_z: Final[TupleOf2Floats] = saddle_offset[0], saddle_offset[2]
+    sphere_y_range: Final[TupleOf2Floats] = (0, 500)
     sphere_radius: Final = 106  # 6.8
     # sphere = Sphere(sphere_center, sphere_radius)
     use_mse: Final = True
@@ -282,10 +286,6 @@ def play_with_a_saddle_like_whatnot_42_with_noise() -> None:
     print(f'Best fit sphere for the saddle like whatnot-42 is {sphere}')
     save_as_ply_with_with_distances_and_scaled_normals_to_fitted_sphere(
         saddle_filename_xyz, sphere, saddle_filename_ply)
-
-
-TupleOf2Floats: TypeAlias = tuple[float, float]
-BoundingBoxOfFloats: TypeAlias = tuple[TupleOf2Floats, TupleOf2Floats, TupleOf2Floats]
 
 
 def get_bounding_box(points: npt.NDArray) -> BoundingBoxOfFloats:
@@ -303,13 +303,13 @@ def get_center(bounding_box: BoundingBoxOfFloats) -> npt.NDArray:
     return center
 
 
-def get_min_and_max_distances_between_points(points: npt.NDArray) -> tuple[float, float]:
+def get_min_and_max_distances_between_points(points: Sequence[TupleOf3Floats]) -> TupleOf2Floats:
     min_distance = float("inf")
     max_distance = float("-inf")
     num_points = len(points)
     for i in range(num_points):
         for j in range(i + 1, num_points):
-            vector = points[i] - points[j]
+            vector = np.array(points[i]) - np.array(points[j])
             distance = float(np.linalg.norm(vector))
             if distance < min_distance:
                 min_distance = distance
@@ -354,7 +354,6 @@ def get_spheres_given_series_of_4_points_and_study_variability(contour_id: str, 
     check.is_an_arrangement(points)
     check.length_is_greater_or_equal_to_n(points, 4)
     delta: Final = int(len(points) / 4)
-    four_points = np.random.rand(4, 3)
     sphere_centers: Final = np.array([])
     sphere_radii = []
     min_distance_between_points_compared = float("inf")
@@ -362,10 +361,11 @@ def get_spheres_given_series_of_4_points_and_study_variability(contour_id: str, 
     sorted_points: Final = get_sorted_points(points)
     save_ply_file('data/_contour-' + contour_id + '-debug--sorted-points.ply', sorted_points)
     for i in range(delta):
-        four_points[0] = sorted_points[i]
-        four_points[1] = sorted_points[i + delta]
-        four_points[2] = sorted_points[i + 2 * delta]
-        four_points[3] = sorted_points[i + 3 * delta]
+        four_points = [
+            as_tuple_of_3_floats(sorted_points[i]),
+            as_tuple_of_3_floats(sorted_points[i + delta]),
+            as_tuple_of_3_floats(sorted_points[i + 2 * delta]),
+            as_tuple_of_3_floats(sorted_points[i + 3 * delta])]
         min_distance_between_4_points, max_distance_between_4_points = get_min_and_max_distances_between_points(
             four_points)
         if min_distance_between_4_points < min_distance_between_points_compared:
