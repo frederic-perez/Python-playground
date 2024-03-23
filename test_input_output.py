@@ -8,6 +8,7 @@ Run the tests by executing, for all test classes:
 
 import unittest
 from input_output import save_as_ply
+from typing import Final
 
 
 class Test_save_as_ply(unittest.TestCase):
@@ -16,18 +17,18 @@ class Test_save_as_ply(unittest.TestCase):
         self.assertRaises(TypeError, save_as_ply)
 
     def test_GivenAnNonexistentInputFile_When_save_as_play_ThenExceptionIsRaised(self):
-        nonexistent_file_in_xyx = 'data/this-file-does-not-exist'
-        filename_out_ply = "data/out.ply"
+        nonexistent_file_in_xyx: Final = 'data/this-file-does-not-exist'
+        filename_out_ply: Final = "data/out.ply"
         self.assertRaises(IOError, save_as_ply, nonexistent_file_in_xyx, filename_out_ply)
 
     def test_GivenAnEmptyInputFile_When_save_as_play_ThenExceptionIsRaised(self):
-        empty_file_in_xyx = 'data/empty-file'
-        filename_out_ply = "data/out.ply"
+        empty_file_in_xyx: Final = 'data/empty-file'
+        filename_out_ply: Final = "data/out.ply"
         self.assertRaises(ValueError, save_as_ply, empty_file_in_xyx, filename_out_ply)
 
     def test_GivenAFaultyInputFile_When_save_as_play_ThenExceptionIsRaised(self):
-        faulty_file_in_xyx = 'data/points-in--faulty.xyz'
-        filename_out_ply = "data/out.ply"
+        faulty_file_in_xyx: Final = 'data/points-in--faulty.xyz'
+        filename_out_ply: Final = "data/out.ply"
         self.assertRaises(ValueError, save_as_ply, faulty_file_in_xyx, filename_out_ply)
 
 

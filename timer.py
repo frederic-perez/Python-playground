@@ -4,7 +4,9 @@ https://stackoverflow.com/questions/7370801/measure-time-elapsed-in-python
 """
 
 import time
+
 from timeit import default_timer
+from typing import Final
 
 
 class Timer:
@@ -27,11 +29,11 @@ class Timer:
         self._start = default_timer()
 
     def set_elapsed(self) -> None:
-        duration = default_timer() - self._start
+        duration: Final = default_timer() - self._start
         _, reminder_of_s = divmod(duration, 1)
-        ds = 10*round(reminder_of_s, 1)  # if we want ds
-        # cs = 100*round(remainder_of_s, 2)  # if we want cs
-        # ms = 1000*round(remainder_of_s, 3)  # if we want ms
+        ds: Final = 10*round(reminder_of_s, 1)  # if we want ds
+        # cs: Final = 100*round(remainder_of_s, 2)  # if we want cs
+        # ms: Final = 1000*round(remainder_of_s, 3)  # if we want ms
         m, s = divmod(duration, 60)
         h, m = divmod(m, 60)
 
@@ -56,7 +58,7 @@ class Timer:
 
 
 def main():
-    timer = Timer()
+    timer: Final = Timer()
     time.sleep(.12345678)  # 61.2345678)
     print(f'First `sleep` took {timer.elapsed()}')
 

@@ -8,6 +8,7 @@ Run the tests by executing, for all test classes:
 
 import math
 import unittest
+
 from epsilon import equal_in_practice
 from playground import average
 
