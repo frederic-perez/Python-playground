@@ -6,7 +6,7 @@ import subprocess
 
 from sphere import get_sphere, Sphere
 from timer import Timer
-from typing import Final, Sequence, TypeAlias
+from typing import Final, Generator, Sequence, TypeAlias
 
 logging.basicConfig(
     format='%(asctime)s.%(msecs)d %(levelname)-8s %(filename)s:%(lineno)d %(funcName)s: %(message)s',
@@ -65,6 +65,15 @@ def decompress_7z_file(filename: str, output_directory: str) -> None:
     logger.info(f'Command `{command}` took {timer.elapsed()} and returned {result}')
 
 
+def fibonacci_generator(n: int) -> Generator[int, None, None]:  # the function returns a generator that yields integers
+    a, b = 0, 1
+    count = 0
+    while count < n:
+        yield a
+        a, b = b, a + b
+        count += 1
+
+
 def main():
     play_with_numpy_random_numbers()
 
@@ -114,6 +123,13 @@ def main():
         if filename_extension == '7z':
             output_directory = filename[0:7]
             decompress_7z_file(filename, output_directory)
+
+    # Using the Fibonacci generator to print the first n Fibonacci numbers
+    n: Final = 10
+    print(f"First {n} Fibonacci numbers: ", end='')
+    for num in fibonacci_generator(10):
+        print(f"{num} ", end='')
+    print()
 
 
 if __name__ == '__main__':
