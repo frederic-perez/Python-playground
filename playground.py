@@ -6,7 +6,7 @@ import subprocess
 
 from sphere import get_sphere, Sphere
 from timer import Timer
-from typing import Final, Generator, Sequence, TypeAlias
+from typing import Callable, Final, Generator, Sequence, TypeAlias
 
 logging.basicConfig(
     format='%(asctime)s.%(msecs)d %(levelname)-8s %(filename)s:%(lineno)d %(funcName)s: %(message)s',
@@ -63,6 +63,29 @@ def decompress_7z_file(filename: str, output_directory: str) -> None:
     timer = Timer()
     result: Final[int] = subprocess.call(command, shell=True)  # returns the exit code in unix
     logger.info(f'Command `{command}` took {timer.elapsed()} and returned {result}')
+
+
+def apply_operation(operation: Callable[[int, int], int], a: int, b: int) -> int:
+    return operation(a, b)
+
+
+def add(x: int, y: int) -> int:
+    return x + y
+
+
+def multiply(x: int, y: int) -> int:
+    return x * y
+
+
+def create_multiplier(factor: int) -> Callable[[int], int]:
+    def multiplier(number: int) -> int:
+        return number * factor
+
+    return multiplier
+
+
+double: Callable[[int], int] = create_multiplier(2)
+triple: Callable[[int], int] = create_multiplier(3)
 
 
 def fibonacci_generator(n: int) -> Generator[int, None, None]:  # the function returns a generator that yields integers
@@ -123,6 +146,12 @@ def main():
         if filename_extension == '7z':
             output_directory = filename[0:7]
             decompress_7z_file(filename, output_directory)
+
+    print(f"double(7) = {double(7)}")
+    print(f"triple(8) = {triple(8)}")
+
+    print(f"apply_operation(add, 2, 3) = {apply_operation(add, 2, 3)}")
+    print(f"apply_operation(multiply, 4, 5) = {apply_operation(multiply, 4, 5)}")
 
     # Using the Fibonacci generator to print the first n Fibonacci numbers
     n: Final = 10
