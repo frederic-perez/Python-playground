@@ -3,6 +3,7 @@
 import tkinter as tk
 
 from enum import Enum
+from tkinter import ttk
 from typing import Final
 
 
@@ -43,6 +44,10 @@ def play_with_tkinter():
     help_.add_separator()
     help_.add_command(label='About Demo', command='')
 
+    # Create a label
+    labelForFoods: Final = tk.Label(root, text="Select a Monty Python's food:")
+    labelForFoods.pack(pady=5)
+
     # Define the radio buttons
     class MontyPythonFood(Enum):
         bacon = 'Bacon'
@@ -50,17 +55,47 @@ def play_with_tkinter():
         ham = 'Ham'
         spam = 'Spam'
 
-    options: Final = tuple((member.name, member.value) for member in MontyPythonFood)
+    optionsForFood: Final = tuple((member.name, member.value) for member in MontyPythonFood)
     radio_value: Final = tk.StringVar(value=MontyPythonFood.spam.name)  # Let us set spam as the default
-    for value, text in options:
+    for value, text in optionsForFood:
         tk.Radiobutton(root, text=text, variable=radio_value, value=value).pack(anchor=tk.W)
 
     def confirm():  # Function to be called when the user makes a selection
         user_choice = radio_value.get()
-        print(f"Selected option {user_choice}")
+        print(f"Selected Monty Python's food option: {user_choice}")
 
-    # Button to confirm the selection
+    # Button to print the selected radio button
     tk.Button(root, text="Confirm", command=confirm).pack()
+
+    # Create a label
+    labelForNames: Final = tk.Label(root, text="Select a placeholder name:")
+    labelForNames.pack(pady=5)
+
+    # Define the combobox
+    class PlaceholderName(Enum):
+        foo = 'foo'
+        bar = 'bar'
+        baz = 'baz'
+
+    optionsForNames: Final = tuple(member.value for member in PlaceholderName)
+    selected_option: Final = tk.StringVar()
+    combobox: Final = ttk.Combobox(root, textvariable=selected_option, values=optionsForNames)
+    combobox.set(PlaceholderName.bar.value)  # Let us set bar as the default
+    combobox.pack(pady=0)
+
+    # Define a function to handle the selection
+    def on_select(_):  # We define the argument with an underscore instead of 'event' because it is not used
+        selected: Final = combobox.get()
+        print(f"Selected placeholder name: {selected}")
+
+    # Bind the selection event to the function
+    combobox.bind("<<ComboboxSelected>>", on_select)
+
+    def go():
+        print(f"Selected Monty Python's food option {radio_value.get()}, and placeholder name {combobox.get()}")
+
+    # Button to print all the selections
+    tk.Button(root, text="Go", command=go).pack()
 
     # Display Menu
     root.config(menu=menubar)
