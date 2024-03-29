@@ -58,7 +58,7 @@ def play_with_tkinter():
     optionsForFood: Final = tuple((member.name, member.value) for member in MontyPythonFood)
     radio_value: Final = tk.StringVar(value=MontyPythonFood.spam.name)  # Let us set spam as the default
     for value, text in optionsForFood:
-        tk.Radiobutton(root, text=text, variable=radio_value, value=value).pack(anchor=tk.W)
+        tk.Radiobutton(root, text=text, variable=radio_value, value=value).pack(anchor=tk.CENTER)
 
     def confirm():  # Function to be called when the user makes a selection
         user_choice = radio_value.get()
@@ -96,6 +96,23 @@ def play_with_tkinter():
 
     # Button to print all the selections
     tk.Button(root, text="Go", command=go).pack()
+
+    # Let us play with fractals
+    def draw_fractal(the_canvas: tk.Canvas, x: int, y: int, size: int, level: int) -> None:
+        if level == 0:
+            the_canvas.create_rectangle(x, y, x + size, y + size, fill='blue')
+            return
+
+        new_size: Final[int] = int(size / 3)
+        for dx in [0, new_size, 2 * new_size]:
+            for dy in [0, new_size, 2 * new_size]:
+                if dx != new_size or dy != new_size:  # Skip the center square
+                    draw_fractal(the_canvas, x + dx, y + dy, new_size, level - 1)
+
+    canvas_size: Final[int] = 300
+    canvas: Final[tk.Canvas] = tk.Canvas(root, width=canvas_size, height=canvas_size)
+    canvas.pack()
+    draw_fractal(canvas, 0, 0, canvas_size, 4)
 
     # Display Menu
     root.config(menu=menubar)
