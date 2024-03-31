@@ -46,6 +46,14 @@ def generate_array_colors(num_colors: int, step_colors: int, card_s: int, card_v
     return tuple(array_colors)
 
 
+M: Final = 100.  # Magnitude
+K: Final = 16  # Maximum number of iterations
+num_colors: Final = 16
+step_colors: Final = 1
+card_s: Final = 1
+card_v: Final = 1
+
+
 def julia_set(photo_image: tk.PhotoImage) -> None:
     resolution_i: Final = photo_image.width()
     resolution_j: Final = photo_image.height()
@@ -55,12 +63,6 @@ def julia_set(photo_image: tk.PhotoImage) -> None:
     jy_min, jy_max = -1.5, 1.5
     inc_x: Final = (jx_max - jx_min)/(resolution_i - 1.)
     inc_y: Final = (jy_min - jy_max)/(resolution_j - 1.)
-    K: Final = 16  # Maximum number of iterations
-    M: Final = 100.
-    num_colors: Final = 16
-    step_colors: Final = 1
-    card_s: Final = 1
-    card_v: Final = 1
     int_color: int = 0
 
     informer_out: int = 1
@@ -82,7 +84,7 @@ def julia_set(photo_image: tk.PhotoImage) -> None:
                 k += 1
                 x_k = x_k_plus_1
                 y_k = y_k_plus_1
-                r = x_k * x_k+y_k * y_k
+                r = x_k * x_k + y_k * y_k
                 if r > M:
                     int_color = k % num_colors + 1
                     finished = True
@@ -98,8 +100,56 @@ def julia_set(photo_image: tk.PhotoImage) -> None:
             row_column += 1
 
 
+def mandelbrot_set(photo_image: tk.PhotoImage) -> None:
+    resolution_i: Final = photo_image.width()
+    resolution_j: Final = photo_image.height()
+
+    mp_min, mp_max = -2.25, .75
+    mq_min, mq_max = -1.5, 1.5
+    inc_p = (mp_max - mp_min)/(resolution_i - 1.)
+    inc_q = (mq_min - mq_max)/(resolution_j - 1.)  # beware!
+    int_color: int = 0
+
+    informer_out: int = 1
+    informer: int = int(math.floor(informer_out * resolution_i * resolution_j) / 10.)
+    row_column: int = 0
+
+    array_colors: Final = generate_array_colors(num_colors, step_colors, card_s, card_v)
+    # print(f"array_colors is {array_colors}")
+
+    for q in range(0, resolution_j):
+        for p in range(0, resolution_i):
+            k: int = 0
+            p_0 = mp_min + p * inc_p
+            q_0 = mq_max + q * inc_q  # beware!
+            x_k = 0.
+            y_k = 0.
+            finished = False
+            while not finished:
+                x_k_plus_1 = x_k * x_k - y_k * y_k + p_0
+                y_k_plus_1 = 2. * x_k * y_k + q_0
+                k += 1
+                x_k = x_k_plus_1
+                y_k = y_k_plus_1
+                r = x_k * x_k + y_k * y_k
+                if r > M:
+                    int_color = k % num_colors + 1
+                    finished = True
+                elif k == K:
+                    int_color = 0
+                    finished = True
+
+            photo_image.put(array_colors[int_color], (p, q))
+            if row_column > informer:
+                print(f"{informer_out}", end='', flush=True)
+                informer_out += 1
+                informer = int(math.floor(informer_out * resolution_i * resolution_j) / 10.)
+            row_column += 1
+
+
 def paint_fractal(photo_image: tk.PhotoImage) -> None:
     julia_set(photo_image)
+    # mandelbrot_set(photo_image)
 
 
 def create_a_window_and_paint_a_fractal(size: tuple[int, int]) -> None:
