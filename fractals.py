@@ -8,7 +8,17 @@ import random
 import tkinter as tk
 
 from formatting import format_float
+from timer import Timer
 from typing import Final, TypeAlias
+
+
+def sOrVcommand(event):
+    pass
+
+
+def grayCommand(event):
+    return
+
 
 TupleOf3Ints: TypeAlias = tuple[int, int, int]
 TupleOf3Floats: TypeAlias = tuple[float, float, float]
@@ -54,7 +64,13 @@ card_s: Final = 1
 card_v: Final = 1
 
 
-def julia_set(photo_image: tk.PhotoImage) -> None:
+def go_julia(canvas, size: tuple[int, int]) -> None:
+    timer: Final = Timer()
+    photo_image: Final = tk.PhotoImage(width=size[0], height=size[1])
+
+    # Draw the PhotoImage on the Canvas
+    # canvas.create_image((size[0] / 2, size[1] / 2), image=photo_image, state="normal")
+
     resolution_i: Final = photo_image.width()
     resolution_j: Final = photo_image.height()
 
@@ -98,9 +114,22 @@ def julia_set(photo_image: tk.PhotoImage) -> None:
                 informer_out += 1
                 informer = int(math.floor(informer_out * resolution_i * resolution_j) / 10.)
             row_column += 1
+    print('')
+
+    # canvas.create_image(0, 0, anchor=tk.NW, image=new_photo, tags="image")
+    canvas.create_image((size[0] / 2, size[1] / 2), image=photo_image, state="normal")
+    canvas.image = photo_image  # Keep a reference to the image
+    canvas.update()
+
+    function_name: Final = go_julia.__name__
+    print(f'Call to `{function_name}` took {timer.elapsed()}')
 
 
-def mandelbrot_set(photo_image: tk.PhotoImage) -> None:
+def go_mandelbrot(canvas, size: tuple[int, int]) -> None:
+    timer: Final = Timer()
+
+    photo_image: Final = tk.PhotoImage(width=size[0], height=size[1])
+
     resolution_i: Final = photo_image.width()
     resolution_j: Final = photo_image.height()
 
@@ -145,29 +174,177 @@ def mandelbrot_set(photo_image: tk.PhotoImage) -> None:
                 informer_out += 1
                 informer = int(math.floor(informer_out * resolution_i * resolution_j) / 10.)
             row_column += 1
+    print('')
 
-
-def paint_fractal(photo_image: tk.PhotoImage) -> None:
-    julia_set(photo_image)
-    # mandelbrot_set(photo_image)
-
-
-def create_a_window_and_paint_a_fractal(size: tuple[int, int]) -> None:
-    # Create tkinter window
-    window: Final = tk.Tk()
-    window.title('fractals')
-
-    canvas: Final[tk.Canvas] = tk.Canvas(window, width=size[0], height=size[1], background='black')
-    canvas.pack()
-
-    photo_image: Final = tk.PhotoImage(width=size[0], height=size[1])
-
-    # Draw the PhotoImage on the Canvas
+    # canvas.create_image(0, 0, anchor=tk.NW, image=new_photo, tags="image")
     canvas.create_image((size[0] / 2, size[1] / 2), image=photo_image, state="normal")
+    canvas.image = photo_image  # Keep a reference to the image
+    canvas.update()
 
-    paint_fractal(photo_image)
+    function_name: Final = go_mandelbrot.__name__
+    print(f'Call to `{function_name}` took {timer.elapsed()}')
 
-    window.config()
+
+def create_gui(size: int) -> None:
+    root = tk.Tk() # Create the main window
+
+    # Create the frames
+    args = tk.Frame(root, relief="raised", borderwidth=1)
+    args_julia_and_mandelbrot = tk.Frame(args, relief="raised", borderwidth=1)
+    args_julia = tk.Frame(args_julia_and_mandelbrot, relief="raised", borderwidth=1)
+    args_mandelbrot = tk.Frame(args_julia_and_mandelbrot, relief="raised", borderwidth=1)
+    args_controls = tk.Frame(args, relief="raised", borderwidth=1)
+    canvas: Final[tk.Canvas] = tk.Canvas(root, width=size, height=size, background='black')
+
+    # Pack the frames
+    args.pack(side="left", expand=True, fill="both")
+    args_julia_and_mandelbrot.pack(side="top", expand=True, fill="both")
+    args_julia.pack(side="left", expand=True, fill="both")
+    args_mandelbrot.pack(side="right", expand=True, fill="both")
+    args_controls.pack(side="bottom", expand=False, fill="both")
+    canvas.pack(side="right")
+
+    # Julia set
+    julia_label = tk.Label(args_julia, text="Julia set")
+    julia_rec_frame = tk.Frame(args_julia)
+    julia_rec_label = tk.Label(julia_rec_frame, text="Re(c)")
+    julia_rec_entry = tk.Entry(julia_rec_frame, width=12, relief="sunken", textvariable=tk.StringVar())
+    julia_rec_entry.bind("<Return>", lambda event: None)
+    julia_imc_frame = tk.Frame(args_julia)
+    julia_imc_label = tk.Label(julia_imc_frame, text="Im(c)")
+    julia_imc_entry = tk.Entry(julia_imc_frame, width=12, relief="sunken", textvariable=tk.StringVar())
+    julia_imc_entry.bind("<Return>", lambda event: None)
+    julia_xmin_frame = tk.Frame(args_julia)
+    julia_xmin_label = tk.Label(julia_xmin_frame, text="xMin")
+    julia_xmin_entry = tk.Entry(julia_xmin_frame, width=12, relief="sunken", textvariable=tk.StringVar())
+    julia_xmin_entry.bind("<Return>", lambda event: None)
+    julia_xmax_frame = tk.Frame(args_julia)
+    julia_xmax_label = tk.Label(julia_xmax_frame, text="xMax")
+    julia_xmax_entry = tk.Entry(julia_xmax_frame, width=12, relief="sunken", textvariable=tk.StringVar())
+    julia_xmax_entry.bind("<Return>", lambda event: None)
+    julia_ymin_frame = tk.Frame(args_julia)
+    julia_ymin_label = tk.Label(julia_ymin_frame, text="yMin")
+    julia_ymin_entry = tk.Entry(julia_ymin_frame, width=12, relief="sunken", textvariable=tk.StringVar())
+    julia_ymin_entry.bind("<Return>", lambda event: None)
+    julia_ymax_frame = tk.Frame(args_julia)
+    julia_ymax_label = tk.Label(julia_ymax_frame, text="yMax")
+    julia_ymax_entry = tk.Entry(julia_ymax_frame, width=12, relief="sunken", textvariable=tk.StringVar())
+    julia_ymax_entry.bind("<Return>", lambda event: None)
+    julia_go_button = tk.Button(args_julia, text="Go!", command=lambda: go_julia(canvas, (150, 150)))
+
+    # Mandelbrot set
+    mandelbrot_label = tk.Label(args_mandelbrot, text="Mandelbrot set")
+    mandelbrot_pmin_frame = tk.Frame(args_mandelbrot)
+    mandelbrot_pmin_label = tk.Label(mandelbrot_pmin_frame, text="pMin")
+    mandelbrot_pmin_entry = tk.Entry(mandelbrot_pmin_frame, width=12, relief="sunken", textvariable=tk.StringVar())
+    mandelbrot_pmin_entry.bind("<Return>", lambda event: None)
+    mandelbrot_pmax_frame = tk.Frame(args_mandelbrot)
+    mandelbrot_pmax_label = tk.Label(mandelbrot_pmax_frame, text="pMax")
+    mandelbrot_pmax_entry = tk.Entry(mandelbrot_pmax_frame, width=12, relief="sunken", textvariable=tk.StringVar())
+    mandelbrot_pmax_entry.bind("<Return>", lambda event: None)
+    mandelbrot_qmin_frame = tk.Frame(args_mandelbrot)
+    mandelbrot_qmin_label = tk.Label(mandelbrot_qmin_frame, text="qMin")
+    mandelbrot_qmin_entry = tk.Entry(mandelbrot_qmin_frame, width=12, relief="sunken", textvariable=tk.StringVar())
+    mandelbrot_qmin_entry.bind("<Return>", lambda event: None)
+    mandelbrot_qmax_frame = tk.Frame(args_mandelbrot)
+    mandelbrot_qmax_label = tk.Label(mandelbrot_qmax_frame, text="qMax")
+    mandelbrot_qmax_entry = tk.Entry(mandelbrot_qmax_frame, width=12, relief="sunken", textvariable=tk.StringVar())
+    mandelbrot_qmax_entry.bind("<Return>", lambda event: None)
+    mandelbrot_go_button = tk.Button(args_mandelbrot, text="Go!", command=lambda: go_mandelbrot(canvas, (150, 150)))
+
+    # Controls
+    controls_label = tk.Label(args_controls, text="Controls")
+    controls_myM_frame = tk.Frame(args_controls)
+    controls_myM_label = tk.Label(controls_myM_frame, text="M (magnitude)")
+    controls_myM_entry = tk.Entry(controls_myM_frame, width=5, relief="sunken", textvariable=tk.StringVar())
+    controls_myM_entry.bind("<Return>", lambda event: None)
+    controls_myK_frame = tk.Frame(args_controls)
+    controls_myK_label = tk.Label(controls_myK_frame, text="K (max. #iterations)")
+    controls_myK_entry = tk.Entry(controls_myK_frame, width=5, relief="sunken", textvariable=tk.StringVar())
+    controls_myK_entry.bind("<Return>", lambda event: None)
+    controls_myC_frame = tk.Frame(args_controls)
+    controls_myC_label = tk.Label(controls_myC_frame, text="C (max. #colors)")
+    controls_myC_entry = tk.Entry(controls_myC_frame, width=5, relief="sunken", textvariable=tk.StringVar())
+    controls_myC_entry.bind("<Return>", lambda event: None)
+    controls_mySC_frame = tk.Frame(args_controls)
+    controls_mySC_label = tk.Label(controls_mySC_frame, text="SC (step colors)")
+    controls_mySC_entry = tk.Entry(controls_mySC_frame, width=5, relief="sunken", textvariable=tk.StringVar())
+    controls_mySC_entry.bind("<Return>", lambda event: None)
+    controls_mySandV_frame = tk.Frame(args_controls)
+    controls_mySandV_s = tk.Scale(controls_mySandV_frame, label="s (saturation)", from_=0, to=10, length="3c", relief="sunken", orient="horizontal", command=sOrVcommand)
+    controls_mySandV_v = tk.Scale(controls_mySandV_frame, label="v (value)", from_=0, to=10, length="3c", relief="sunken", orient="horizontal", command=sOrVcommand)
+    controls_g_checkbutton = tk.Checkbutton(args_controls, text="g (gray)", variable=tk.BooleanVar(), relief="flat", anchor="w", command=grayCommand)
+    controls_resXandY_frame = tk.Frame(args_controls)
+    controls_resXandY_x_frame = tk.Frame(controls_resXandY_frame)
+    controls_resXandY_y_frame = tk.Frame(controls_resXandY_frame)
+    controls_resXandY_x_label = tk.Label(controls_resXandY_x_frame, text="resX")
+    controls_resXandY_x_entry = tk.Entry(controls_resXandY_x_frame, width=4, relief="sunken", textvariable=tk.StringVar())
+    controls_resXandY_y_label = tk.Label(controls_resXandY_y_frame, text="resY")
+    controls_resXandY_y_entry = tk.Entry(controls_resXandY_y_frame, width=4, relief="sunken", textvariable=tk.StringVar())
+
+    # Pack the widgets
+    julia_label.pack()
+    julia_rec_frame.pack(anchor="e")
+    julia_rec_label.pack(side="left", padx="1m")
+    julia_rec_entry.pack(side="left", padx="1m")
+    julia_imc_frame.pack(anchor="e")
+    julia_imc_label.pack(side="left", padx="1m")
+    julia_imc_entry.pack(side="left", padx="1m")
+    julia_xmin_frame.pack(anchor="e")
+    julia_xmin_label.pack(side="left", padx="1m")
+    julia_xmin_entry.pack(side="left", padx="1m")
+    julia_xmax_frame.pack(anchor="e")
+    julia_xmax_label.pack(side="left", padx="1m")
+    julia_xmax_entry.pack(side="left", padx="1m")
+    julia_ymin_frame.pack(anchor="e")
+    julia_ymin_label.pack(side="left", padx="1m")
+    julia_ymin_entry.pack(side="left", padx="1m")
+    julia_ymax_frame.pack(anchor="e")
+    julia_ymax_label.pack(side="left", padx="1m")
+    julia_ymax_entry.pack(side="left", padx="1m")
+    julia_go_button.pack(pady="1m")
+
+    mandelbrot_label.pack()
+    mandelbrot_pmin_frame.pack(anchor="se")
+    mandelbrot_pmin_label.pack(side="left", padx="1m")
+    mandelbrot_pmin_entry.pack(side="left", padx="1m")
+    mandelbrot_pmax_frame.pack(anchor="se")
+    mandelbrot_pmax_label.pack(side="left", padx="1m")
+    mandelbrot_pmax_entry.pack(side="left", padx="1m")
+    mandelbrot_qmin_frame.pack(anchor="se")
+    mandelbrot_qmin_label.pack(side="left", padx="1m")
+    mandelbrot_qmin_entry.pack(side="left", padx="1m")
+    mandelbrot_qmax_frame.pack(anchor="se")
+    mandelbrot_qmax_label.pack(side="left", padx="1m")
+    mandelbrot_qmax_entry.pack(side="left", padx="1m")
+    mandelbrot_go_button.pack(pady="1m")
+
+    controls_label.pack()
+    controls_myM_frame.pack()
+    controls_myM_label.pack(side="left")
+    controls_myM_entry.pack(side="left")
+    controls_myK_frame.pack()
+    controls_myK_label.pack(side="left")
+    controls_myK_entry.pack(side="left")
+    controls_myC_frame.pack()
+    controls_myC_label.pack(side="left")
+    controls_myC_entry.pack(side="left")
+    controls_mySC_frame.pack()
+    controls_mySC_label.pack(side="left")
+    controls_mySC_entry.pack(side="left")
+    controls_mySandV_frame.pack()
+    controls_mySandV_s.pack(side="left")
+    controls_mySandV_v.pack(side="right")
+    controls_g_checkbutton.pack()
+    controls_resXandY_frame.pack()
+    controls_resXandY_x_frame.pack(side="left")
+    controls_resXandY_x_label.pack(side="left")
+    controls_resXandY_x_entry.pack(side="left")
+    controls_resXandY_y_frame.pack(side="right")
+    controls_resXandY_y_entry.pack(side="right")
+    controls_resXandY_y_label.pack(side="right")
+
+    root.config()
     tk.mainloop()
 
 
@@ -176,8 +353,8 @@ def main():
     rgb: Final = hsv2rgb(hsv)
     print(f'hsv {to_str(hsv)} converted to RGB resulted in {to_str(rgb)}')
 
-    size: Final = 150, 150
-    create_a_window_and_paint_a_fractal(size)
+    canvas_size: Final[int] = 300
+    create_gui(canvas_size)
 
 
 if __name__ == '__main__':
