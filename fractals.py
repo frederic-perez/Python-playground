@@ -13,10 +13,6 @@ import tkinter.font as tkfont
 from typing import Final, TypeAlias
 
 
-def gray_command():
-    return
-
-
 TupleOf3Ints: TypeAlias = tuple[int, int, int]
 TupleOf3Floats: TypeAlias = tuple[float, float, float]
 
@@ -220,14 +216,34 @@ def create_gui(size: int) -> None:
     controls_card_sv_s.set(1)
     controls_card_sv_v = tk.Scale(controls_card_sv_frame, label="card{V} in HSV", from_=0, to=10, resolution=1, length="3c", relief="sunken", orient="horizontal")
     controls_card_sv_v.set(1)
-    controls_g_checkbutton = tk.Checkbutton(args_common_controls, text="g (gray)", variable=tk.BooleanVar(), relief="flat", anchor="w", command=gray_command)
+
+    gray = tk.BooleanVar(master=root, value=False)
+
+    def gray_command() -> None:
+        if not hasattr(gray_command, "old_s"):  # To create "static" attribute/variable for 's'
+            gray_command.old_s = 66  # type: ignore
+        if not hasattr(gray_command, "old_v"):  # To create "static" attribute/variable for 'v'
+            gray_command.old_v = 66  # type: ignore
+        if gray.get():  # i.e, the checkmark has been activated
+            gray_command.old_s = int(controls_card_sv_s.get())  # type: ignore  # Save the previous value
+            gray_command.old_v = int(controls_card_sv_v.get())  # type: ignore  # Save the previous value
+            controls_card_sv_s.set(0)
+            controls_card_sv_v.set(0)
+        else:
+            controls_card_sv_s.set(gray_command.old_s)  # type: ignore  # Try to restore the saved value
+            controls_card_sv_v.set(gray_command.old_v)  # type: ignore  # Try to restore the saved value
+
+    controls_g_checkbutton = tk.Checkbutton(args_common_controls, text="g (gray)", variable=gray, relief="flat", anchor="w", command=gray_command)
+
     controls_resXandY_frame = tk.Frame(args_common_controls)
     controls_resXandY_x_frame = tk.Frame(controls_resXandY_frame)
     controls_resXandY_y_frame = tk.Frame(controls_resXandY_frame)
-    controls_resXandY_x_label = tk.Label(controls_resXandY_x_frame, text="resX")
-    controls_resXandY_x_entry = tk.Entry(controls_resXandY_x_frame, width=4, relief="sunken", textvariable=tk.StringVar())
-    controls_resXandY_y_label = tk.Label(controls_resXandY_y_frame, text="resY")
-    controls_resXandY_y_entry = tk.Entry(controls_resXandY_y_frame, width=4, relief="sunken", textvariable=tk.StringVar())
+    controls_resXandY_x_label = tk.Label(controls_resXandY_x_frame, text="resolution_X")
+    res_x = tk.IntVar(master=root, value=100)
+    controls_resXandY_x_entry = tk.Entry(controls_resXandY_x_frame, width=5, relief="sunken", textvariable=res_x)
+    controls_resXandY_y_label = tk.Label(controls_resXandY_y_frame, text="resolution_Y")
+    res_y = tk.IntVar(master=root, value=150)
+    controls_resXandY_y_entry = tk.Entry(controls_resXandY_y_frame, width=5, relief="sunken", textvariable=res_y)
 
     # Julia set
     julia_label = tk.Label(args_julia, text="Julia set", font=font_for_titles)
@@ -255,7 +271,7 @@ def create_gui(size: int) -> None:
     julia_ymax_label = tk.Label(julia_ymax_frame, text="yMax")
     julia_ymax_entry = tk.Entry(julia_ymax_frame, width=12, relief="sunken", textvariable=tk.StringVar())
     julia_ymax_entry.bind("<Return>", lambda event: None)
-    julia_go_button = tk.Button(args_julia, text="Go!", command=lambda: go_julia(magnitude.get(), k_max.get(), c_max.get(), step_colors.get(), int(controls_card_sv_s.get()), int(controls_card_sv_v.get()), canvas, (150, 150)))
+    julia_go_button = tk.Button(args_julia, text="Go!", command=lambda: go_julia(magnitude.get(), k_max.get(), c_max.get(), step_colors.get(), int(controls_card_sv_s.get()), int(controls_card_sv_v.get()), canvas, (res_x.get(), res_y.get())))
 
     # Mandelbrot set
     mandelbrot_label = tk.Label(args_mandelbrot, text="Mandelbrot set", font=font_for_titles)
@@ -275,7 +291,7 @@ def create_gui(size: int) -> None:
     mandelbrot_qmax_label = tk.Label(mandelbrot_qmax_frame, text="qMax")
     mandelbrot_qmax_entry = tk.Entry(mandelbrot_qmax_frame, width=12, relief="sunken", textvariable=tk.StringVar())
     mandelbrot_qmax_entry.bind("<Return>", lambda event: None)
-    mandelbrot_go_button = tk.Button(args_mandelbrot, text="Go!", command=lambda: go_mandelbrot(magnitude.get(), k_max.get(), c_max.get(), step_colors.get(), int(controls_card_sv_s.get()), int(controls_card_sv_v.get()), canvas, (150, 150)))
+    mandelbrot_go_button = tk.Button(args_mandelbrot, text="Go!", command=lambda: go_mandelbrot(magnitude.get(), k_max.get(), c_max.get(), step_colors.get(), int(controls_card_sv_s.get()), int(controls_card_sv_v.get()), canvas, (res_x.get(), res_y.get())))
 
     #
     # Pack the widgets
