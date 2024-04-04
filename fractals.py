@@ -49,9 +49,54 @@ def generate_array_colors(num_colors: int, step_colors: int, card_s: int, card_v
     return tuple(array_colors)
 
 
-def go_julia(magnitude: float, k_max: int, num_colors: int, step_colors: int, card_s: int, card_v: int, canvas: tk.Canvas, size: tuple[int, int]) -> None:
+def singleton(cls):
+    """A decorator can be used to make a class a singleton. This method is concise and allows the class to be used as
+    a singleton without modifying its code. However, it has limitations, such as not being thread-safe and not allowing
+    the class to be inherited from."""
+    instances = {}
+
+    def wrapper(*args, **kwargs):
+        if cls not in instances:
+            instances[cls] = cls(*args, **kwargs)
+        return instances[cls]
+    return wrapper
+
+
+@singleton
+class CommonVars:
+    def __new__(cls,
+                a_magnitude: tk.DoubleVar,
+                a_k_max: tk.IntVar, a_c_max: tk.IntVar, a_step_colors: tk.IntVar,
+                a_card_s: tk.Scale, a_card_v: tk.Scale,
+                a_res_xy: tuple[tk.IntVar, tk.IntVar]) -> 'CommonVars':
+        return object.__new__(cls)
+
+    def __init__(self,
+                 a_magnitude: tk.DoubleVar,
+                 a_k_max: tk.IntVar, a_c_max: tk.IntVar, a_step_colors: tk.IntVar,
+                 a_card_s: tk.Scale, a_card_v: tk.Scale,
+                 a_res_xy: tuple[tk.IntVar, tk.IntVar]) -> None:
+        self.magnitude = a_magnitude
+        self.k_max = a_k_max
+        self.c_max = a_c_max
+        self.step_colors = a_step_colors
+        self.card_s = a_card_s
+        self.card_v = a_card_v
+        self.res_xy = a_res_xy[0], a_res_xy[1]
+
+
+def go_julia(common_vars: CommonVars, canvas: tk.Canvas) -> None:
     timer: Final = Timer()
-    photo_image: Final = tk.PhotoImage(width=size[0], height=size[1])
+
+    magnitude: Final[float] = common_vars.magnitude.get()
+    k_max: Final[int] = common_vars.k_max.get()
+    num_colors: Final[int] = common_vars.c_max.get()
+    step_colors: Final[int] = common_vars.step_colors.get()
+    card_s: Final[int] = int(common_vars.card_s.get())
+    card_v: Final[int] = int(common_vars.card_v.get())
+    res_xy: Final[tuple[int, int]] = common_vars.res_xy[0].get(), common_vars.res_xy[1].get()
+
+    photo_image: Final = tk.PhotoImage(width=res_xy[0], height=res_xy[1])
 
     resolution_i: Final = photo_image.width()
     resolution_j: Final = photo_image.height()
@@ -99,7 +144,7 @@ def go_julia(magnitude: float, k_max: int, num_colors: int, step_colors: int, ca
     print('')
 
     # canvas.create_image(0, 0, anchor=tk.NW, image=new_photo, tags="image")
-    canvas.create_image((size[0] / 2, size[1] / 2), image=photo_image, state="normal")
+    canvas.create_image((res_xy[0] / 2, res_xy[1] / 2), image=photo_image, state="normal")
     canvas.image = photo_image  # type: ignore  # Keep a reference to the image
     canvas.update()
 
@@ -107,10 +152,18 @@ def go_julia(magnitude: float, k_max: int, num_colors: int, step_colors: int, ca
     print(f'Call to `{function_name}` took {timer.elapsed()}')
 
 
-def go_mandelbrot(magnitude: float, k_max: int, num_colors: int, step_colors: int, card_s: int, card_v: int, canvas: tk.Canvas, size: tuple[int, int]) -> None:
+def go_mandelbrot(common_vars: CommonVars, canvas: tk.Canvas) -> None:
     timer: Final = Timer()
 
-    photo_image: Final = tk.PhotoImage(width=size[0], height=size[1])
+    magnitude: Final[float] = common_vars.magnitude.get()
+    k_max: Final[int] = common_vars.k_max.get()
+    num_colors: Final[int] = common_vars.c_max.get()
+    step_colors: Final[int] = common_vars.step_colors.get()
+    card_s: Final[int] = int(common_vars.card_s.get())
+    card_v: Final[int] = int(common_vars.card_v.get())
+    res_xy: Final[tuple[int, int]] = common_vars.res_xy[0].get(), common_vars.res_xy[1].get()
+
+    photo_image: Final = tk.PhotoImage(width=res_xy[0], height=res_xy[1])
 
     resolution_i: Final = photo_image.width()
     resolution_j: Final = photo_image.height()
@@ -159,7 +212,7 @@ def go_mandelbrot(magnitude: float, k_max: int, num_colors: int, step_colors: in
     print('')
 
     # canvas.create_image(0, 0, anchor=tk.NW, image=new_photo, tags="image")
-    canvas.create_image((size[0] / 2, size[1] / 2), image=photo_image, state="normal")
+    canvas.create_image((res_xy[0] / 2, res_xy[1] / 2), image=photo_image, state="normal")
     canvas.image = photo_image  # type: ignore  # Keep a reference to the image
     canvas.update()
 
@@ -167,7 +220,7 @@ def go_mandelbrot(magnitude: float, k_max: int, num_colors: int, step_colors: in
     print(f'Call to `{function_name}` took {timer.elapsed()}')
 
 
-def create_gui(size: int) -> None:
+def set_up_fully_operational_gui(size: int) -> None:
     root = tk.Tk()  # Create the main window
 
     # Create the frames
@@ -212,9 +265,11 @@ def create_gui(size: int) -> None:
     controls_step_colors_entry = tk.Entry(controls_step_colors_frame, width=5, textvariable=step_colors)
     controls_step_colors_entry.bind("<Return>", lambda event: None)
     controls_card_sv_frame = tk.Frame(args_common_controls)
-    controls_card_sv_s = tk.Scale(controls_card_sv_frame, label="card{S} in HSV", from_=0, to=10, resolution=1, length="3c", relief="sunken", orient="horizontal")
+    controls_card_sv_s = tk.Scale(controls_card_sv_frame, label="card{S} in HSV", from_=0, to=10, resolution=1,
+                                  length="3c", relief="sunken", orient="horizontal")
     controls_card_sv_s.set(1)
-    controls_card_sv_v = tk.Scale(controls_card_sv_frame, label="card{V} in HSV", from_=0, to=10, resolution=1, length="3c", relief="sunken", orient="horizontal")
+    controls_card_sv_v = tk.Scale(controls_card_sv_frame, label="card{V} in HSV", from_=0, to=10, resolution=1,
+                                  length="3c", relief="sunken", orient="horizontal")
     controls_card_sv_v.set(1)
 
     gray = tk.BooleanVar(master=root, value=False)
@@ -233,7 +288,8 @@ def create_gui(size: int) -> None:
             controls_card_sv_s.set(gray_command.old_s)  # type: ignore  # Try to restore the saved value
             controls_card_sv_v.set(gray_command.old_v)  # type: ignore  # Try to restore the saved value
 
-    controls_g_checkbutton = tk.Checkbutton(args_common_controls, text="g (gray)", variable=gray, relief="flat", anchor="w", command=gray_command)
+    controls_g_checkbutton = tk.Checkbutton(args_common_controls, text="g (gray)", variable=gray, relief="flat",
+                                            anchor="w", command=gray_command)
 
     controls_resXandY_frame = tk.Frame(args_common_controls)
     controls_resXandY_x_frame = tk.Frame(controls_resXandY_frame)
@@ -244,6 +300,9 @@ def create_gui(size: int) -> None:
     controls_resXandY_y_label = tk.Label(controls_resXandY_y_frame, text="resolution_Y")
     res_y = tk.IntVar(master=root, value=150)
     controls_resXandY_y_entry = tk.Entry(controls_resXandY_y_frame, width=5, relief="sunken", textvariable=res_y)
+
+    common_vars = CommonVars(magnitude, k_max, c_max, step_colors, controls_card_sv_s, controls_card_sv_v,
+                             (res_x, res_y))
 
     # Julia set
     julia_label = tk.Label(args_julia, text="Julia set", font=font_for_titles)
@@ -271,7 +330,7 @@ def create_gui(size: int) -> None:
     julia_ymax_label = tk.Label(julia_ymax_frame, text="yMax")
     julia_ymax_entry = tk.Entry(julia_ymax_frame, width=12, relief="sunken", textvariable=tk.StringVar())
     julia_ymax_entry.bind("<Return>", lambda event: None)
-    julia_go_button = tk.Button(args_julia, text="Go!", command=lambda: go_julia(magnitude.get(), k_max.get(), c_max.get(), step_colors.get(), int(controls_card_sv_s.get()), int(controls_card_sv_v.get()), canvas, (res_x.get(), res_y.get())))
+    julia_go_button = tk.Button(args_julia, text="Go!", command=lambda: go_julia(common_vars, canvas))
 
     # Mandelbrot set
     mandelbrot_label = tk.Label(args_mandelbrot, text="Mandelbrot set", font=font_for_titles)
@@ -291,7 +350,7 @@ def create_gui(size: int) -> None:
     mandelbrot_qmax_label = tk.Label(mandelbrot_qmax_frame, text="qMax")
     mandelbrot_qmax_entry = tk.Entry(mandelbrot_qmax_frame, width=12, relief="sunken", textvariable=tk.StringVar())
     mandelbrot_qmax_entry.bind("<Return>", lambda event: None)
-    mandelbrot_go_button = tk.Button(args_mandelbrot, text="Go!", command=lambda: go_mandelbrot(magnitude.get(), k_max.get(), c_max.get(), step_colors.get(), int(controls_card_sv_s.get()), int(controls_card_sv_v.get()), canvas, (res_x.get(), res_y.get())))
+    mandelbrot_go_button = tk.Button(args_mandelbrot, text="Go!", command=lambda: go_mandelbrot(common_vars, canvas))
 
     #
     # Pack the widgets
@@ -368,7 +427,7 @@ def main():
     print(f'hsv {to_str(hsv)} converted to RGB resulted in {to_str(rgb)}')
 
     canvas_size: Final[int] = 300
-    create_gui(canvas_size)
+    set_up_fully_operational_gui(canvas_size)
 
 
 if __name__ == '__main__':
