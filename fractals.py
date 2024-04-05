@@ -1,15 +1,13 @@
-"""module docstring should be here
-Originally based on the frim1’s (for "Fractal Images") good-old-`C` code circa 1995.
-"""
+"""Originally based on the frim1’s (for "Fractal Images") good-old-`C` code circa 1995."""
 
 import colorsys
 import math
 import random
 import tkinter as tk
+from tkinter.font import Font
 
 from formatting import format_float
 from timer import Timer
-import tkinter.font as tkfont
 from typing import Final, TypeAlias
 
 
@@ -25,7 +23,7 @@ def hsv2rgb(hsv: TupleOf3Floats) -> TupleOf3Floats:
     """Converts a color specification from the hsv model to the rgb model. As input, h ranges from 0. to 360. (not
     included), and s and v range from 0 to 1. [Baker]328.-"""
     (h, s, v) = hsv
-    return colorsys.hsv_to_rgb(h/360., s, v)  # h is normalized for the call to colorsys’s function
+    return colorsys.hsv_to_rgb(h/360., s, v)  # h must be normalized for the call to this particular function
 
 
 def to_str(rgb: TupleOf3Floats) -> str:
@@ -85,7 +83,38 @@ class CommonVars:
         self.res_xy = a_res_xy[0], a_res_xy[1]
 
 
-def go_julia(common_vars: CommonVars, canvas: tk.Canvas) -> None:
+@singleton
+class JuliaSetVars:
+    def __new__(cls,
+                a_c: tuple[tk.DoubleVar, tk.DoubleVar],  # complex c number (real and imaginary parts)
+                a_x_min_max: tuple[tk.DoubleVar, tk.DoubleVar],
+                a_y_min_max: tuple[tk.DoubleVar, tk.DoubleVar]) -> 'JuliaSetVars':
+        return object.__new__(cls)
+
+    def __init__(self,
+                 a_c: tuple[tk.DoubleVar, tk.DoubleVar],
+                 a_x_min_max: tuple[tk.DoubleVar, tk.DoubleVar],
+                 a_y_min_max: tuple[tk.DoubleVar, tk.DoubleVar]) -> None:
+        self.c = a_c[0], a_c[1]
+        self.x_min_max = a_x_min_max[0], a_x_min_max[1]
+        self.y_min_max = a_y_min_max[0], a_y_min_max[1]
+
+
+@singleton
+class MandelbrotSetVars:
+    def __new__(cls,
+                a_p_min_max: tuple[tk.DoubleVar, tk.DoubleVar],
+                a_q_min_max: tuple[tk.DoubleVar, tk.DoubleVar]) -> 'MandelbrotSetVars':
+        return object.__new__(cls)
+
+    def __init__(self,
+                 a_p_min_max: tuple[tk.DoubleVar, tk.DoubleVar],
+                 a_q_min_max: tuple[tk.DoubleVar, tk.DoubleVar]) -> None:
+        self.p_min_max = a_p_min_max[0], a_p_min_max[1]
+        self.q_min_max = a_q_min_max[0], a_q_min_max[1]
+
+
+def go_julia(common_vars: CommonVars, julia_set_vars: JuliaSetVars, canvas: tk.Canvas) -> None:
     timer: Final = Timer()
 
     magnitude: Final[float] = common_vars.magnitude.get()
@@ -96,16 +125,19 @@ def go_julia(common_vars: CommonVars, canvas: tk.Canvas) -> None:
     card_v: Final[int] = int(common_vars.card_v.get())
     res_xy: Final[tuple[int, int]] = common_vars.res_xy[0].get(), common_vars.res_xy[1].get()
 
+    c: Final[tuple[float, float]] = julia_set_vars.c[0].get(), julia_set_vars.c[1].get()
+    x_min: Final[float] = julia_set_vars.x_min_max[0].get()
+    x_max: Final[float] = julia_set_vars.x_min_max[1].get()
+    y_min: Final[float] = julia_set_vars.y_min_max[0].get()
+    y_max: Final[float] = julia_set_vars.y_min_max[1].get()
+
     photo_image: Final = tk.PhotoImage(width=res_xy[0], height=res_xy[1])
 
     resolution_i: Final = photo_image.width()
     resolution_j: Final = photo_image.height()
 
-    c: Final = -.39054, -.58679
-    jx_min, jx_max = -1.5, 1.5
-    jy_min, jy_max = -1.5, 1.5
-    inc_x: Final = (jx_max - jx_min)/(resolution_i - 1.)
-    inc_y: Final = (jy_min - jy_max)/(resolution_j - 1.)
+    inc_x: Final = (x_max - x_min)/(resolution_i - 1.)
+    inc_y: Final = (y_min - y_max)/(resolution_j - 1.)
     int_color: int = 0
 
     informer_out: int = 1
@@ -118,8 +150,8 @@ def go_julia(common_vars: CommonVars, canvas: tk.Canvas) -> None:
     for j in range(0, resolution_j):
         for i in range(0, resolution_i):
             k: int = 0
-            x_k = jx_min + i * inc_x
-            y_k = jy_max + j * inc_y
+            x_k = x_min + i * inc_x
+            y_k = y_max + j * inc_y
             finished = False
             while not finished:
                 x_k_plus_1 = x_k * x_k-y_k * y_k + c[0]
@@ -152,7 +184,7 @@ def go_julia(common_vars: CommonVars, canvas: tk.Canvas) -> None:
     print(f'Call to `{function_name}` took {timer.elapsed()}')
 
 
-def go_mandelbrot(common_vars: CommonVars, canvas: tk.Canvas) -> None:
+def go_mandelbrot(common_vars: CommonVars, mandelbrot_set_vars: MandelbrotSetVars, canvas: tk.Canvas) -> None:
     timer: Final = Timer()
 
     magnitude: Final[float] = common_vars.magnitude.get()
@@ -163,15 +195,18 @@ def go_mandelbrot(common_vars: CommonVars, canvas: tk.Canvas) -> None:
     card_v: Final[int] = int(common_vars.card_v.get())
     res_xy: Final[tuple[int, int]] = common_vars.res_xy[0].get(), common_vars.res_xy[1].get()
 
+    p_min: Final[float] = mandelbrot_set_vars.p_min_max[0].get()
+    p_max: Final[float] = mandelbrot_set_vars.p_min_max[1].get()
+    q_min: Final[float] = mandelbrot_set_vars.q_min_max[0].get()
+    q_max: Final[float] = mandelbrot_set_vars.q_min_max[1].get()
+
     photo_image: Final = tk.PhotoImage(width=res_xy[0], height=res_xy[1])
 
     resolution_i: Final = photo_image.width()
     resolution_j: Final = photo_image.height()
 
-    mp_min, mp_max = -2.25, .75
-    mq_min, mq_max = -1.5, 1.5
-    inc_p = (mp_max - mp_min)/(resolution_i - 1.)
-    inc_q = (mq_min - mq_max)/(resolution_j - 1.)  # beware!
+    inc_p = (p_max - p_min)/(resolution_i - 1.)
+    inc_q = (q_min - q_max)/(resolution_j - 1.)  # beware!
     int_color: int = 0
 
     informer_out: int = 1
@@ -184,8 +219,8 @@ def go_mandelbrot(common_vars: CommonVars, canvas: tk.Canvas) -> None:
     for q in range(0, resolution_j):
         for p in range(0, resolution_i):
             k: int = 0
-            p_0 = mp_min + p * inc_p
-            q_0 = mq_max + q * inc_q  # beware!
+            p_0 = p_min + p * inc_p
+            q_0 = q_max + q * inc_q  # beware!
             x_k = 0.
             y_k = 0.
             finished = False
@@ -240,7 +275,7 @@ def set_up_fully_operational_gui(size: int) -> None:
     canvas.pack(side="right")
 
     #
-    font_for_titles = tkfont.Font(size=12, weight="bold")
+    font_for_titles = Font(size=12, weight="bold")
 
     # Common controls
     controls_label = tk.Label(args_common_controls, text="Common controls", font=font_for_titles)
@@ -291,66 +326,83 @@ def set_up_fully_operational_gui(size: int) -> None:
     controls_g_checkbutton = tk.Checkbutton(args_common_controls, text="g (gray)", variable=gray, relief="flat",
                                             anchor="w", command=gray_command)
 
-    controls_resXandY_frame = tk.Frame(args_common_controls)
-    controls_resXandY_x_frame = tk.Frame(controls_resXandY_frame)
-    controls_resXandY_y_frame = tk.Frame(controls_resXandY_frame)
-    controls_resXandY_x_label = tk.Label(controls_resXandY_x_frame, text="resolution_X")
+    controls_res_x_and_y_frame = tk.Frame(args_common_controls)
+    controls_res_x_and_y__x_frame = tk.Frame(controls_res_x_and_y_frame)
+    controls_res_x_and_y_y_frame = tk.Frame(controls_res_x_and_y_frame)
+    controls_res_x_and_y_x_label = tk.Label(controls_res_x_and_y__x_frame, text="resolution_X")
     res_x = tk.IntVar(master=root, value=100)
-    controls_resXandY_x_entry = tk.Entry(controls_resXandY_x_frame, width=5, relief="sunken", textvariable=res_x)
-    controls_resXandY_y_label = tk.Label(controls_resXandY_y_frame, text="resolution_Y")
+    controls_res_x_and_y_x_entry = tk.Entry(controls_res_x_and_y__x_frame, width=5, relief="sunken", textvariable=res_x)
+    controls_res_x_and_y_y_label = tk.Label(controls_res_x_and_y_y_frame, text="resolution_Y")
     res_y = tk.IntVar(master=root, value=150)
-    controls_resXandY_y_entry = tk.Entry(controls_resXandY_y_frame, width=5, relief="sunken", textvariable=res_y)
+    controls_res_x_and_y_y_entry = tk.Entry(controls_res_x_and_y_y_frame, width=5, relief="sunken", textvariable=res_y)
 
     common_vars = CommonVars(magnitude, k_max, c_max, step_colors, controls_card_sv_s, controls_card_sv_v,
                              (res_x, res_y))
 
     # Julia set
     julia_label = tk.Label(args_julia, text="Julia set", font=font_for_titles)
-    julia_rec_frame = tk.Frame(args_julia)
-    julia_rec_label = tk.Label(julia_rec_frame, text="Re(c)")
-    julia_rec_entry = tk.Entry(julia_rec_frame, width=12, relief="sunken", textvariable=tk.StringVar())
-    julia_rec_entry.bind("<Return>", lambda event: None)
-    julia_imc_frame = tk.Frame(args_julia)
-    julia_imc_label = tk.Label(julia_imc_frame, text="Im(c)")
-    julia_imc_entry = tk.Entry(julia_imc_frame, width=12, relief="sunken", textvariable=tk.StringVar())
-    julia_imc_entry.bind("<Return>", lambda event: None)
-    julia_xmin_frame = tk.Frame(args_julia)
-    julia_xmin_label = tk.Label(julia_xmin_frame, text="xMin")
-    julia_xmin_entry = tk.Entry(julia_xmin_frame, width=12, relief="sunken", textvariable=tk.StringVar())
-    julia_xmin_entry.bind("<Return>", lambda event: None)
-    julia_xmax_frame = tk.Frame(args_julia)
-    julia_xmax_label = tk.Label(julia_xmax_frame, text="xMax")
-    julia_xmax_entry = tk.Entry(julia_xmax_frame, width=12, relief="sunken", textvariable=tk.StringVar())
-    julia_xmax_entry.bind("<Return>", lambda event: None)
-    julia_ymin_frame = tk.Frame(args_julia)
-    julia_ymin_label = tk.Label(julia_ymin_frame, text="yMin")
-    julia_ymin_entry = tk.Entry(julia_ymin_frame, width=12, relief="sunken", textvariable=tk.StringVar())
-    julia_ymin_entry.bind("<Return>", lambda event: None)
-    julia_ymax_frame = tk.Frame(args_julia)
-    julia_ymax_label = tk.Label(julia_ymax_frame, text="yMax")
-    julia_ymax_entry = tk.Entry(julia_ymax_frame, width=12, relief="sunken", textvariable=tk.StringVar())
-    julia_ymax_entry.bind("<Return>", lambda event: None)
-    julia_go_button = tk.Button(args_julia, text="Go!", command=lambda: go_julia(common_vars, canvas))
+    julia_re_c_frame = tk.Frame(args_julia)
+    julia_re_c_label = tk.Label(julia_re_c_frame, text="Re(c)")
+    re_c = tk.DoubleVar(master=root, value=-.39054)
+    julia_re_c_entry = tk.Entry(julia_re_c_frame, width=12, relief="sunken", textvariable=re_c)
+    julia_re_c_entry.bind("<Return>", lambda event: None)
+    julia_im_c_frame = tk.Frame(args_julia)
+    julia_im_c_label = tk.Label(julia_im_c_frame, text="Im(c)")
+    im_c = tk.DoubleVar(master=root, value=-.58679)
+    julia_im_c_entry = tk.Entry(julia_im_c_frame, width=12, relief="sunken", textvariable=im_c)
+    julia_im_c_entry.bind("<Return>", lambda event: None)
+    julia_x_min_frame = tk.Frame(args_julia)
+    julia_x_min_label = tk.Label(julia_x_min_frame, text="xMin")
+    x_min = tk.DoubleVar(master=root, value=-1.5)
+    julia_x_min_entry = tk.Entry(julia_x_min_frame, width=12, relief="sunken", textvariable=x_min)
+    julia_x_min_entry.bind("<Return>", lambda event: None)
+    julia_x_max_frame = tk.Frame(args_julia)
+    julia_x_max_label = tk.Label(julia_x_max_frame, text="xMax")
+    x_max = tk.DoubleVar(master=root, value=1.5)
+    julia_x_max_entry = tk.Entry(julia_x_max_frame, width=12, relief="sunken", textvariable=x_max)
+    julia_x_max_entry.bind("<Return>", lambda event: None)
+    julia_y_min_frame = tk.Frame(args_julia)
+    julia_y_min_label = tk.Label(julia_y_min_frame, text="yMin")
+    y_min = tk.DoubleVar(master=root, value=-1.5)
+    julia_y_min_entry = tk.Entry(julia_y_min_frame, width=12, relief="sunken", textvariable=y_min)
+    julia_y_min_entry.bind("<Return>", lambda event: None)
+    julia_y_max_frame = tk.Frame(args_julia)
+    julia_y_max_label = tk.Label(julia_y_max_frame, text="yMax")
+    y_max = tk.DoubleVar(master=root, value=1.5)
+    julia_y_max_entry = tk.Entry(julia_y_max_frame, width=12, relief="sunken", textvariable=y_max)
+    julia_y_max_entry.bind("<Return>", lambda event: None)
+
+    julia_set_vars = JuliaSetVars((re_c, im_c), (x_min, x_max), (y_min, y_max))
+
+    julia_go_button = tk.Button(args_julia, text="Go!", command=lambda: go_julia(common_vars, julia_set_vars, canvas))
 
     # Mandelbrot set
     mandelbrot_label = tk.Label(args_mandelbrot, text="Mandelbrot set", font=font_for_titles)
-    mandelbrot_pmin_frame = tk.Frame(args_mandelbrot)
-    mandelbrot_pmin_label = tk.Label(mandelbrot_pmin_frame, text="pMin")
-    mandelbrot_pmin_entry = tk.Entry(mandelbrot_pmin_frame, width=12, relief="sunken", textvariable=tk.StringVar())
-    mandelbrot_pmin_entry.bind("<Return>", lambda event: None)
-    mandelbrot_pmax_frame = tk.Frame(args_mandelbrot)
-    mandelbrot_pmax_label = tk.Label(mandelbrot_pmax_frame, text="pMax")
-    mandelbrot_pmax_entry = tk.Entry(mandelbrot_pmax_frame, width=12, relief="sunken", textvariable=tk.StringVar())
-    mandelbrot_pmax_entry.bind("<Return>", lambda event: None)
-    mandelbrot_qmin_frame = tk.Frame(args_mandelbrot)
-    mandelbrot_qmin_label = tk.Label(mandelbrot_qmin_frame, text="qMin")
-    mandelbrot_qmin_entry = tk.Entry(mandelbrot_qmin_frame, width=12, relief="sunken", textvariable=tk.StringVar())
-    mandelbrot_qmin_entry.bind("<Return>", lambda event: None)
-    mandelbrot_qmax_frame = tk.Frame(args_mandelbrot)
-    mandelbrot_qmax_label = tk.Label(mandelbrot_qmax_frame, text="qMax")
-    mandelbrot_qmax_entry = tk.Entry(mandelbrot_qmax_frame, width=12, relief="sunken", textvariable=tk.StringVar())
-    mandelbrot_qmax_entry.bind("<Return>", lambda event: None)
-    mandelbrot_go_button = tk.Button(args_mandelbrot, text="Go!", command=lambda: go_mandelbrot(common_vars, canvas))
+    mandelbrot_p_min_frame = tk.Frame(args_mandelbrot)
+    mandelbrot_p_min_label = tk.Label(mandelbrot_p_min_frame, text="pMin")
+    p_min = tk.DoubleVar(master=root, value=-2.25)
+    mandelbrot_p_min_entry = tk.Entry(mandelbrot_p_min_frame, width=12, relief="sunken", textvariable=p_min)
+    mandelbrot_p_min_entry.bind("<Return>", lambda event: None)
+    mandelbrot_p_max_frame = tk.Frame(args_mandelbrot)
+    mandelbrot_p_max_label = tk.Label(mandelbrot_p_max_frame, text="pMax")
+    p_max = tk.DoubleVar(master=root, value=.75)
+    mandelbrot_p_max_entry = tk.Entry(mandelbrot_p_max_frame, width=12, relief="sunken", textvariable=p_max)
+    mandelbrot_p_max_entry.bind("<Return>", lambda event: None)
+    mandelbrot_q_min_frame = tk.Frame(args_mandelbrot)
+    mandelbrot_q_min_label = tk.Label(mandelbrot_q_min_frame, text="qMin")
+    q_min = tk.DoubleVar(master=root, value=-1.5)
+    mandelbrot_q_min_entry = tk.Entry(mandelbrot_q_min_frame, width=12, relief="sunken", textvariable=q_min)
+    mandelbrot_q_min_entry.bind("<Return>", lambda event: None)
+    mandelbrot_q_max_frame = tk.Frame(args_mandelbrot)
+    mandelbrot_q_max_label = tk.Label(mandelbrot_q_max_frame, text="qMax")
+    q_max = tk.DoubleVar(master=root, value=1.5)
+    mandelbrot_q_max_entry = tk.Entry(mandelbrot_q_max_frame, width=12, relief="sunken", textvariable=q_max)
+    mandelbrot_q_max_entry.bind("<Return>", lambda event: None)
+
+    mandelbrot_set_vars = MandelbrotSetVars((p_min, p_max), (q_min, q_max))
+
+    mandelbrot_go_button = tk.Button(args_mandelbrot, text="Go!",
+                                     command=lambda: go_mandelbrot(common_vars, mandelbrot_set_vars, canvas))
 
     #
     # Pack the widgets
@@ -373,48 +425,48 @@ def set_up_fully_operational_gui(size: int) -> None:
     controls_card_sv_s.pack(side="left")
     controls_card_sv_v.pack(side="right")
     controls_g_checkbutton.pack()
-    controls_resXandY_frame.pack()
-    controls_resXandY_x_frame.pack(side="left")
-    controls_resXandY_x_label.pack(side="left")
-    controls_resXandY_x_entry.pack(side="left")
-    controls_resXandY_y_frame.pack(side="right")
-    controls_resXandY_y_entry.pack(side="right")
-    controls_resXandY_y_label.pack(side="right")
+    controls_res_x_and_y_frame.pack()
+    controls_res_x_and_y__x_frame.pack(side="left")
+    controls_res_x_and_y_x_label.pack(side="left")
+    controls_res_x_and_y_x_entry.pack(side="left")
+    controls_res_x_and_y_y_frame.pack(side="right")
+    controls_res_x_and_y_y_entry.pack(side="right")
+    controls_res_x_and_y_y_label.pack(side="right")
 
     julia_label.pack()
-    julia_rec_frame.pack(anchor="e")
-    julia_rec_label.pack(side="left", padx="1m")
-    julia_rec_entry.pack(side="left", padx="1m")
-    julia_imc_frame.pack(anchor="e")
-    julia_imc_label.pack(side="left", padx="1m")
-    julia_imc_entry.pack(side="left", padx="1m")
-    julia_xmin_frame.pack(anchor="e")
-    julia_xmin_label.pack(side="left", padx="1m")
-    julia_xmin_entry.pack(side="left", padx="1m")
-    julia_xmax_frame.pack(anchor="e")
-    julia_xmax_label.pack(side="left", padx="1m")
-    julia_xmax_entry.pack(side="left", padx="1m")
-    julia_ymin_frame.pack(anchor="e")
-    julia_ymin_label.pack(side="left", padx="1m")
-    julia_ymin_entry.pack(side="left", padx="1m")
-    julia_ymax_frame.pack(anchor="e")
-    julia_ymax_label.pack(side="left", padx="1m")
-    julia_ymax_entry.pack(side="left", padx="1m")
+    julia_re_c_frame.pack(anchor="e")
+    julia_re_c_label.pack(side="left", padx="1m")
+    julia_re_c_entry.pack(side="left", padx="1m")
+    julia_im_c_frame.pack(anchor="e")
+    julia_im_c_label.pack(side="left", padx="1m")
+    julia_im_c_entry.pack(side="left", padx="1m")
+    julia_x_min_frame.pack(anchor="e")
+    julia_x_min_label.pack(side="left", padx="1m")
+    julia_x_min_entry.pack(side="left", padx="1m")
+    julia_x_max_frame.pack(anchor="e")
+    julia_x_max_label.pack(side="left", padx="1m")
+    julia_x_max_entry.pack(side="left", padx="1m")
+    julia_y_min_frame.pack(anchor="e")
+    julia_y_min_label.pack(side="left", padx="1m")
+    julia_y_min_entry.pack(side="left", padx="1m")
+    julia_y_max_frame.pack(anchor="e")
+    julia_y_max_label.pack(side="left", padx="1m")
+    julia_y_max_entry.pack(side="left", padx="1m")
     julia_go_button.pack(pady="1m")
 
     mandelbrot_label.pack()
-    mandelbrot_pmin_frame.pack(anchor="se")
-    mandelbrot_pmin_label.pack(side="left", padx="1m")
-    mandelbrot_pmin_entry.pack(side="left", padx="1m")
-    mandelbrot_pmax_frame.pack(anchor="se")
-    mandelbrot_pmax_label.pack(side="left", padx="1m")
-    mandelbrot_pmax_entry.pack(side="left", padx="1m")
-    mandelbrot_qmin_frame.pack(anchor="se")
-    mandelbrot_qmin_label.pack(side="left", padx="1m")
-    mandelbrot_qmin_entry.pack(side="left", padx="1m")
-    mandelbrot_qmax_frame.pack(anchor="se")
-    mandelbrot_qmax_label.pack(side="left", padx="1m")
-    mandelbrot_qmax_entry.pack(side="left", padx="1m")
+    mandelbrot_p_min_frame.pack(anchor="se")
+    mandelbrot_p_min_label.pack(side="left", padx="1m")
+    mandelbrot_p_min_entry.pack(side="left", padx="1m")
+    mandelbrot_p_max_frame.pack(anchor="se")
+    mandelbrot_p_max_label.pack(side="left", padx="1m")
+    mandelbrot_p_max_entry.pack(side="left", padx="1m")
+    mandelbrot_q_min_frame.pack(anchor="se")
+    mandelbrot_q_min_label.pack(side="left", padx="1m")
+    mandelbrot_q_min_entry.pack(side="left", padx="1m")
+    mandelbrot_q_max_frame.pack(anchor="se")
+    mandelbrot_q_max_label.pack(side="left", padx="1m")
+    mandelbrot_q_max_entry.pack(side="left", padx="1m")
     mandelbrot_go_button.pack(pady="1m")
 
     root.config()
