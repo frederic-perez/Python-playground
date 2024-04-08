@@ -17,6 +17,7 @@ A place for continuous learning of Python and software engineering through exper
   - By [mCoding](https://www.youtube.com/@mCoding) (let us improve our code!):
     - [25 nooby Python habits you need to ditch](https://www.youtube.com/watch?v=qUeud6DvOWI)
     - [21 MORE nooby Python habits](https://www.youtube.com/watch?v=E8NijUYfyus)
+- [AI Tutor](https://community.uuki.live/course/tdb3Vsl1/python-course/aitutor) by UUKI helps teach Python to beginners and advanced learners
 - kaggle.com’s [learn/python](https://www.kaggle.com/learn/python)
 - tutorialspoint.com’s [Python Tutorial](https://www.tutorialspoint.com/python)
 - [Python for complete beginners](https://www.techwithtim.net/tutorials/python-programming/beginner-python-tutorials)
