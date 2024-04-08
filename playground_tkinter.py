@@ -93,11 +93,23 @@ def play_with_tkinter():
     # Bind the selection event to the function
     combobox.bind("<<ComboboxSelected>>", on_select)
 
-    def go():
+    def print_food_and_placeholder_name():
         print(f"Selected Monty Python's food option {radio_value.get()}, and placeholder name {combobox.get()}")
 
     # Button to print all the selections
-    tk.Button(root, text="Go", command=go).pack(pady=4)
+    tk.Button(root, text="Print food & placeholder name", command=print_food_and_placeholder_name).pack(pady=4)
+
+    # Create a label for the themes
+    tk.Label(root, text="Select a theme:").pack(pady=2)
+
+    # Create a combobox to select the theme
+    theme_var: Final = tk.StringVar()
+    theme_combobox = ttk.Combobox(root, textvariable=theme_var, values=ttk.Style().theme_names())
+    theme_combobox.set("default")  # Set default theme
+    theme_combobox.pack(pady=2)
+
+    # Button for the theme
+    tk.Button(root, text="Apply theme", command=lambda: ttk.Style().theme_use(theme_var.get())).pack(pady=4)
 
     def g_pline(the_canvas: tk.Canvas, vertices: list[TupleOf2Floats], origin: TupleOf2Floats, scale: float) -> None:
         n: Final = len(vertices)
