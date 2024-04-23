@@ -131,10 +131,12 @@ def go_julia(common_vars: CommonVars, julia_set_vars: JuliaSetVars, canvas: tk.C
     y_min: Final[float] = julia_set_vars.y_min_max[0].get()
     y_max: Final[float] = julia_set_vars.y_min_max[1].get()
 
-    photo_image: Final = tk.PhotoImage(width=res_xy[0], height=res_xy[1])
+    use_photo_image: Final[bool] = False  # True
 
-    resolution_i: Final = photo_image.width()
-    resolution_j: Final = photo_image.height()
+    photo_image: Final = tk.PhotoImage(width=res_xy[0], height=res_xy[1]) if use_photo_image else None
+
+    resolution_i: Final = res_xy[0]
+    resolution_j: Final = res_xy[1]
 
     inc_x: Final = (x_max - x_min)/(resolution_i - 1.)
     inc_y: Final = (y_min - y_max)/(resolution_j - 1.)
@@ -146,6 +148,8 @@ def go_julia(common_vars: CommonVars, julia_set_vars: JuliaSetVars, canvas: tk.C
 
     array_colors: Final = generate_array_colors(num_colors, step_colors, card_s, card_v)
     # print(f"array_colors is {array_colors}")
+
+    canvas.delete('all')  # delete old objects, reducing memory footprint and running time
 
     for j in range(0, resolution_j):
         for i in range(0, resolution_i):
@@ -167,18 +171,30 @@ def go_julia(common_vars: CommonVars, julia_set_vars: JuliaSetVars, canvas: tk.C
                     int_color = 0
                     finished = True
 
-            photo_image.put(array_colors[int_color], (i, j))
+            color = array_colors[int_color]  # DEBUGGING: color = array_colors[(1 + i + j) % num_colors]
+
+            # paint pixel
+            if use_photo_image:
+                photo_image.put(color, (i, j))
+            else:
+                canvas.create_rectangle(
+                    i + 2, j + 2, i + 2, j + 2,  # Experimentally we found out we need + 2 to paint ALL pixels
+                    fill=color, outline='')  # faster than canvas.create_oval
+
             if row_column > informer:
                 print(f"{informer_out}", end='', flush=True)
                 informer_out += 1
                 informer = int(math.floor(informer_out * resolution_i * resolution_j) / 10.)
+                if not use_photo_image:
+                    canvas.update()
             row_column += 1
     print('')
 
-    # canvas.create_image(0, 0, anchor=tk.NW, image=new_photo, tags="image")
-    canvas.create_image((res_xy[0] / 2, res_xy[1] / 2), image=photo_image, state="normal")
-    canvas.image = photo_image  # type: ignore  # Keep a reference to the image
-    canvas.update()
+    if use_photo_image:
+        # canvas.create_image(0, 0, anchor=tk.NW, image=new_photo, tags="image")
+        canvas.create_image((res_xy[0] / 2, res_xy[1] / 2), image=photo_image, state="normal")
+        canvas.image = photo_image  # type: ignore  # Keep a reference to the image
+        canvas.update()
 
     function_name: Final = go_julia.__name__
     print(f'Call to `{function_name}` took {timer.elapsed()}')
@@ -200,10 +216,12 @@ def go_mandelbrot(common_vars: CommonVars, mandelbrot_set_vars: MandelbrotSetVar
     q_min: Final[float] = mandelbrot_set_vars.q_min_max[0].get()
     q_max: Final[float] = mandelbrot_set_vars.q_min_max[1].get()
 
-    photo_image: Final = tk.PhotoImage(width=res_xy[0], height=res_xy[1])
+    use_photo_image: Final[bool] = False  # True
 
-    resolution_i: Final = photo_image.width()
-    resolution_j: Final = photo_image.height()
+    photo_image: Final = tk.PhotoImage(width=res_xy[0], height=res_xy[1]) if use_photo_image else None
+
+    resolution_i: Final = res_xy[0]
+    resolution_j: Final = res_xy[1]
 
     inc_p = (p_max - p_min)/(resolution_i - 1.)
     inc_q = (q_min - q_max)/(resolution_j - 1.)  # beware!
@@ -215,6 +233,8 @@ def go_mandelbrot(common_vars: CommonVars, mandelbrot_set_vars: MandelbrotSetVar
 
     array_colors: Final = generate_array_colors(num_colors, step_colors, card_s, card_v)
     # print(f"array_colors is {array_colors}")
+
+    canvas.delete('all')  # delete old objects, reducing memory footprint and running time
 
     for q in range(0, resolution_j):
         for p in range(0, resolution_i):
@@ -238,18 +258,30 @@ def go_mandelbrot(common_vars: CommonVars, mandelbrot_set_vars: MandelbrotSetVar
                     int_color = 0
                     finished = True
 
-            photo_image.put(array_colors[int_color], (p, q))
+            color = array_colors[int_color]  # DEBUGGING: color = array_colors[(1 + i + j) % num_colors]
+
+            # paint pixel
+            if use_photo_image:
+                photo_image.put(color, (p, q))
+            else:
+                canvas.create_rectangle(
+                    p + 2, q + 2, p + 2, q + 2,  # Experimentally we found out we need + 2 to paint ALL pixels
+                    fill=color, outline='')  # faster than canvas.create_oval
+
             if row_column > informer:
                 print(f"{informer_out}", end='', flush=True)
                 informer_out += 1
                 informer = int(math.floor(informer_out * resolution_i * resolution_j) / 10.)
+                if not use_photo_image:
+                    canvas.update()
             row_column += 1
     print('')
 
-    # canvas.create_image(0, 0, anchor=tk.NW, image=new_photo, tags="image")
-    canvas.create_image((res_xy[0] / 2, res_xy[1] / 2), image=photo_image, state="normal")
-    canvas.image = photo_image  # type: ignore  # Keep a reference to the image
-    canvas.update()
+    if use_photo_image:
+        # canvas.create_image(0, 0, anchor=tk.NW, image=new_photo, tags="image")
+        canvas.create_image((res_xy[0] / 2, res_xy[1] / 2), image=photo_image, state="normal")
+        canvas.image = photo_image  # type: ignore  # Keep a reference to the image
+        canvas.update()
 
     function_name: Final = go_mandelbrot.__name__
     print(f'Call to `{function_name}` took {timer.elapsed()}')
@@ -330,10 +362,10 @@ def set_up_fully_operational_gui(size: int) -> None:
     controls_res_x_and_y__x_frame = tk.Frame(controls_res_x_and_y_frame)
     controls_res_x_and_y_y_frame = tk.Frame(controls_res_x_and_y_frame)
     controls_res_x_and_y_x_label = tk.Label(controls_res_x_and_y__x_frame, text="resolution_X")
-    res_x = tk.IntVar(master=root, value=100)
+    res_x = tk.IntVar(master=root, value=128)
     controls_res_x_and_y_x_entry = tk.Entry(controls_res_x_and_y__x_frame, width=5, relief="sunken", textvariable=res_x)
     controls_res_x_and_y_y_label = tk.Label(controls_res_x_and_y_y_frame, text="resolution_Y")
-    res_y = tk.IntVar(master=root, value=150)
+    res_y = tk.IntVar(master=root, value=128)
     controls_res_x_and_y_y_entry = tk.Entry(controls_res_x_and_y_y_frame, width=5, relief="sunken", textvariable=res_y)
 
     common_vars = CommonVars(magnitude, k_max, c_max, step_colors, controls_card_sv_s, controls_card_sv_v,
@@ -478,7 +510,7 @@ def main():
     rgb: Final = hsv2rgb(hsv)
     print(f'hsv {to_str(hsv)} converted to RGB resulted in {to_str(rgb)}')
 
-    canvas_size: Final[int] = 300
+    canvas_size: Final[int] = 512  # Use something ridiculous like 10 to verify ALL expected pixels are painted
     set_up_fully_operational_gui(canvas_size)
 
 
