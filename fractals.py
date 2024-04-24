@@ -66,14 +66,16 @@ class CommonVars:
                 a_magnitude: tk.DoubleVar,
                 a_k_max: tk.IntVar, a_c_max: tk.IntVar, a_step_colors: tk.IntVar,
                 a_card_s: tk.Scale, a_card_v: tk.Scale,
-                a_res_xy: tuple[tk.IntVar, tk.IntVar]) -> 'CommonVars':
+                a_res_xy: tuple[tk.IntVar, tk.IntVar],
+                a_use_photo_image: tk.BooleanVar) -> 'CommonVars':
         return object.__new__(cls)
 
     def __init__(self,
                  a_magnitude: tk.DoubleVar,
                  a_k_max: tk.IntVar, a_c_max: tk.IntVar, a_step_colors: tk.IntVar,
                  a_card_s: tk.Scale, a_card_v: tk.Scale,
-                 a_res_xy: tuple[tk.IntVar, tk.IntVar]) -> None:
+                 a_res_xy: tuple[tk.IntVar, tk.IntVar],
+                 a_use_photo_image: tk.BooleanVar) -> None:
         self.magnitude = a_magnitude
         self.k_max = a_k_max
         self.c_max = a_c_max
@@ -81,6 +83,7 @@ class CommonVars:
         self.card_s = a_card_s
         self.card_v = a_card_v
         self.res_xy = a_res_xy[0], a_res_xy[1]
+        self.use_photo_image = a_use_photo_image
 
 
 @singleton
@@ -131,7 +134,7 @@ def go_julia(common_vars: CommonVars, julia_set_vars: JuliaSetVars, canvas: tk.C
     y_min: Final[float] = julia_set_vars.y_min_max[0].get()
     y_max: Final[float] = julia_set_vars.y_min_max[1].get()
 
-    use_photo_image: Final[bool] = False  # True
+    use_photo_image: Final[bool] = common_vars.use_photo_image.get()
 
     photo_image: Final = tk.PhotoImage(width=res_xy[0], height=res_xy[1]) if use_photo_image else None
 
@@ -175,7 +178,7 @@ def go_julia(common_vars: CommonVars, julia_set_vars: JuliaSetVars, canvas: tk.C
 
             # paint pixel
             if use_photo_image:
-                photo_image.put(color, (i, j))
+                photo_image.put(color, (i, j))  # type: ignore
             else:
                 canvas.create_rectangle(
                     i + 2, j + 2, i + 2, j + 2,  # Experimentally we found out we need + 2 to paint ALL pixels
@@ -192,7 +195,7 @@ def go_julia(common_vars: CommonVars, julia_set_vars: JuliaSetVars, canvas: tk.C
 
     if use_photo_image:
         # canvas.create_image(0, 0, anchor=tk.NW, image=new_photo, tags="image")
-        canvas.create_image((res_xy[0] / 2, res_xy[1] / 2), image=photo_image, state="normal")
+        canvas.create_image((2 + res_xy[0] / 2, 2 + res_xy[1] / 2), image=photo_image, state="normal")
         canvas.image = photo_image  # type: ignore  # Keep a reference to the image
         canvas.update()
 
@@ -216,7 +219,7 @@ def go_mandelbrot(common_vars: CommonVars, mandelbrot_set_vars: MandelbrotSetVar
     q_min: Final[float] = mandelbrot_set_vars.q_min_max[0].get()
     q_max: Final[float] = mandelbrot_set_vars.q_min_max[1].get()
 
-    use_photo_image: Final[bool] = False  # True
+    use_photo_image: Final[bool] = common_vars.use_photo_image.get()
 
     photo_image: Final = tk.PhotoImage(width=res_xy[0], height=res_xy[1]) if use_photo_image else None
 
@@ -262,7 +265,7 @@ def go_mandelbrot(common_vars: CommonVars, mandelbrot_set_vars: MandelbrotSetVar
 
             # paint pixel
             if use_photo_image:
-                photo_image.put(color, (p, q))
+                photo_image.put(color, (p, q))  # type: ignore
             else:
                 canvas.create_rectangle(
                     p + 2, q + 2, p + 2, q + 2,  # Experimentally we found out we need + 2 to paint ALL pixels
@@ -279,7 +282,7 @@ def go_mandelbrot(common_vars: CommonVars, mandelbrot_set_vars: MandelbrotSetVar
 
     if use_photo_image:
         # canvas.create_image(0, 0, anchor=tk.NW, image=new_photo, tags="image")
-        canvas.create_image((res_xy[0] / 2, res_xy[1] / 2), image=photo_image, state="normal")
+        canvas.create_image((2 + res_xy[0] / 2, 2 + res_xy[1] / 2), image=photo_image, state="normal")
         canvas.image = photo_image  # type: ignore  # Keep a reference to the image
         canvas.update()
 
@@ -289,6 +292,7 @@ def go_mandelbrot(common_vars: CommonVars, mandelbrot_set_vars: MandelbrotSetVar
 
 def set_up_fully_operational_gui(size: int) -> None:
     root = tk.Tk()  # Create the main window
+    root.title('fractals')
 
     # Create the frames
     args = tk.Frame(root, relief="raised", borderwidth=0)
@@ -367,9 +371,12 @@ def set_up_fully_operational_gui(size: int) -> None:
     controls_res_x_and_y_y_label = tk.Label(controls_res_x_and_y_y_frame, text="resolution_Y")
     res_y = tk.IntVar(master=root, value=128)
     controls_res_x_and_y_y_entry = tk.Entry(controls_res_x_and_y_y_frame, width=5, relief="sunken", textvariable=res_y)
-
+    use_photo_image = tk.BooleanVar(master=root, value=False)
+    controls_use_photo_image_checkbutton = tk.Checkbutton(args_common_controls, text="Use photo_image",
+                                                          variable=use_photo_image, relief="flat", anchor="w",
+                                                          command='')
     common_vars = CommonVars(magnitude, k_max, c_max, step_colors, controls_card_sv_s, controls_card_sv_v,
-                             (res_x, res_y))
+                             (res_x, res_y), use_photo_image)
 
     # Julia set
     julia_label = tk.Label(args_julia, text="Julia set", font=font_for_titles)
@@ -464,6 +471,7 @@ def set_up_fully_operational_gui(size: int) -> None:
     controls_res_x_and_y_y_frame.pack(side="right")
     controls_res_x_and_y_y_entry.pack(side="right")
     controls_res_x_and_y_y_label.pack(side="right")
+    controls_use_photo_image_checkbutton.pack()
 
     julia_label.pack()
     julia_re_c_frame.pack(anchor="e")
