@@ -29,6 +29,16 @@ def crop_image(image: Image) -> Image:
     return cropped_image
 
 
+def get_human_readable_size(size_in_bytes: int) -> str:
+    units = ["B", "KB", "MB", "GB", "TB", "PB"]
+    index = 0
+    size_as_float: float = size_in_bytes
+    while size_as_float >= 1024 and index < len(units) - 1:
+        size_as_float /= 1024.
+        index += 1
+    return f"{size_as_float:.1f}{units[index]}"
+
+
 def process_file(the_file_path_original: str, acc: int) -> None:
     # Open the original image
     image_original = Image.open(the_file_path_original)
@@ -45,8 +55,13 @@ def process_file(the_file_path_original: str, acc: int) -> None:
     # Save the cropped image
     image_cropped.save(file_path_treated)
 
-    print(f'{acc:03d}: {the_file_path_original}: {width_original} x {height_original} '
-          f'» {file_path_treated}: {width_cropped} x {height_cropped}')
+    basename_original: Final[str] = os.path.basename(the_file_path_original)
+    basename_treated: Final[str] = os.path.basename(file_path_treated)
+    size_original: Final[str] = get_human_readable_size(os.path.getsize(the_file_path_original))
+    size_cropped: Final[str] = get_human_readable_size(os.path.getsize(file_path_treated))
+    print(f'#{acc:03d} {basename_original} » {basename_treated}: '
+          f'From {width_original}x{height_original} ({size_original}) '
+          f'to {width_cropped}x{height_cropped} ({size_cropped})')
 
 
 def process_hardcoded(folder_path: str, pattern: str) -> None:
@@ -62,6 +77,12 @@ def process_hardcoded(folder_path: str, pattern: str) -> None:
 
 
 def process_files(file_paths: list[str]) -> None:
+    if len(file_paths) == 0:
+        return
+
+    folder_path: Final[str] = os.path.dirname(file_paths[0])
+    print(f"Folder path (of the first file) is `{folder_path}`")
+
     acc: int = 0
     for file_path_original in file_paths:
         acc += 1
@@ -78,3 +99,4 @@ if __name__ == '__main__':
         process_hardcoded(hardcoded_folder_path, hardcoded_pattern)
     else:
         process_files(sys.argv[1:])
+        input("Press any key to finish...")
