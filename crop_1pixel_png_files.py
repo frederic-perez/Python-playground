@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """module docstring should be here"""
 
 # Create an installer (a .exe file that will be placed in the dist/ subfolder) with the following command:
@@ -5,15 +6,20 @@
 # Then you can create a shortcut on the Desktop to the newly created file .../dist/crop_1pixel_png_files.exe
 # that allows dragging and dropping to the corresponding icon the user's selected files to be cropped.
 
+import colorama
+import emoji
 import os
 import re
 import sys
 
+from colorama import Fore, Back, Style
 from PIL import Image
-from typing import Final
+from typing import Final, TypeAlias
+
+PillowImage: TypeAlias = Image.Image
 
 
-def crop_image(image: Image) -> Image:
+def crop_image(image: PillowImage) -> PillowImage:
     # Get the dimensions of the image
     width, height = image.size
 
@@ -30,8 +36,8 @@ def crop_image(image: Image) -> Image:
 
 
 def get_human_readable_size(size_in_bytes: int) -> str:
-    units = ["B", "KB", "MB", "GB", "TB", "PB"]
-    index = 0
+    units: Final = "B", "KB", "MB", "GB", "TB", "PB"
+    index: int = 0
     size_as_float: float = size_in_bytes
     while size_as_float >= 1024 and index < len(units) - 1:
         size_as_float /= 1024.
@@ -39,29 +45,46 @@ def get_human_readable_size(size_in_bytes: int) -> str:
     return f"{size_as_float:.1f}{units[index]}"
 
 
+def calculate_percentage_reduction(size_a: int, size_b: int) -> float:
+    # Calculate the reduction amount
+    reduction_amount: Final[int] = size_a - size_b
+
+    # Calculate the percentage reduction
+    percentage_reduction: Final[float] = (reduction_amount / size_a) * 100
+
+    return percentage_reduction
+
+
 def process_file(the_file_path_original: str, acc: int) -> None:
     # Open the original image
-    image_original = Image.open(the_file_path_original)
+    image_original: Final = Image.open(the_file_path_original)
     width_original, height_original = image_original.size
 
     # Crop the image
-    image_cropped = crop_image(image_original)
+    image_cropped: Final = crop_image(image_original)
     width_cropped, height_cropped = image_cropped.size
 
     # Construct the file path for the new image by adding a suffix before the extension
     base, ext = os.path.splitext(the_file_path_original)
-    file_path_treated = f"{base}-TRTD{ext}"  # https://acronyms.thefreedictionary.com/trtd » Treated
+    file_path_treated: Final[str] = f"{base}-TRTD{ext}"  # https://acronyms.thefreedictionary.com/trtd » Treated
 
     # Save the cropped image
     image_cropped.save(file_path_treated)
 
     basename_original: Final[str] = os.path.basename(the_file_path_original)
-    basename_treated: Final[str] = os.path.basename(file_path_treated)
-    size_original: Final[str] = get_human_readable_size(os.path.getsize(the_file_path_original))
-    size_cropped: Final[str] = get_human_readable_size(os.path.getsize(file_path_treated))
-    print(f'#{acc:03d} {basename_original} » {basename_treated}: '
-          f'From {width_original}x{height_original} ({size_original}) '
-          f'to {width_cropped}x{height_cropped} ({size_cropped})')
+    basename_base, _ = os.path.splitext(basename_original)
+    size_original: Final[int] = os.path.getsize(the_file_path_original)
+    size_cropped: Final[int] = os.path.getsize(file_path_treated)
+    size_str_original: Final[str] = get_human_readable_size(size_original)
+    size_str_cropped: Final[str] = get_human_readable_size(size_cropped)
+    percent_reduction: Final[float] = calculate_percentage_reduction(size_original, size_cropped)
+    print(Back.LIGHTYELLOW_EX + Fore.BLACK + f' #{acc:03d} ' + Style.RESET_ALL + ' ' +
+          Fore.LIGHTCYAN_EX + f'{basename_base}' +
+          Back.LIGHTYELLOW_EX + Fore.BLACK + f' -TRTD ' + Style.RESET_ALL + Fore.LIGHTCYAN_EX + f'{ext}' +
+          Style.RESET_ALL + ': ' +
+          'From ' + Fore.LIGHTCYAN_EX + f'{width_original}x{height_original} ({size_str_original}) ' + Style.RESET_ALL +
+          'to ' + Back.LIGHTYELLOW_EX + Fore.BLACK + f' {width_cropped}x{height_cropped} ({size_str_cropped}'
+          ' ' + emoji.emojize(':down_arrow:') + f'{percent_reduction:.1f}%) ')
 
 
 def process_hardcoded(folder_path: str, pattern: str) -> None:
@@ -92,8 +115,10 @@ def process_files(file_paths: list[str]) -> None:
 
 
 if __name__ == '__main__':
+    colorama.init(autoreset=True)  # initialize the console
+
     if len(sys.argv) < 2:
-        print("No files provided » processing 'hardcoded' files")
+        print("No files provided » processing 'hardcoded' files:")
         hardcoded_folder_path: Final[str] = "D:\\3phemeral/foo-TRTD"
         hardcoded_pattern: Final[str] = r"^\d\d (DE|EN|ES) snap-\d{6}-\d{4}.png"
         process_hardcoded(hardcoded_folder_path, hardcoded_pattern)
