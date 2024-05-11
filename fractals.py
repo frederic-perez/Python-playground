@@ -178,7 +178,8 @@ def go_julia(common_vars: CommonVars, julia_set_vars: JuliaSetVars, canvas: tk.C
 
             # paint pixel
             if use_photo_image:
-                photo_image.put(color, (i, j))  # type: ignore
+                assert photo_image is not None  # prevents mypy from generating a [union-attr] error for the line below
+                photo_image.put(color, (i, j))
             else:
                 canvas.create_rectangle(
                     i + 2, j + 2, i + 2, j + 2,  # Experimentally we found out we need + 2 to paint ALL pixels
@@ -196,7 +197,7 @@ def go_julia(common_vars: CommonVars, julia_set_vars: JuliaSetVars, canvas: tk.C
     if use_photo_image:
         # canvas.create_image(0, 0, anchor=tk.NW, image=new_photo, tags="image")
         canvas.create_image((2 + res_xy[0] / 2, 2 + res_xy[1] / 2), image=photo_image, state="normal")
-        canvas.image = photo_image  # type: ignore  # Keep a reference to the image
+        canvas.image = photo_image  # type: ignore[attr-defined]  # Keep a reference to the image
         canvas.update()
 
     function_name: Final = go_julia.__name__
@@ -265,7 +266,8 @@ def go_mandelbrot(common_vars: CommonVars, mandelbrot_set_vars: MandelbrotSetVar
 
             # paint pixel
             if use_photo_image:
-                photo_image.put(color, (p, q))  # type: ignore
+                assert photo_image is not None  # prevents mypy from generating a [union-attr] error for the line below
+                photo_image.put(color, (p, q))
             else:
                 canvas.create_rectangle(
                     p + 2, q + 2, p + 2, q + 2,  # Experimentally we found out we need + 2 to paint ALL pixels
@@ -283,7 +285,7 @@ def go_mandelbrot(common_vars: CommonVars, mandelbrot_set_vars: MandelbrotSetVar
     if use_photo_image:
         # canvas.create_image(0, 0, anchor=tk.NW, image=new_photo, tags="image")
         canvas.create_image((2 + res_xy[0] / 2, 2 + res_xy[1] / 2), image=photo_image, state="normal")
-        canvas.image = photo_image  # type: ignore  # Keep a reference to the image
+        canvas.image = photo_image  # type: ignore[attr-defined]  # Keep a reference to the image
         canvas.update()
 
     function_name: Final = go_mandelbrot.__name__
@@ -345,19 +347,22 @@ def set_up_fully_operational_gui(size: int) -> None:
 
     gray = tk.BooleanVar(master=root, value=False)
 
-    def gray_command() -> None:
-        if not hasattr(gray_command, "old_s"):  # To create "static" attribute/variable for 's'
-            gray_command.old_s = 66  # type: ignore
-        if not hasattr(gray_command, "old_v"):  # To create "static" attribute/variable for 'v'
-            gray_command.old_v = 66  # type: ignore
-        if gray.get():  # i.e, the checkmark has been activated
-            gray_command.old_s = int(controls_card_sv_s.get())  # type: ignore  # Save the previous value
-            gray_command.old_v = int(controls_card_sv_v.get())  # type: ignore  # Save the previous value
-            controls_card_sv_s.set(0)
-            controls_card_sv_v.set(0)
-        else:
-            controls_card_sv_s.set(gray_command.old_s)  # type: ignore  # Try to restore the saved value
-            controls_card_sv_v.set(gray_command.old_v)  # type: ignore  # Try to restore the saved value
+    class GrayCommand:
+        def __init__(self):
+            self.old_s: int = 66
+            self.old_v: int = 66
+
+        def __call__(self) -> None:
+            if gray.get():  # i.e, the checkmark has been activated
+                self.old_s = int(controls_card_sv_s.get())
+                self.old_v = int(controls_card_sv_v.get())
+                controls_card_sv_s.set(0)
+                controls_card_sv_v.set(0)
+            else:
+                controls_card_sv_s.set(self.old_s)
+                controls_card_sv_v.set(self.old_v)
+
+    gray_command = GrayCommand()
 
     controls_g_checkbutton = tk.Checkbutton(args_common_controls, text="g (gray)", variable=gray, relief="flat",
                                             anchor="w", command=gray_command)

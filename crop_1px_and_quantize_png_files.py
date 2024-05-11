@@ -4,10 +4,12 @@ import os
 import re
 
 from PIL import Image
-from typing import Final
+from typing import Final, TypeAlias
+
+PillowImage: TypeAlias = Image.Image
 
 
-def crop_image(image: Image) -> Image:
+def crop_image(image: PillowImage) -> PillowImage:
     # Get the dimensions of the image
     width, height = image.size
 

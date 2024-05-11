@@ -61,7 +61,7 @@ def main():
 
     for language_str in languages_str:
         map_language_to_translator[language_str].install()  # The 'magic' happens here
-        print(f'- `{language_str}`: ' + _('Hello, world!'))
+        print(f'- `{language_str}`: ' + _('Hello, world!'))  # type: ignore[name-defined]
 
 
 if __name__ == '__main__':
