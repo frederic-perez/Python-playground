@@ -27,14 +27,19 @@ class OnOff(Enum):
     off = 'off'
 
 
+class CompressMode(Enum):
+    do_not_compress = 'do-not-compress'
+    reduce_palette = 'reduce-palette'
+    webp_convert = 'webp-convert'
+
+
 prog_name: Final[str] = os.path.basename(__file__)
 
 epilog_text: Final[str] = \
     (f'Treat png files depending on the CLI parameters.\n\n'
      'Usage examples:\n'
-     f'1) python {prog_name} --crop {OnOff.on.value} \n'
-     f'2) python {prog_name} @response-file-1.txt --dry-run\n'
-     f'3) python {prog_name} @response-file-1.txt @response-file-2.txt --crop {OnOff.off.value}\n')
+     f'1) python {prog_name} --crop {OnOff.on.value} --compress-mode {CompressMode.reduce_palette.value}\n'
+     f'2) python {prog_name} @response-file-1.txt @response-file-2.txt --crop {OnOff.off.value}\n')
 
 
 def create_parser() -> argparse.ArgumentParser:
@@ -55,11 +60,13 @@ def create_parser() -> argparse.ArgumentParser:
     operation_flags_and_parameters.add_argument(
         '--crop', choices=tuple(member.value for member in OnOff), dest='crop',
         type=str,
-        required=False, default=OnOff.on.value,
+        required=False, default=OnOff.off.value,
         help='crop (optional)')
     operation_flags_and_parameters.add_argument(
-        '--dry-run', dest='dry_run', action='store_true',
-        help='simulate the execution without applying any changes')  # flag
+        '--compress-mode', choices=tuple(member.value for member in CompressMode), dest='compress_mode',
+        type=str,
+        required=False, default=CompressMode.do_not_compress.value,
+        help='compress mode (optional)')
 
     # 2) Informative output
     #
@@ -78,7 +85,7 @@ def output_arguments(args: argparse.Namespace, unknown_args: list[str]) -> None:
     print('')
     print('1) Operation flags/parameters:')
     print(f'  --crop {args.crop}')
-    print('  --dry-run') if args.dry_run else print('  # --dry-run was not requested')
+    print(f'  --compress-mode {args.compress_mode}')
     print('')
     print('2) Informative output:')
     print(f'   --verbose {args.verbose}')
@@ -152,11 +159,7 @@ def process_file(the_file_path_original: str, acc: int) -> None:
     base, ext = os.path.splitext(the_file_path_original)
     file_path_treated: Final[str] = f"{base}-TRTD{ext}"  # https://acronyms.thefreedictionary.com/trtd » Treated
 
-    # Save the cropped image (if not dry_run)
-    if args.dry_run:
-        print(emoji.emojize(':cactus:') + f'{file_path_treated} not saved -- '
-              + Fore.LIGHTWHITE_EX + 'dry-run' + Style.RESET_ALL)
-        return
+    # Save the cropped image
     image_cropped.save(file_path_treated)
 
     basename_original: Final[str] = os.path.basename(the_file_path_original)
@@ -171,7 +174,7 @@ def process_file(the_file_path_original: str, acc: int) -> None:
           Back.LIGHTYELLOW_EX + Fore.BLACK + f' -TRTD ' + Style.RESET_ALL + Fore.LIGHTCYAN_EX + f'{ext}' +
           Style.RESET_ALL + ': ' +
           'From ' + Fore.LIGHTCYAN_EX + f'{width_original}x{height_original} ({size_str_original}) ' + Style.RESET_ALL +
-          'to ' + Back.LIGHTYELLOW_EX + Fore.BLACK + f' {width_cropped}x{height_cropped} ({size_str_cropped}'
+          'to ' + Back.LIGHTYELLOW_EX + Fore.BLACK + f' {width_cropped}x{height_cropped} ({size_str_cropped}' +
           ' ' + emoji.emojize(':down_arrow:') + f'{percent_reduction:.1f}%) ')
 
 
