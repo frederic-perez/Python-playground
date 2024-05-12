@@ -6,6 +6,7 @@
 # Then you can create a shortcut on the Desktop to the newly created file .../dist/crop_1pixel_png_files.exe
 # that allows dragging and dropping to the corresponding icon the user's selected files to be cropped.
 
+import argparse
 import colorama
 import emoji
 import os
@@ -13,10 +14,93 @@ import re
 import sys
 
 from colorama import Fore, Back, Style
+from enum import Enum
 from PIL import Image
+from timer import Timer
 from typing import Final, TypeAlias
 
 PillowImage: TypeAlias = Image.Image
+
+
+class OnOff(Enum):
+    on = 'on'
+    off = 'off'
+
+
+prog_name: Final[str] = os.path.basename(__file__)
+
+epilog_text: Final[str] = \
+    (f'Treat png files depending on the CLI parameters.\n\n'
+     'Usage examples:\n'
+     f'1) python {prog_name} --crop {OnOff.on.value} \n'
+     f'2) python {prog_name} @response-file-1.txt --dry-run\n'
+     f'3) python {prog_name} @response-file-1.txt @response-file-2.txt --crop {OnOff.off.value}\n')
+
+
+def create_parser() -> argparse.ArgumentParser:
+    # Create ArgumentParser instance
+    parser = argparse.ArgumentParser(
+        add_help=False,  # disable the default help argument provided by argparse
+        allow_abbrev=False,
+        description='A simple Python script to treat png images according to the CLI parameters.',
+        formatter_class=argparse.RawTextHelpFormatter,  # to preserve newlines and other formatting
+        fromfile_prefix_chars='@',
+        epilog=epilog_text)
+
+    # Define known command-line options
+
+    # 1) Operation flags/parameters
+    #
+    operation_flags_and_parameters = parser.add_argument_group('1) Operation flags/parameters')
+    operation_flags_and_parameters.add_argument(
+        '--crop', choices=tuple(member.value for member in OnOff), dest='crop',
+        type=str,
+        required=False, default=OnOff.on.value,
+        help='crop (optional)')
+    operation_flags_and_parameters.add_argument(
+        '--dry-run', dest='dry_run', action='store_true',
+        help='simulate the execution without applying any changes')  # flag
+
+    # 2) Informative output
+    #
+    informative_output = parser.add_argument_group('2) Informative output (optional)')
+    informative_output.add_argument('-h', '--help', action='help', help='show this help message and exit')
+    informative_output.add_argument(
+        '-v', '--verbose', choices=tuple(member.value for member in OnOff),
+        type=str,
+        required=False, default=OnOff.on.value)
+
+    return parser
+
+
+def output_arguments(args: argparse.Namespace, unknown_args: list[str]) -> None:
+    print(Style.BRIGHT + f'{prog_name}' + Style.RESET_ALL + ' was called with the following options:')
+    print('')
+    print('1) Operation flags/parameters:')
+    print(f'  --crop {args.crop}')
+    print('  --dry-run') if args.dry_run else print('  # --dry-run was not requested')
+    print('')
+    print('2) Informative output:')
+    print(f'   --verbose {args.verbose}')
+    print('')
+    print('3) Unknown arguments:')
+    print(f'   {unknown_args}')
+    print('')
+
+
+def deal_with_the_cli_parsing() -> tuple[argparse.Namespace, list[str]]:
+    parser = create_parser()
+    try:
+        args, unknown_args = parser.parse_known_args()  # Parse known command-line options
+    except SystemExit:
+        sys.exit(1)
+    except argparse.ArgumentError as e:
+        print(f'❌  ERROR: Caught `argparse.ArgumentError` {e}')
+        parser.print_help()
+        sys.exit(1)
+
+    output_arguments(args, unknown_args)
+    return args, unknown_args
 
 
 def crop_image(image: PillowImage) -> PillowImage:
@@ -68,7 +152,11 @@ def process_file(the_file_path_original: str, acc: int) -> None:
     base, ext = os.path.splitext(the_file_path_original)
     file_path_treated: Final[str] = f"{base}-TRTD{ext}"  # https://acronyms.thefreedictionary.com/trtd » Treated
 
-    # Save the cropped image
+    # Save the cropped image (if not dry_run)
+    if args.dry_run:
+        print(emoji.emojize(':cactus:') + f'{file_path_treated} not saved -- '
+              + Fore.LIGHTWHITE_EX + 'dry-run' + Style.RESET_ALL)
+        return
     image_cropped.save(file_path_treated)
 
     basename_original: Final[str] = os.path.basename(the_file_path_original)
@@ -104,7 +192,7 @@ def process_files(file_paths: list[str]) -> None:
         return
 
     folder_path: Final[str] = os.path.dirname(file_paths[0])
-    print(f"Folder path (of the first file) is `{folder_path}`")
+    print(f"Folder path (of the first file) is `{folder_path}`.\n")
 
     acc: int = 0
     for file_path_original in file_paths:
@@ -117,11 +205,24 @@ def process_files(file_paths: list[str]) -> None:
 if __name__ == '__main__':
     colorama.init(autoreset=True)  # initialize the console
 
-    if len(sys.argv) < 2:
+    timer = Timer()
+
+    args_and_unknown_args: Final = deal_with_the_cli_parsing()
+    args: Final[argparse.Namespace] = args_and_unknown_args[0]
+    unknown_args: Final[list[str]] = args_and_unknown_args[1]
+
+    if args.verbose == OnOff.on.value:
+        print(f'The actual work is about to start...\n')
+
+    if len(unknown_args) == 0:
         print("No files provided » processing 'hardcoded' files:")
         hardcoded_folder_path: Final[str] = "D:\\3phemeral/foo-TRTD"
         hardcoded_pattern: Final[str] = r"^\d\d (DE|EN|ES) snap-\d{6}-\d{4}.png"
         process_hardcoded(hardcoded_folder_path, hardcoded_pattern)
     else:
-        process_files(sys.argv[1:])
-        input("Press any key to finish...")
+        process_files(unknown_args)
+
+    if args.verbose == OnOff.on.value:
+        print('\n' + Style.BRIGHT + f'{prog_name}' + Style.RESET_ALL + f' finished in {timer.elapsed()}.')
+
+    input('\n' + Style.BRIGHT + Fore.LIGHTYELLOW_EX + 'Press any key to finish... ' + Style.RESET_ALL)
