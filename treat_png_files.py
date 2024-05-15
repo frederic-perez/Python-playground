@@ -2,13 +2,14 @@
 """module docstring should be here"""
 
 # Create an installer (a .exe file that will be placed in the dist/ subfolder) with the following command:
-# $ pyinstaller.exe --onefile crop_1pixel_png_files.py
-# Then you can create a shortcut on the Desktop to the newly created file .../dist/crop_1pixel_png_files.exe
+# $ pyinstaller.exe --onefile treat_png_files.py
+# Then you can create a shortcut on the Desktop to the newly created file .../dist/treat_png_files.exe
 # that allows dragging and dropping to the corresponding icon the user's selected files to be treated.
 
 import argparse
 import colorama
 import emoji
+import io
 import os
 import re
 import sys
@@ -126,6 +127,33 @@ def crop_image(image: PillowImage) -> PillowImage:
     return cropped_image
 
 
+def get_quality_to_save_as_webp(image: PillowImage, max_size_kb: int) -> int:
+    function_name: Final = get_quality_to_save_as_webp.__name__
+    spy: Final[bool] = True
+
+    # Start with maximum quality
+    quality: int = 100
+    while True:
+        buffer = io.BytesIO()
+        image.save(buffer, format="WEBP", quality=quality, method=6)
+        webp_data = buffer.getvalue()
+        size_kb: float = len(webp_data) / 1000  # 1024 A bit tricky to get a final file size that we (mostly) like
+
+        # Check if the file size is within the limit
+        if size_kb <= max_size_kb:
+            if spy:
+                print(emoji.emojize(':magnifying_glass_tilted_right:') +
+                      Fore.WHITE +
+                      f' {function_name}: size_kb is {size_kb} <= {max_size_kb} with quality = {quality}' +
+                      Style.RESET_ALL)
+            return quality
+
+        # Decrease quality and try again
+        quality -= 1
+        if quality < 0:
+            raise Exception("Cannot compress the image with the current settings.")
+
+
 def get_human_readable_size(size_in_bytes: int) -> str:
     units: Final = "B", "KB", "MB", "GB", "TB", "PB"
     index: int = 0
@@ -151,15 +179,31 @@ def process_file(args: argparse.Namespace, the_file_path_original: str, acc: int
     width_original, height_original = image_original.size
 
     image_treated = crop_image(image_original) if args.crop == OnOff.on.value else image_original
+    quality_for_webp: int = 0
+    try:
+        if args.compress_mode == CompressMode.do_not_compress.value:
+            pass  # Intentionally left empty - no action needed for this condition
+        elif args.compress_mode == CompressMode.reduce_palette.value:
+            image_treated = image_treated.quantize(colors=256)
+        elif args.compress_mode == CompressMode.webp_convert.value:
+            max_size_kb: Final[int] = 100
+            quality_for_webp = get_quality_to_save_as_webp(image_treated, max_size_kb)
+    except Exception as e:
+        print(f"Error: {e}")
 
     width_treated, height_treated = image_treated.size
 
     # Construct the file path for the new image by adding a suffix before the extension
     base, ext = os.path.splitext(the_file_path_original)
+    if args.compress_mode == CompressMode.webp_convert.value:
+        ext = ".webp"
     file_path_treated: Final[str] = f"{base}-TRTD{ext}"  # https://acronyms.thefreedictionary.com/trtd » Treated
 
     # Save the treated image
-    image_treated.save(file_path_treated)
+    if args.compress_mode == CompressMode.webp_convert.value:
+        image_treated.save(file_path_treated, format='WebP', quality=quality_for_webp)
+    else:
+        image_treated.save(file_path_treated)
 
     basename_original: Final[str] = os.path.basename(the_file_path_original)
     basename_base, _ = os.path.splitext(basename_original)
@@ -170,8 +214,8 @@ def process_file(args: argparse.Namespace, the_file_path_original: str, acc: int
     percent_reduction: Final[float] = calculate_percentage_reduction(size_original, size_treated)
     print(Back.LIGHTYELLOW_EX + Fore.BLACK + f' #{acc:03d} ' + Style.RESET_ALL + ' ' +
           Fore.LIGHTCYAN_EX + f'{basename_base}' +
-          Back.LIGHTYELLOW_EX + Fore.BLACK + f' -TRTD ' + Style.RESET_ALL + Fore.LIGHTCYAN_EX + f'{ext}' +
-          Style.RESET_ALL + ': ' +
+          Back.LIGHTYELLOW_EX + Fore.BLACK + f'-TRTD' + Style.RESET_ALL + Fore.LIGHTCYAN_EX + '.png' +
+          Back.LIGHTYELLOW_EX + Fore.BLACK + f'{ext}' + Style.RESET_ALL + ': ' +
           'From ' + Fore.LIGHTCYAN_EX + f'{width_original}x{height_original} ({size_str_original}) ' + Style.RESET_ALL +
           'to ' + Back.LIGHTYELLOW_EX + Fore.BLACK + f' {width_treated}x{height_treated} ({size_str_treated}' +
           ' ' + emoji.emojize(':down_arrow:') + f'{percent_reduction:.1f}%) ')
