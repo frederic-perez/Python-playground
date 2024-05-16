@@ -23,20 +23,47 @@
 #
 # `import gettext` below required 'python -m pip install python-gettext'
 #
+import colorama
 import gettext
+import msvcrt
 import os
 
+from colorama import Fore, Style
 from enum import Enum
 from typing import Final
 
 # _ = gettext.gettext
-#  '- Too bad: when uncommenting this line PyCharm does not complain about undefined reference,
+#  `- Too bad: when uncommenting this line PyCharm does not complain about undefined reference,
 #              but the translations stop working!
 
 dummy_string_to_ensure_utf_8_encoding = "ø"  # Non-ASCII character to ensure (I doubt this, BTW) UTF-8 encoding
 
 
+def read_char() -> str:
+    return msvcrt.getch().decode()
+
+
+def colored_input(prompt: str, color: str) -> str:
+    print(prompt, end='', flush=True)
+    input_value = ''
+    while True:
+        char = read_char()
+        if char == '\r':  # Enter key
+            print()
+            break
+        elif char == '\b':  # Backspace
+            if input_value:
+                print('\b \b', end='', flush=True)
+                input_value = input_value[:-1]
+        else:
+            print(f'{color}{char}', end='', flush=True)
+            input_value += char
+    return input_value
+
+
 def main():
+    colorama.init(autoreset=True)  # initialize the console
+
     # Set up the location of the .mo files
     localedir: Final[str] = os.path.join(os.path.dirname(__file__), 'locales')
 
@@ -57,11 +84,22 @@ def main():
     for language_str in languages_str:
         map_language_to_translator[language_str] = gettext.translation(domain, localedir, [language_str], fallback=True)
 
-    print('`Hello, world!` in different languages:')
+    print(Style.BRIGHT + 'Hello, world!' + Style.RESET_ALL + ' in different languages:')
 
     for language_str in languages_str:
         map_language_to_translator[language_str].install()  # The 'magic' happens here
-        print(f'- `{language_str}`: ' + _('Hello, world!'))  # type: ignore[name-defined]
+        print('- ' + Fore.LIGHTYELLOW_EX + f'{language_str}' + Style.RESET_ALL + ': ' +
+              _('Hello, world!'))  # type: ignore[name-defined]
+
+    while True:
+        language_str = colored_input('Please, type a target language (or something else, like `q`, to quit): ',
+                                     Fore.LIGHTYELLOW_EX)
+        if language_str in languages_str:
+            map_language_to_translator[language_str].install()  # The 'magic' happens here
+            print('» ' + Fore.LIGHTYELLOW_EX + f'{language_str}' + Style.RESET_ALL + ': ' +
+                  _('Hello, world!'))  # type: ignore[name-defined]
+        else:
+            break
 
 
 if __name__ == '__main__':
