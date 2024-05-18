@@ -2,8 +2,8 @@
 """module docstring should be here"""
 
 # Create an installer (a .exe file that will be placed in the dist/ subfolder) with the following command:
-# $ pyinstaller.exe --onefile treat_png_files.py
-# Then you can create a shortcut on the Desktop to the newly created file .../dist/treat_png_files.exe
+# $ pyinstaller.exe --onefile treat_image_files.py
+# Then you can create a shortcut on the Desktop to the newly created file .../dist/treat_image_files.exe
 # that allows dragging and dropping to the corresponding icon the user's selected files to be treated.
 
 import argparse
@@ -37,7 +37,7 @@ class CompressMode(Enum):
 prog_name: Final[str] = os.path.basename(__file__)
 
 epilog_text: Final[str] = \
-    (f'Treat png files depending on the CLI parameters.\n\n'
+    (f'Treat image files depending on the CLI parameters.\n\n'
      'Usage examples:\n'
      f'1) python {prog_name} --crop {OnOff.on.value} --compress-mode {CompressMode.reduce_palette.value}\n'
      f'2) python {prog_name} @response-file-1.txt @response-file-2.txt --crop {OnOff.off.value}\n')
@@ -48,7 +48,7 @@ def create_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         add_help=False,  # disable the default help argument provided by argparse
         allow_abbrev=False,
-        description='A simple Python script to treat png images according to the CLI parameters.',
+        description='A simple Python script to treat image files according to the CLI parameters.',
         formatter_class=argparse.RawTextHelpFormatter,  # to preserve newlines and other formatting
         fromfile_prefix_chars='@',
         epilog=epilog_text)
@@ -142,7 +142,7 @@ def get_quality_to_save_as_webp(image: PillowImage, max_size_kb: int) -> int:
         # Check if the file size is within the limit
         if size_kb <= max_size_kb:
             if spy:
-                print(emoji.emojize(':magnifying_glass_tilted_right:') +
+                print(emoji.emojize(':detective:', variant='emoji_type') +
                       Fore.WHITE +
                       f' {function_name}: size_kb is {size_kb} <= {max_size_kb} with quality = {quality}' +
                       Style.RESET_ALL)
@@ -194,10 +194,11 @@ def process_file(args: argparse.Namespace, the_file_path_original: str, acc: int
     width_treated, height_treated = image_treated.size
 
     # Construct the file path for the new image by adding a suffix before the extension
-    base, ext = os.path.splitext(the_file_path_original)
+    base, ext_original = os.path.splitext(the_file_path_original)
+    ext_treated = ext_original
     if args.compress_mode == CompressMode.webp_convert.value:
-        ext = ".webp"
-    file_path_treated: Final[str] = f"{base}-TRTD{ext}"  # https://acronyms.thefreedictionary.com/trtd » Treated
+        ext_treated = ".webp"
+    file_path_treated: Final[str] = f"{base}-TRTD{ext_treated}"  # https://acronyms.thefreedictionary.com/trtd » Treated
 
     # Save the treated image
     if args.compress_mode == CompressMode.webp_convert.value:
@@ -214,15 +215,15 @@ def process_file(args: argparse.Namespace, the_file_path_original: str, acc: int
     percent_reduction: Final[float] = calculate_percentage_reduction(size_original, size_treated)
     print(Back.LIGHTYELLOW_EX + Fore.BLACK + f' #{acc:03d} ' + Style.RESET_ALL + ' ' +
           Fore.LIGHTCYAN_EX + f'{basename_base}' +
-          Back.LIGHTYELLOW_EX + Fore.BLACK + f'-TRTD' + Style.RESET_ALL + Fore.LIGHTCYAN_EX + '.png' +
-          Back.LIGHTYELLOW_EX + Fore.BLACK + f'{ext}' + Style.RESET_ALL + ': ' +
+          Back.LIGHTYELLOW_EX + Fore.BLACK + f'-TRTD' + Style.RESET_ALL + Fore.LIGHTCYAN_EX + f'{ext_original}' +
+          Back.LIGHTYELLOW_EX + Fore.BLACK + f'{ext_treated}' + Style.RESET_ALL + ': ' +
           'From ' + Fore.LIGHTCYAN_EX + f'{width_original}x{height_original} ({size_str_original}) ' + Style.RESET_ALL +
           'to ' + Back.LIGHTYELLOW_EX + Fore.BLACK + f' {width_treated}x{height_treated} ({size_str_treated}' +
-          ' ' + emoji.emojize(':down_arrow:') + f'{percent_reduction:.1f}%) ')
+          ' ' + emoji.emojize(':down_arrow:', variant='emoji_type') + f'{percent_reduction:.1f}%) ')
 
 
 def process_hardcoded(args: argparse.Namespace, folder_path: str, pattern: str) -> None:
-    # Traverse the folder and print the names of PNG files that satisfy the pattern
+    # Traverse the folder and print the names of files that satisfy the pattern
     acc: int = 0
     for file_name in os.listdir(folder_path):
         if re.match(pattern, file_name):
