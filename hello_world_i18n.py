@@ -27,6 +27,7 @@ import colorama
 import gettext
 import msvcrt
 import os
+import polib
 
 from colorama import Fore, Style
 from enum import Enum
@@ -61,9 +62,7 @@ def colored_input(prompt: str, color: str) -> str:
     return input_value
 
 
-def main():
-    colorama.init(autoreset=True)  # initialize the console
-
+def translations_using_locales() -> None:
     # Set up the location of the .mo files
     localedir: Final[str] = os.path.join(os.path.dirname(__file__), 'locales')
 
@@ -102,5 +101,42 @@ def main():
             break
 
 
+def word_exists_in_pofile(word: str, po_file: polib.POFile) -> bool:
+    for entry in po_file:
+        if entry.msgid == word:
+            return True
+    return False
+
+
+def translations_using_polib() -> None:
+    po_fr = polib.POFile()
+    for id_str in ('foo', 'toto'), ('bar', 'tata'), ('baz', 'titi'):
+        entry = polib.POEntry(msgid=id_str[0], msgstr=id_str[1])
+        po_fr.append(entry)
+    po_fr.append(polib.POEntry(msgid='rare', msgstr=''))
+    # print(po_fr)
+    print('\nEntries of our POFile object:')
+    for entry in po_fr:
+        if entry.translated():
+            print('- `' + Fore.LIGHTGREEN_EX + entry.msgid + Style.RESET_ALL +
+                  '` » `' + entry.msgstr + '` (translated)')
+        else:
+            print('- `' + Fore.LIGHTRED_EX + entry.msgid + Style.RESET_ALL +
+                  '` » `' + entry.msgstr + '` (not translated)')
+
+    while True:
+        word = colored_input('Please, enter a word to be translated (or `q` to quit): ',
+                             Fore.LIGHTYELLOW_EX)
+        if word == 'q':
+            break
+        if word_exists_in_pofile(word, po_fr):
+            print(f'Word ' + Fore.LIGHTGREEN_EX + word + Style.RESET_ALL + ' exists in POFile')
+        else:
+            print(f'Word ' + Fore.LIGHTRED_EX + word + Style.RESET_ALL + ' does not exist in POFile')
+
+
 if __name__ == '__main__':
-    main()
+    colorama.init(autoreset=True)  # initialize the console
+
+    translations_using_locales()
+    translations_using_polib()
