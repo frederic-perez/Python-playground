@@ -108,10 +108,21 @@ def word_exists_in_pofile(word: str, po_file: polib.POFile) -> bool:
     return False
 
 
+def get_entry_if_word_exists_in_pofile(word: str, po_file: polib.POFile) -> polib.POEntry | None:
+    for entry in po_file:
+        if entry.msgid == word:
+            return entry
+    return None
+
+
 def translations_using_polib() -> None:
     po_fr = polib.POFile()
     for id_str in ('foo', 'toto'), ('bar', 'tata'), ('baz', 'titi'):
-        entry = polib.POEntry(msgid=id_str[0], msgstr=id_str[1])
+        entry = polib.POEntry(msgid=id_str[0],
+                              msgstr=id_str[1],
+                              comment='A common comment #' + str(ord(id_str[1][1])),
+                              tcomment='Translated by ' + id_str[1].capitalize(),
+                              occurrences=[('example.py', '12'), ('anothermodule.py', '34')])
         po_fr.append(entry)
     po_fr.append(polib.POEntry(msgid='rare', msgstr=''))
     # print(po_fr)
@@ -130,7 +141,8 @@ def translations_using_polib() -> None:
         if word == 'q':
             break
         if word_exists_in_pofile(word, po_fr):
-            print(f'Word ' + Fore.LIGHTGREEN_EX + word + Style.RESET_ALL + ' exists in POFile')
+            print(f'Word ' + Fore.LIGHTGREEN_EX + word + Style.RESET_ALL + ' exists in POFile » entry:\n' +
+                  Fore.WHITE + f'{get_entry_if_word_exists_in_pofile(word, po_fr)}' + Style.RESET_ALL)
         else:
             print(f'Word ' + Fore.LIGHTRED_EX + word + Style.RESET_ALL + ' does not exist in POFile')
 
