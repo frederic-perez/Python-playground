@@ -101,21 +101,13 @@ def translations_using_locales() -> None:
             break
 
 
-def word_exists_in_pofile(word: str, po_file: polib.POFile) -> bool:
-    for entry in po_file:
-        if entry.msgid == word:
-            return True
-    return False
-
-
-def get_entry_if_word_exists_in_pofile(word: str, po_file: polib.POFile) -> polib.POEntry | None:
-    for entry in po_file:
-        if entry.msgid == word:
-            return entry
-    return None
-
-
 def translations_using_polib() -> None:
+    def get_entry_if_msgid_exists_in_pofile(msgid: str, po_file: polib.POFile) -> polib.POEntry | None:
+        for current_entry in po_file:
+            if current_entry.msgid == msgid:
+                return current_entry
+        return None
+
     po_fr = polib.POFile()
     for id_str in ('foo', 'toto'), ('bar', 'tata'), ('baz', 'titi'):
         entry = polib.POEntry(msgid=id_str[0],
@@ -125,7 +117,9 @@ def translations_using_polib() -> None:
                               occurrences=[('example.py', '12'), ('anothermodule.py', '34')])
         po_fr.append(entry)
     po_fr.append(polib.POEntry(msgid='rare', msgstr=''))
-    # print(po_fr)
+    spy: Final[bool] = False
+    if spy:
+        print(po_fr)
     print('\nEntries of our POFile object:')
     for entry in po_fr:
         if entry.translated():
@@ -136,15 +130,16 @@ def translations_using_polib() -> None:
                   '` » `' + entry.msgstr + '` (not translated)')
 
     while True:
-        word = colored_input('Please, enter a word to be translated (or `q` to quit): ',
+        word = colored_input('Please, enter a word (ahem, msgid) to be translated (or `q` to quit): ',
                              Fore.LIGHTYELLOW_EX)
         if word == 'q':
             break
-        if word_exists_in_pofile(word, po_fr):
-            print(f'Word ' + Fore.LIGHTGREEN_EX + word + Style.RESET_ALL + ' exists in POFile » entry:\n' +
-                  Fore.WHITE + f'{get_entry_if_word_exists_in_pofile(word, po_fr)}' + Style.RESET_ALL)
+        possible_entry = get_entry_if_msgid_exists_in_pofile(word, po_fr)
+        if possible_entry is not None:
+            print(f'The word ' + Fore.LIGHTGREEN_EX + word + Style.RESET_ALL + ' exists in POFile » entry:\n' +
+                  Fore.WHITE + f'{possible_entry}' + Style.RESET_ALL)
         else:
-            print(f'Word ' + Fore.LIGHTRED_EX + word + Style.RESET_ALL + ' does not exist in POFile')
+            print(f'The word ' + Fore.LIGHTRED_EX + word + Style.RESET_ALL + ' does not exist in POFile')
 
 
 if __name__ == '__main__':
