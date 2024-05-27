@@ -28,18 +28,38 @@ def paste_text(text: str) -> None:
     pg.hotkey('ctrl', 'v')  # Simulate paste action
 
 
+def move_window_to_origin(window_title: str) -> None:
+    # Try to find the window
+    windows: Final = pg.getWindowsWithTitle(window_title)
+    if len(windows) == 0:
+        return
+    window: Final = windows[0]
+
+    # Get the current position of the window
+    current_x, current_y = window.left, window.top
+
+    # Calculate the new position to move the window to
+    new_x, new_y = 0, 0
+
+    # Move the window to the new position
+    window.move(new_x - current_x, new_y - current_y)
+
+
 def play_a_bit_with_notepad_plus_plus() -> None:
     # noinspection PyUnresolvedReferences
-    pg.alert('🤖💬 I am going to open notepad++.exe, create a new buffer, type something, and quit without saving.',
+    pg.alert('🤖💬 I am going to open notepad++.exe, move the window, create a new buffer, type something, '
+             'and quit without saving.',
              title=title_FYI)
     pg.PAUSE = 1
     pg.press('win')
     pg.typewrite('notepad', interval=.025)
     paste_text('++')
     pg.typewrite('.exe', interval=.025)
+    time.sleep(.5)
     pg.press('enter')
 
     pg.hotkey('ctrl', 'n')  # 'New'
+    move_window_to_origin('new 1 - Notepad++')
     pg.typewrite('Hello, world!\nI will close this tab in 1 second...', interval=.025)
     time.sleep(1)
     pg.hotkey('ctrl', 'w')  # 'Close'
