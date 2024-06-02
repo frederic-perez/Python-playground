@@ -19,7 +19,7 @@ A place for continuous learning of Python and software engineering through exper
     - [21 MORE nooby Python habits](https://www.youtube.com/watch?v=E8NijUYfyus)
 - [AI Tutor](https://community.uuki.live/course/tdb3Vsl1/python-course/aitutor) by UUKI helps teach Python to beginners and advanced learners
 - kaggle.com’s [learn/python](https://www.kaggle.com/learn/python)
-- tutorialspoint.com’s [Python Tutorial](https://www.tutorialspoint.com/python)
+- tutorialspoint.com’s [Python Tutorial](https://www.tutorialspoint.com/python/index.htm)
 - [Python for complete beginners](https://www.techwithtim.net/tutorials/python-programming/beginner-python-tutorials)
 - [Python Tutorials playlist](https://www.youtube.com/playlist?list=PL-osiE80TeTt2d9bfVyTiXJA-UTHn6WwU), by Corey Schafer » GitHub [code_snippets](https://github.com/CoreyMSchafer/code_snippets)
 
