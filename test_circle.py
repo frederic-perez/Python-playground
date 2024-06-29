@@ -107,21 +107,21 @@ class Test_Circle(unittest.TestCase):
         center: Final = 1, 2
         radius: Final = 7
         circle: Final = Circle(center, radius)
-        point: Final = as_tuple_of_2_floats(center + np.array([radius, 0], np.float_))
+        point: Final = as_tuple_of_2_floats(center + np.array([radius, 0], np.float64))
         self.assertTrue(circle.point_is_on_circumference(point))
 
     def test_GivenCircleAndPointAlmostEqualToCenterPlusRadiusForX_When_point_is_on_circumference_ThenReturnTrue(self):
         center: Final = 1, 2
         radius: Final = 7
         circle: Final = Circle(center, radius)
-        point: Final = as_tuple_of_2_floats(center + np.array([radius + epsilon_distance/2., 0], np.float_))
+        point: Final = as_tuple_of_2_floats(center + np.array([radius + epsilon_distance/2., 0], np.float64))
         self.assertTrue(circle.point_is_on_circumference(point))
 
     def test_GivenCircleAndPointFarEnoughToCenterPlusRadiusForX_When_point_is_on_circumference_ThenReturnFalse(self):
         center: Final = 1, 2
         radius: Final = 7
         circle: Final = Circle(center, radius)
-        point: Final = as_tuple_of_2_floats(center + np.array([radius + 2. * epsilon_distance, 0], np.float_))
+        point: Final = as_tuple_of_2_floats(center + np.array([radius + 2. * epsilon_distance, 0], np.float64))
         self.assertFalse(circle.point_is_on_circumference(point))
 
 

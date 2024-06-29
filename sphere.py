@@ -63,14 +63,14 @@ class Sphere(object):
 
     def get_center(self) -> TupleOf3Floats:
         return self.center
-  
+
     def spy(self, message: str) -> None:
         print(f'{message}: {self}')
 
     def get_signed_distance_to_surface(self, point: TupleOf3Numbers) -> float:
-        point_in_np: Final = np.array(point, np.float_)
+        point_in_np: Final = np.array(point, np.float64)
         return float(np.linalg.norm(self.center - point_in_np)) - self.radius
-  
+
     def point_is_on_surface(self, point: TupleOf3Numbers) -> bool:
         distance: Final = self.get_signed_distance_to_surface(point)
         return zero_in_practice(distance)

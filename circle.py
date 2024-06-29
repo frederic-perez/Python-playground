@@ -61,14 +61,14 @@ class Circle(object):
 
     def get_center(self) -> TupleOf2Floats:
         return self.center
-  
+
     def spy(self, message: str) -> None:
         print(f'{message}: {self}')
 
     def get_signed_distance_to_circumference(self, point: TupleOf2Numbers) -> float:
-        point_in_np: Final = np.array(point, np.float_)
+        point_in_np: Final = np.array(point, np.float64)
         return float(np.linalg.norm(self.center - point_in_np)) - self.radius
-  
+
     def point_is_on_circumference(self, point: TupleOf2Numbers) -> bool:
         distance: Final = self.get_signed_distance_to_circumference(point)
         return zero_in_practice(distance)
@@ -175,7 +175,7 @@ def get_best_fit_circle(points: Sequence[TupleOf2Numbers], x_center: Number, rad
             # print(f'i = {i}, j = {j} | y = {y[j]} | error = {error[j]}')
             if zero_in_practice(error[j]):
                 return circle
-      
+
         idx_min, idx_max = get_indices_around_minimum_abs_error(error)
         y_min, y_max = y[idx_min], y[idx_max]
         # print(f"idx_min = {idx_min}, idx_max = {idx_max}, y range: {y_min} {y_max}")
