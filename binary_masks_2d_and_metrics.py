@@ -79,23 +79,24 @@ def cl_score(v, s):
     return np.sum(v*s)/np.sum(s)
 
 
-def cl_dice(v_p, v_l):
-    """[this function computes the cldice metric]
+def cl_dice(v_p, v_l) -> float:
+    """[this function computes the clDice metric]
 
     Args:
         v_p ([bool]): [predicted image]
         v_l ([bool]): [ground truth image]
 
     Returns:
-        [float]: [cldice metric]
+        [float]: [clDice metric]
     """
-    if len(v_p.shape)==2:
-        tprec = cl_score(v_p,skeletonize(v_l))
-        tsens = cl_score(v_l,skeletonize(v_p))
-    elif len(v_p.shape)==3:
-        tprec = cl_score(v_p,skeletonize_3d(v_l))
-        tsens = cl_score(v_l,skeletonize_3d(v_p))
-    return 2*tprec*tsens/(tprec+tsens)
+    t_prec, t_sens = 0, 0  # To avoid warning
+    if len(v_p.shape) == 2:
+        t_prec = cl_score(v_p, skeletonize(v_l))
+        t_sens = cl_score(v_l, skeletonize(v_p))
+    elif len(v_p.shape) == 3:
+        t_prec = cl_score(v_p, skeletonize_3d(v_l))
+        t_sens = cl_score(v_l, skeletonize_3d(v_p))
+    return 2*t_prec*t_sens/(t_prec+t_sens)
 
 
 def replicate_reinke_2024_extended_data_fig_1_p2_2a(top_or_bottom: str, spy: bool) -> None:
@@ -183,8 +184,57 @@ def replicate_reinke_2024_extended_data_fig_1_p2_2() -> None:
     replicate_reinke_2024_extended_data_fig_1_p2_2b(spy)
 
 
+def compute_cl_dice_for_input_masks_using_paths(mask_1_path: str, mask_2_path) -> float:
+    spy: Final = False  # True
+
+    mask_1_nib = nib.load(mask_1_path)
+    mask_1_data = mask_1_nib.get_fdata()
+    mask_1_array = np.array(mask_1_data, dtype=np.int8)
+    if spy:
+        print(f'mask_1_array =\n{mask_1_array}')
+
+    mask_2_nib = nib.load(mask_2_path)
+    mask_2_data = mask_2_nib.get_fdata()
+    mask_2_array = np.array(mask_2_data, dtype=np.int8)
+    if spy:
+        print(f'mask_2_array =\n{mask_2_array}')
+
+    mask_1_array_shape: Final = mask_1_array.shape
+    mask_2_array_shape: Final = mask_2_array.shape
+    if mask_1_array_shape != mask_2_array_shape:
+        print('ERROR: Cannot compute the clDice for masks with different shapes: '
+              f'{mask_1_array_shape} != {mask_2_array_shape}')
+        return -666.
+
+    cl_dice_value: Final = cl_dice(mask_1_array, mask_2_array)
+    return cl_dice_value
+
+
+def replicate_reinke_2024_extended_data_fig_1_p2_2b_bottom_using_nifti_files() -> None:
+    mask_1_path = 'data/Reinke-2024/binary-mask-2d-Extended-Data-Fig-1-P2-2b-Reference.nii.gz'
+    for i in 1, 2:
+        mask_2_path = 'data/Reinke-2024/binary-mask-2d-Extended-Data-Fig-1-P2-2b-Prediction-' + str(i) + '.nii.gz'
+        cl_dice_value = compute_cl_dice_for_input_masks_using_paths(mask_1_path, mask_2_path)
+        print(f'clDice({mask_1_path}, {mask_2_path}) = {format_float_as_in_paper(cl_dice_value)}')
+
+
+def compute_cl_dice_for_input_masks_provided_by_the_user() -> None:
+    # Ask the user if they want to compute the ClDice value from binary masks
+    prompt = "Do you want to compute the clDice value from binary masks (.nii.gz files)? (yes/no): "
+    answer = input(prompt).lower()
+
+    # Check the user's answer and proceed accordingly
+    if answer == 'yes' or answer == 'y':
+        mask_1_path = input("Please, provide path of first mask: ")
+        mask_2_path = input("Please, provide path of second mask: ")
+        cl_dice_value = compute_cl_dice_for_input_masks_using_paths(mask_1_path, mask_2_path)
+        print(f'clDice({mask_1_path}, {mask_2_path}) = {format_float_as_in_paper(cl_dice_value)}')
+
+
 def main():
     replicate_reinke_2024_extended_data_fig_1_p2_2()
+    replicate_reinke_2024_extended_data_fig_1_p2_2b_bottom_using_nifti_files()
+    compute_cl_dice_for_input_masks_provided_by_the_user()
 
 
 if __name__ == '__main__':
