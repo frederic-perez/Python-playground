@@ -4,7 +4,8 @@ import nibabel as nib
 import numpy as np
 import tempfile
 
-from skimage.morphology import skeletonize, skeletonize_3d
+from numpy.typing import ArrayLike
+from skimage.morphology import skeletonize
 from typing import Final
 
 
@@ -89,13 +90,13 @@ def cl_dice(v_p, v_l) -> float:
     Returns:
         [float]: [clDice metric]
     """
-    t_prec, t_sens = 0, 0  # To avoid warning
-    if len(v_p.shape) == 2:
-        t_prec = cl_score(v_p, skeletonize(v_l))
-        t_sens = cl_score(v_l, skeletonize(v_p))
-    elif len(v_p.shape) == 3:
-        t_prec = cl_score(v_p, skeletonize_3d(v_l))
-        t_sens = cl_score(v_l, skeletonize_3d(v_p))
+    len_v_p_shape: Final = len(v_p.shape)
+    if len_v_p_shape != 2 and len_v_p_shape != 3:
+        print(f'ERROR: Cannot compute the clDice when len(v_p.shape) = {len_v_p_shape} is not 2 or 3')
+        return -666.
+
+    t_prec: Final = cl_score(v_p, skeletonize(v_l))
+    t_sens: Final = cl_score(v_l, skeletonize(v_p))
     return 2*t_prec*t_sens/(t_prec+t_sens)
 
 
@@ -107,10 +108,10 @@ def replicate_reinke_2024_extended_data_fig_1_p2_2a(top_or_bottom: str, spy: boo
 
     basename_file_mask_2d_reference: Final[str] = basename_file_mask_2d + '-Reference'
     filename_ascii_mask_2d_reference: Final[str] = 'data/Reinke-2024/' + basename_file_mask_2d_reference + ".txt"
-    mask_2d_reference: Final[np.ndarray] = ascii_to_binary_mask_2d(filename_ascii_mask_2d_reference)
+    mask_2d_reference: Final = ascii_to_binary_mask_2d(filename_ascii_mask_2d_reference)
     if spy:
         print(f'mask_2d_reference =\n{mask_2d_reference}')
-        mask_2d_nifti = nib.Nifti1Image(mask_2d_reference, identity)  # Create NIfTI1 image object
+        mask_2d_nifti = nib.Nifti1Image(ArrayLike(mask_2d_reference), identity)  # Create NIfTI1 image object
         filename_nifti_mask_2d = temp_dir + "/" + basename_file_mask_2d_reference + ".nii.gz"
         nib.save(mask_2d_nifti, filename_nifti_mask_2d)  # Save the NIFTI objects to file
 
@@ -120,7 +121,7 @@ def replicate_reinke_2024_extended_data_fig_1_p2_2a(top_or_bottom: str, spy: boo
         mask_2d_prediction = ascii_to_binary_mask_2d(filename_ascii_mask_2d_prediction)
         if spy:
             print(f'mask_2d_prediction #{i} =\n{mask_2d_prediction}')
-            mask_2d_nifti = nib.Nifti1Image(mask_2d_prediction, identity)  # Create NIfTI1 image object
+            mask_2d_nifti = nib.Nifti1Image(ArrayLike(mask_2d_prediction), identity)  # Create NIfTI1 image object
             filename_nifti_mask_2d = temp_dir + "/" + basename_file_mask_2d_prediction + ".nii.gz"
             nib.save(mask_2d_nifti, filename_nifti_mask_2d)  # Save the NIFTI objects to file
 
@@ -145,7 +146,7 @@ def replicate_reinke_2024_extended_data_fig_1_p2_2b(spy: bool) -> None:
     mask_2d_reference: Final[np.ndarray] = ascii_to_binary_mask_2d(filename_ascii_mask_2d_reference)
     if spy:
         print(f'mask_2d_reference =\n{mask_2d_reference}')
-        mask_2d_nifti = nib.Nifti1Image(mask_2d_reference, identity)  # Create NIfTI1 image object
+        mask_2d_nifti = nib.Nifti1Image(ArrayLike(mask_2d_reference), identity)  # Create NIfTI1 image object
         filename_nifti_mask_2d = temp_dir + "/" + basename_file_mask_2d_reference + ".nii.gz"
         nib.save(mask_2d_nifti, filename_nifti_mask_2d)  # Save the NIFTI objects to file
 
@@ -155,7 +156,7 @@ def replicate_reinke_2024_extended_data_fig_1_p2_2b(spy: bool) -> None:
         mask_2d_prediction = ascii_to_binary_mask_2d(filename_ascii_mask_2d_prediction)
         if spy:
             print(f'mask_2d_prediction #{i} =\n{mask_2d_prediction}')
-            mask_2d_nifti = nib.Nifti1Image(mask_2d_prediction, identity)  # Create NIfTI1 image object
+            mask_2d_nifti = nib.Nifti1Image(ArrayLike(mask_2d_prediction), identity)  # Create NIfTI1 image object
             filename_nifti_mask_2d = temp_dir + "/" + basename_file_mask_2d_prediction + ".nii.gz"
             nib.save(mask_2d_nifti, filename_nifti_mask_2d)  # Save the NIFTI objects to file
 
@@ -188,13 +189,13 @@ def compute_cl_dice_for_input_masks_using_paths(mask_1_path: str, mask_2_path) -
     spy: Final = False  # True
 
     mask_1_nib = nib.load(mask_1_path)
-    mask_1_data = mask_1_nib.get_fdata()
+    mask_1_data = mask_1_nib.get_fdata()  # type: ignore[attr-defined]
     mask_1_array = np.array(mask_1_data, dtype=np.int8)
     if spy:
         print(f'mask_1_array =\n{mask_1_array}')
 
     mask_2_nib = nib.load(mask_2_path)
-    mask_2_data = mask_2_nib.get_fdata()
+    mask_2_data = mask_2_nib.get_fdata()  # type: ignore[attr-defined]
     mask_2_array = np.array(mask_2_data, dtype=np.int8)
     if spy:
         print(f'mask_2_array =\n{mask_2_array}')
