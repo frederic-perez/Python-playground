@@ -124,7 +124,6 @@ class Masks2DWindow(object):
 
         # Create tkinter window
         self.root: Final = tk.Tk()
-        self.root.title('2D Masks')
 
         # Create the frame(s)
         self.canvas: Final[tk.Canvas] = tk.Canvas(self.root, width=res_x*cell_size, height=res_y*cell_size,
@@ -139,7 +138,7 @@ class Masks2DWindow(object):
     def spy(self, message: str) -> None:
         print(f'{message}: {self}')
 
-    def paint_cell(self, i: int, j: int, color: str, cell_unpainted_inner_border) -> None:
+    def paint_mask_cell(self, i: int, j: int, color: str, cell_unpainted_inner_border) -> None:
         self.canvas.create_rectangle(
             # Experimentally we found out we need + 2 to paint ALL pixels
             i*self.cell_size + cell_unpainted_inner_border + 2,
@@ -148,20 +147,46 @@ class Masks2DWindow(object):
             j*self.cell_size + self.cell_size - cell_unpainted_inner_border + 2,
             fill=color, outline='')  # faster than canvas.create_oval
 
-    def clean(self, cell_unpainted_inner_border: int) -> None:
+    def paint_skeleton_cell(self, i: int, j: int, color: str, cell_unpainted_inner_border) -> None:
+        self.canvas.create_oval(
+            # Experimentally we found out we need + 2 to paint ALL pixels
+            i*self.cell_size + cell_unpainted_inner_border + 2,
+            j*self.cell_size + cell_unpainted_inner_border + 2,
+            i*self.cell_size + self.cell_size - cell_unpainted_inner_border + 2 - 1,
+            j*self.cell_size + self.cell_size - cell_unpainted_inner_border + 2 - 1,
+            fill=color, outline='')  # faster than canvas.create_oval
+
+    def paint_mask_foreground(self, mask: np.ndarray, color: str, cell_unpainted_inner_border: int) -> None:
         for i in range(self.shape[0]):
             for j in range(self.shape[1]):
-                self.paint_cell(j, i, 'white', cell_unpainted_inner_border)
+                self.paint_mask_cell(j, i, 'white', cell_unpainted_inner_border=1)
+        if mask.shape != self.shape:
+            raise ValueError(f'Mask shape of input mask {mask.shape} should be equal to {self.shape}')
+        for i in range(self.shape[0]):
+            for j in range(self.shape[1]):
+                if mask[i][j] != 0:
+                    self.paint_mask_cell(j, i, color, cell_unpainted_inner_border)
 
-    def paint_over(self, mask: np.ndarray, color: str, cell_unpainted_inner_border: int = 0) -> None:
+    def paint_mask_over(self, mask: np.ndarray, color: str, cell_unpainted_inner_border: int = 0) -> None:
         if mask.shape != self.shape:
             raise ValueError(f'Mask shape of input mask {mask.shape} should be equal to {self.shape}')
         for i in range(self.shape[0]):
             for j in range(self.shape[1]):
                 cell_color = color if mask[i][j] != 0 else 'white'
-                self.paint_cell(j, i, cell_color, cell_unpainted_inner_border)
+                self.paint_mask_cell(j, i, cell_color, cell_unpainted_inner_border)
+                # if mask[i][j] != 0:
+                #    self.paint_mask_cell(j, i, color, cell_unpainted_inner_border)
 
-    def show(self) -> None:
+    def paint_skeleton_over(self, mask: np.ndarray, color: str, cell_unpainted_inner_border: int = 0) -> None:
+        if mask.shape != self.shape:
+            raise ValueError(f'Mask shape of input mask {mask.shape} should be equal to {self.shape}')
+        for i in range(self.shape[0]):
+            for j in range(self.shape[1]):
+                cell_color = color if mask[i][j] != 0 else 'white'
+                self.paint_skeleton_cell(j, i, cell_color, cell_unpainted_inner_border)
+
+    def show(self, title: str) -> None:
+        self.root.title(title)
         self.root.mainloop()
 
 
@@ -203,10 +228,12 @@ def replicate_reinke_2024_extended_data_fig_1_p2_2a(top_or_bottom: str, spy: boo
 
         masks_2d_window = Masks2DWindow(mask_2d_reference.shape, cell_width)
         # masks_2d_window.spy('Initial mask_2d_window')
-        masks_2d_window.clean(cell_unpainted_inner_border=1)
-        masks_2d_window.paint_over(mask_2d_reference, 'green', cell_unpainted_inner_border=1)
-        masks_2d_window.paint_over(mask_2d_prediction, 'orange' if i == 1 else 'cyan', cell_unpainted_inner_border=3)
-        masks_2d_window.show()
+        masks_2d_window.paint_mask_foreground(mask_2d_reference, 'green', cell_unpainted_inner_border=-2)
+        masks_2d_window.paint_mask_over(mask_2d_prediction, 'goldenrod1' if i == 1 else 'light blue',
+                                        cell_unpainted_inner_border=3)
+        # masks_2d_window.paint_skeleton_over(mask_2d_prediction, 'goldenrod4' if i == 1 else 'dodgerblue2',
+        #                                 cell_unpainted_inner_border=5)
+        masks_2d_window.show(f'clDice = {format_float_as_in_paper(dice_a)}')
 
 
 def replicate_reinke_2024_extended_data_fig_1_p2_2b(spy: bool) -> None:
@@ -248,10 +275,9 @@ def replicate_reinke_2024_extended_data_fig_1_p2_2b(spy: bool) -> None:
 
         masks_2d_window = Masks2DWindow(mask_2d_reference.shape, cell_width)
         # masks_2d_window.spy('Initial mask_2d_window')
-        masks_2d_window.clean(cell_unpainted_inner_border=1)
-        masks_2d_window.paint_over(mask_2d_reference, 'green', cell_unpainted_inner_border=1)
-        masks_2d_window.paint_over(mask_2d_prediction, 'orange' if i == 1 else 'cyan', cell_unpainted_inner_border=3)
-        masks_2d_window.show()
+        masks_2d_window.paint_mask_foreground(mask_2d_reference, 'green', cell_unpainted_inner_border=-2)  #1)
+        masks_2d_window.paint_mask_over(mask_2d_prediction, 'goldenrod1' if i == 1 else 'light blue', cell_unpainted_inner_border=3)
+        masks_2d_window.show(f'clDice = {format_float_as_in_paper(cl_dice_value)}')
 
 
 def replicate_reinke_2024_extended_data_fig_1_p2_2() -> None:
