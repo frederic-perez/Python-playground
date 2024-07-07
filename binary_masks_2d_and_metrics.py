@@ -119,8 +119,8 @@ class Masks2DWindow(object):
         self.shape = mask_shape
         self.cell_size = cell_size
 
-        res_x = self.shape[0]
-        res_y = self.shape[1]
+        res_x = self.shape[1]
+        res_y = self.shape[0]
 
         # Create tkinter window
         self.root: Final = tk.Tk()
@@ -156,7 +156,7 @@ class Masks2DWindow(object):
             j*self.cell_size + self.cell_size - cell_unpainted_inner_border + 2 - 1,
             fill=color, outline='')  # faster than canvas.create_oval
 
-    def paint_mask_foreground(self, mask: np.ndarray, color: str, cell_unpainted_inner_border: int) -> None:
+    def paint_mask_foreground_over(self, mask: np.ndarray, color: str, cell_unpainted_inner_border: int) -> None:
         for i in range(self.shape[0]):
             for j in range(self.shape[1]):
                 self.paint_mask_cell(j, i, 'white', cell_unpainted_inner_border=1)
@@ -177,13 +177,13 @@ class Masks2DWindow(object):
                 # if mask[i][j] != 0:
                 #    self.paint_mask_cell(j, i, color, cell_unpainted_inner_border)
 
-    def paint_skeleton_over(self, mask: np.ndarray, color: str, cell_unpainted_inner_border: int = 0) -> None:
+    def paint_skeleton_foreground_over(self, mask: np.ndarray, color: str, cell_unpainted_inner_border: int = 0) -> None:
         if mask.shape != self.shape:
             raise ValueError(f'Mask shape of input mask {mask.shape} should be equal to {self.shape}')
         for i in range(self.shape[0]):
             for j in range(self.shape[1]):
-                cell_color = color if mask[i][j] != 0 else 'white'
-                self.paint_skeleton_cell(j, i, cell_color, cell_unpainted_inner_border)
+                if mask[i][j] != 0:
+                    self.paint_skeleton_cell(j, i, color, cell_unpainted_inner_border)
 
     def show(self, title: str) -> None:
         self.root.title(title)
@@ -228,7 +228,7 @@ def replicate_reinke_2024_extended_data_fig_1_p2_2a(top_or_bottom: str, spy: boo
 
         masks_2d_window = Masks2DWindow(mask_2d_reference.shape, cell_width)
         # masks_2d_window.spy('Initial mask_2d_window')
-        masks_2d_window.paint_mask_foreground(mask_2d_reference, 'green', cell_unpainted_inner_border=-2)
+        masks_2d_window.paint_mask_foreground_over(mask_2d_reference, 'green', cell_unpainted_inner_border=-2)
         masks_2d_window.paint_mask_over(mask_2d_prediction, 'goldenrod1' if i == 1 else 'light blue',
                                         cell_unpainted_inner_border=3)
         # masks_2d_window.paint_skeleton_over(mask_2d_prediction, 'goldenrod4' if i == 1 else 'dodgerblue2',
@@ -275,8 +275,9 @@ def replicate_reinke_2024_extended_data_fig_1_p2_2b(spy: bool) -> None:
 
         masks_2d_window = Masks2DWindow(mask_2d_reference.shape, cell_width)
         # masks_2d_window.spy('Initial mask_2d_window')
-        masks_2d_window.paint_mask_foreground(mask_2d_reference, 'green', cell_unpainted_inner_border=-2)  #1)
-        masks_2d_window.paint_mask_over(mask_2d_prediction, 'goldenrod1' if i == 1 else 'light blue', cell_unpainted_inner_border=3)
+        masks_2d_window.paint_mask_foreground_over(mask_2d_reference, 'green', cell_unpainted_inner_border=-2)  # 1)
+        masks_2d_window.paint_mask_over(mask_2d_prediction, 'goldenrod1' if i == 1 else 'light blue',
+                                        cell_unpainted_inner_border=3)
         masks_2d_window.show(f'clDice = {format_float_as_in_paper(cl_dice_value)}')
 
 
@@ -341,7 +342,49 @@ def compute_cl_dice_for_input_masks_provided_by_the_user() -> None:
         print(f'clDice({mask_1_path}, {mask_2_path}) = {format_float_as_in_paper(cl_dice_value)}')
 
 
+def compute_cl_scores_and_cl_dices() -> None:
+    identity: Final = np.eye(4)  # Used to save NIFTI files (if the conditions to do so are met)
+
+    basename_file_mask_2d: Final[str] = 'binary-mask-2d-phony'
+
+    basename_file_mask_2d_reference: Final[str] = basename_file_mask_2d + '-Reference'
+    filename_ascii_mask_2d_reference: Final[str] = 'data/clScore/' + basename_file_mask_2d_reference + ".txt"
+    mask_2d_reference: Final = ascii_to_binary_mask_2d(filename_ascii_mask_2d_reference)
+
+    cell_width: Final = 21
+
+    # Colors selected from https://www.wikipython.com/tkinter-ttk-tix/summary-information/colors/
+    color_masks: Final = 'goldenrod1', 'light blue', 'orchid1'
+    color_skeletons: Final = 'goldenrod4', 'dodgerblue2', 'orchid4'
+
+    for i in 1, 2, 3:
+        basename_file_mask_2d_prediction = basename_file_mask_2d + '-Prediction-' + str(i)
+        filename_ascii_mask_2d_prediction = 'data/clScore/' + basename_file_mask_2d_prediction + ".txt"
+        mask_2d_prediction = ascii_to_binary_mask_2d(filename_ascii_mask_2d_prediction)
+
+        # Compute the clScore and the clDice
+        skeleton_of_prediction = skeletonize(mask_2d_prediction)
+        cl_score_value = cl_score(mask_2d_reference, skeleton_of_prediction)
+        cl_dice_value = cl_dice(mask_2d_reference, mask_2d_prediction)
+
+        print(f'clScore({filename_ascii_mask_2d_reference}, skeletonize({filename_ascii_mask_2d_prediction})) = '
+              f'{format_float_as_in_paper(cl_score_value)}, '
+              f'clDice({filename_ascii_mask_2d_reference}, {filename_ascii_mask_2d_prediction}) = '
+              f'{format_float_as_in_paper(cl_dice_value)}')
+
+        masks_2d_window = Masks2DWindow(mask_2d_reference.shape, cell_width)
+        # masks_2d_window.spy('Initial mask_2d_window')
+        masks_2d_window.paint_mask_foreground_over(mask_2d_reference, 'green', cell_unpainted_inner_border=-2)
+        masks_2d_window.paint_mask_over(mask_2d_prediction, color_masks[i-1], cell_unpainted_inner_border=3)
+        masks_2d_window.paint_skeleton_foreground_over(skeleton_of_prediction,
+                                                       color_skeletons[i-1],
+                                                       cell_unpainted_inner_border=5)
+        masks_2d_window.show(f'clScore = {format_float_as_in_paper(cl_score_value)}, '
+                             f'clDice = {format_float_as_in_paper(cl_dice_value)}')
+
+
 def main():
+    compute_cl_scores_and_cl_dices()
     replicate_reinke_2024_extended_data_fig_1_p2_2()
     replicate_reinke_2024_extended_data_fig_1_p2_2b_bottom_using_nifti_files()
     compute_cl_dice_for_input_masks_provided_by_the_user()
