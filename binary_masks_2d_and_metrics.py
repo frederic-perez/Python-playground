@@ -3,10 +3,13 @@
 import nibabel as nib
 import numpy as np
 import tempfile
+import tkinter as tk
 
 from numpy.typing import ArrayLike
 from skimage.morphology import skeletonize
-from typing import Final
+from typing import Final, TypeAlias
+
+TupleOf2Ints: TypeAlias = tuple[int, int]
 
 
 def format_float_as_in_paper(x: float) -> str:
@@ -100,6 +103,68 @@ def cl_dice(v_p, v_l) -> float:
     return 2*t_prec*t_sens/(t_prec+t_sens)
 
 
+class Masks2DWindow(object):
+    shape: Final[TupleOf2Ints]
+    cell_size: Final[int]
+
+    def __new__(cls, mask_shape: TupleOf2Ints, cell_size: int) -> 'Masks2DWindow':
+        for i in 0, 1:
+            if mask_shape[i] <= 0:
+                raise ValueError(f'Mask shape[{i}] = {mask_shape[i]} is out of range')
+        if cell_size <= 0:
+            raise ValueError(f'Cell size value {cell_size} is out of range')
+        return object.__new__(cls)
+
+    def __init__(self, mask_shape: TupleOf2Ints, cell_size: int) -> None:
+        self.shape = mask_shape
+        self.cell_size = cell_size
+
+        res_x = self.shape[0]
+        res_y = self.shape[1]
+
+        # Create tkinter window
+        self.root: Final = tk.Tk()
+        self.root.title('2D Masks')
+
+        # Create the frame(s)
+        self.canvas: Final[tk.Canvas] = tk.Canvas(self.root, width=res_x*cell_size, height=res_y*cell_size,
+                                                  background='gray')
+
+        # Pack the frame(s)
+        self.canvas.pack(side="right")
+
+    def __str__(self) -> str:
+        return f'Masks2DWindow(shape={self.shape}, cell_size={self.cell_size})'
+
+    def spy(self, message: str) -> None:
+        print(f'{message}: {self}')
+
+    def paint_cell(self, i: int, j: int, color: str, cell_unpainted_inner_border) -> None:
+        self.canvas.create_rectangle(
+            # Experimentally we found out we need + 2 to paint ALL pixels
+            i*self.cell_size + cell_unpainted_inner_border + 2,
+            j*self.cell_size + cell_unpainted_inner_border + 2,
+            i*self.cell_size + self.cell_size - cell_unpainted_inner_border + 2,
+            j*self.cell_size + self.cell_size - cell_unpainted_inner_border + 2,
+            fill=color, outline='')  # faster than canvas.create_oval
+
+    def clean(self, cell_unpainted_inner_border: int) -> None:
+        for i in range(self.shape[0]):
+            for j in range(self.shape[1]):
+                self.paint_cell(j, i, 'white', cell_unpainted_inner_border)
+
+    def paint_over(self, mask: np.ndarray, color: str, cell_unpainted_inner_border: int = 0) -> None:
+        if mask.shape != self.shape:
+            raise ValueError(f'Mask shape of input mask {mask.shape} should be equal to {self.shape}')
+        for i in range(self.shape[0]):
+            for j in range(self.shape[1]):
+                cell_color = color if mask[i][j] != 0 else 'white'
+                self.paint_cell(j, i, cell_color, cell_unpainted_inner_border)
+
+    def show(self) -> None:
+        self.root.mainloop()
+
+
 def replicate_reinke_2024_extended_data_fig_1_p2_2a(top_or_bottom: str, spy: bool) -> None:
     identity: Final = np.eye(4)  # Used to save NIFTI files (if the conditions to do so are met)
     temp_dir = tempfile.gettempdir()  # Used to save NIFTI files (if the conditions to do so are met)
@@ -114,6 +179,8 @@ def replicate_reinke_2024_extended_data_fig_1_p2_2a(top_or_bottom: str, spy: boo
         mask_2d_nifti = nib.Nifti1Image(ArrayLike(mask_2d_reference), identity)  # Create NIfTI1 image object
         filename_nifti_mask_2d = temp_dir + "/" + basename_file_mask_2d_reference + ".nii.gz"
         nib.save(mask_2d_nifti, filename_nifti_mask_2d)  # Save the NIFTI objects to file
+
+    cell_width: Final = 21
 
     for i in 1, 2:
         basename_file_mask_2d_prediction = basename_file_mask_2d + '-Prediction-' + str(i)
@@ -134,6 +201,13 @@ def replicate_reinke_2024_extended_data_fig_1_p2_2a(top_or_bottom: str, spy: boo
         print(f'Dice({filename_ascii_mask_2d_reference}, {filename_ascii_mask_2d_prediction}) = '
               f'{format_float_as_in_paper(dice_a)} or {format_float_as_in_paper(dice_b)}')
 
+        masks_2d_window = Masks2DWindow(mask_2d_reference.shape, cell_width)
+        # masks_2d_window.spy('Initial mask_2d_window')
+        masks_2d_window.clean(cell_unpainted_inner_border=1)
+        masks_2d_window.paint_over(mask_2d_reference, 'green', cell_unpainted_inner_border=1)
+        masks_2d_window.paint_over(mask_2d_prediction, 'orange' if i == 1 else 'cyan', cell_unpainted_inner_border=3)
+        masks_2d_window.show()
+
 
 def replicate_reinke_2024_extended_data_fig_1_p2_2b(spy: bool) -> None:
     identity: Final = np.eye(4)  # Used to save NIFTI files (if the conditions to do so are met)
@@ -149,6 +223,8 @@ def replicate_reinke_2024_extended_data_fig_1_p2_2b(spy: bool) -> None:
         mask_2d_nifti = nib.Nifti1Image(ArrayLike(mask_2d_reference), identity)  # Create NIfTI1 image object
         filename_nifti_mask_2d = temp_dir + "/" + basename_file_mask_2d_reference + ".nii.gz"
         nib.save(mask_2d_nifti, filename_nifti_mask_2d)  # Save the NIFTI objects to file
+
+    cell_width: Final = 21
 
     for i in 1, 2:
         basename_file_mask_2d_prediction = basename_file_mask_2d + '-Prediction-' + str(i)
@@ -169,6 +245,13 @@ def replicate_reinke_2024_extended_data_fig_1_p2_2b(spy: bool) -> None:
         print(f'Dice({filename_ascii_mask_2d_reference}, {filename_ascii_mask_2d_prediction}) = '
               f'{format_float_as_in_paper(dice_a)} or {format_float_as_in_paper(dice_b)}; '
               f'clDice = {format_float_as_in_paper(cl_dice_value)}')
+
+        masks_2d_window = Masks2DWindow(mask_2d_reference.shape, cell_width)
+        # masks_2d_window.spy('Initial mask_2d_window')
+        masks_2d_window.clean(cell_unpainted_inner_border=1)
+        masks_2d_window.paint_over(mask_2d_reference, 'green', cell_unpainted_inner_border=1)
+        masks_2d_window.paint_over(mask_2d_prediction, 'orange' if i == 1 else 'cyan', cell_unpainted_inner_border=3)
+        masks_2d_window.show()
 
 
 def replicate_reinke_2024_extended_data_fig_1_p2_2() -> None:
