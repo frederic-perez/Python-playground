@@ -1,10 +1,27 @@
 # -*- coding: utf-8 -*-
 """module docstring should be here"""
 
-# Create an installer (a .exe file that will be placed in the dist/ subfolder) with the following command:
-# $ pyinstaller.exe --onefile treat_image_files.py
-# Then you can create a shortcut on the Desktop to the newly created file .../dist/treat_image_files.exe
-# that allows dragging and dropping to the corresponding icon the user's selected files to be treated.
+# Create an executable whose location will depend on how it is produced, with one of the following commands:
+#
+# - $ pyinstaller.exe --onefile treat_image_files.py  # Fast, but WITH antivirus problems (see below)
+# - $ python -m nuitka --standalone treat_image_files.py  # Slow, but without antivirus problems (see below)
+#
+# The location of the newly created file can be one of these:
+#
+# - .../dist/treat_image_files.exe  # Unfortunately the antivirus 'avast' does not like this file
+# - .../treat_image_files.dist\treat_image_files.exe  # The antivirus 'avast' has no problems with this file
+#
+# Then you can create shortcuts on the Desktop to the newly created file that allows dragging and dropping to the
+# corresponding icon the user's selected files to be treated with different parameters:
+#
+# Example <.exe path>>: D:\bin\xt\Python-playground\treat_image_files.dist\treat_image_files.exe
+#
+#   | Link Name  | Target
+# --|------------|------------------------------------------------------
+# 1 | _CrPalette | <.exe path> --crop on --compress-mode reduce-palette
+# 2 | _Palette   | <.exe path> --crop off --compress-mode reduce-palette
+# 3 | _CrWebp    | <.exe path> --crop on --compress-mode webp-convert
+# 4 | _Webp      | <.exe path> --crop off --compress-mode webp-convert
 
 import argparse
 import colorama
