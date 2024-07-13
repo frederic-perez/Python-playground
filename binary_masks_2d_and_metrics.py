@@ -107,7 +107,7 @@ class Masks2DWindow(object):
     shape: Final[TupleOf2Ints]
     cell_size: Final[int]
 
-    def __new__(cls, mask_shape: TupleOf2Ints, cell_size: int) -> 'Masks2DWindow':
+    def __new__(cls, mask_shape: TupleOf2Ints | tuple[int, ...], cell_size: int) -> 'Masks2DWindow':
         for i in 0, 1:
             if mask_shape[i] <= 0:
                 raise ValueError(f'Mask shape[{i}] = {mask_shape[i]} is out of range')
@@ -115,8 +115,8 @@ class Masks2DWindow(object):
             raise ValueError(f'Cell size value {cell_size} is out of range')
         return object.__new__(cls)
 
-    def __init__(self, mask_shape: TupleOf2Ints, cell_size: int) -> None:
-        self.shape = mask_shape
+    def __init__(self, mask_shape: TupleOf2Ints | tuple[int, ...], cell_size: int) -> None:
+        self.shape = mask_shape[0], mask_shape[1]
         self.cell_size = cell_size
 
         res_x = self.shape[1]
@@ -177,7 +177,8 @@ class Masks2DWindow(object):
                 # if mask[i][j] != 0:
                 #    self.paint_mask_cell(j, i, color, cell_unpainted_inner_border)
 
-    def paint_skeleton_foreground_over(self, mask: np.ndarray, color: str, cell_unpainted_inner_border: int = 0) -> None:
+    def paint_skeleton_foreground_over(self,
+                                       mask: np.ndarray, color: str, cell_unpainted_inner_border: int = 0) -> None:
         if mask.shape != self.shape:
             raise ValueError(f'Mask shape of input mask {mask.shape} should be equal to {self.shape}')
         for i in range(self.shape[0]):
@@ -343,8 +344,6 @@ def compute_cl_dice_for_input_masks_provided_by_the_user() -> None:
 
 
 def compute_cl_scores_and_cl_dices() -> None:
-    identity: Final = np.eye(4)  # Used to save NIFTI files (if the conditions to do so are met)
-
     basename_file_mask_2d: Final[str] = 'binary-mask-2d-phony'
 
     basename_file_mask_2d_reference: Final[str] = basename_file_mask_2d + '-Reference'
@@ -363,12 +362,16 @@ def compute_cl_scores_and_cl_dices() -> None:
         mask_2d_prediction = ascii_to_binary_mask_2d(filename_ascii_mask_2d_prediction)
 
         # Compute the clScore and the clDice
+        skeleton_of_reference = skeletonize(mask_2d_reference)
         skeleton_of_prediction = skeletonize(mask_2d_prediction)
-        cl_score_value = cl_score(mask_2d_reference, skeleton_of_prediction)
+        cl_t_prec_value = cl_score(mask_2d_reference, skeleton_of_prediction)
+        cl_t_sens_value = cl_score(mask_2d_prediction, skeleton_of_reference)
         cl_dice_value = cl_dice(mask_2d_reference, mask_2d_prediction)
 
-        print(f'clScore({filename_ascii_mask_2d_reference}, skeletonize({filename_ascii_mask_2d_prediction})) = '
-              f'{format_float_as_in_paper(cl_score_value)}, '
+        print(f'Tprec({filename_ascii_mask_2d_reference}, skeletonize({filename_ascii_mask_2d_prediction})) = '
+              f'{format_float_as_in_paper(cl_t_prec_value)},\n'
+              f'Tsens({filename_ascii_mask_2d_prediction}, skeletonize({filename_ascii_mask_2d_reference})) = '
+              f'{format_float_as_in_paper(cl_t_sens_value)},\n'
               f'clDice({filename_ascii_mask_2d_reference}, {filename_ascii_mask_2d_prediction}) = '
               f'{format_float_as_in_paper(cl_dice_value)}')
 
@@ -376,10 +379,14 @@ def compute_cl_scores_and_cl_dices() -> None:
         # masks_2d_window.spy('Initial mask_2d_window')
         masks_2d_window.paint_mask_foreground_over(mask_2d_reference, 'green', cell_unpainted_inner_border=-2)
         masks_2d_window.paint_mask_over(mask_2d_prediction, color_masks[i-1], cell_unpainted_inner_border=3)
+        masks_2d_window.paint_skeleton_foreground_over(skeleton_of_reference,
+                                                       'darkgreen',
+                                                       cell_unpainted_inner_border=5)
         masks_2d_window.paint_skeleton_foreground_over(skeleton_of_prediction,
                                                        color_skeletons[i-1],
-                                                       cell_unpainted_inner_border=5)
-        masks_2d_window.show(f'clScore = {format_float_as_in_paper(cl_score_value)}, '
+                                                       cell_unpainted_inner_border=7)
+        masks_2d_window.show(f'Tprec = {format_float_as_in_paper(cl_t_prec_value)}, '
+                             f'Tsens = {format_float_as_in_paper(cl_t_sens_value)}, '
                              f'clDice = {format_float_as_in_paper(cl_dice_value)}')
 
 
