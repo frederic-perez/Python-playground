@@ -6,6 +6,7 @@ __AES__ (_vs_ DES) Advanced Encryption Standard, AKA the Rijndael algorithm. It 
 __CSR__ Certificate Signing Request. An encoded message sent from an applicant to a Certificate Authority (CA) to apply for an SSL/TLS certificate. It typically contains the public key, identifying information like a domain name, and proof of authenticity, and it must be generated on the server where the certificate will be used.  
 __DES__ (_vs_ AES) Data Encryption Standard.  
 __ECC__ Elliptic Curve Cryptography.  
+__IV__ Initialization vector.  
 __KDF__ Key derivation function.  
 __RSA__ Rivest-Shamir-Adleman, a widely used public-key cryptosystem that enables secure data transmission and is foundational in modern cryptography.  
 __SSL__ Secure Sockets Layer, a networking protocol that secures connections between web clients and servers through encryption.  
@@ -18,12 +19,13 @@ __cipher__ _v_ (cypher) Convert ordinary language into a coded format or to writ
 __crypto-__ (crypt-) Secret, hidden, or concealed.  
 __cryptogram__ (_vs_ plaintext) A message or writing in code or cipher.  
 __cryptographic key__ A piece of information, typically a string of numbers or letters _stored in a file_, used to encode or decode cryptographic data through a cryptographic algorithm. They are used for (1) encryption, (2) decryption, (3) authentication (to verify the identity of users or devices in a system), and (4) digital signatures (keys help ensure the integrity of messages and confirm the identity of the sender).  
-__cryptography__ The practice of securing information by transforming it into a format that is unreadable to unauthorized users.  
+__cryptography__ [:scroll: Derived from the Greek words “kryptos” (κρυπτός), meaning “hidden” or “secret,” and “graphia” (γραφή), meaning “writing” or “description.”] The practice of securing information by transforming it into a format that is unreadable to unauthorized users.  
 __cyphertext__ The result of encryption performed on plaintext using an algorithm, known as a cipher.  
 __decryption__ (_vs_ encryption) The reverse of encryption, converting ciphertext back into readable plain text.  
 __digital signature__ Digital signatures are used to verify the authenticity and integrity of a message, software, or digital document. They use asymmetric cryptography to create a signature that can be verified by anyone with the public key. Usage example (see _public key_): Bob can sign a message with his private key. Anyone with Bob’s public key can verify that the message is indeed from Bob and hasn’t been altered.  
 __encryption__ (_vs_ decryption) The process of converting plain text into a coded format (ciphertext) to prevent unauthorized access.  
-__hash functions__ These are algorithms that take an input and produce a fixed-size string of bytes. The output, called a hash, is unique to each unique input. Hash functions are used for data integrity verification.  
+__hash functions__ These are algorithms that take an input and produce a fixed-size string of bytes. The output, called a hash, is unique to each unique input. A _hash function_ is a mathematical algorithm that transforms input data of any size into a fixed-size output, known as a hash value or message digest. This process is one-way, meaning it is computationally infeasible to reverse the hash value to obtain the original input data. Hash functions are crucial in various security applications, including password storage, data integrity checks, and digital signatures.  
+__initialization vector__ (IV) A random or pseudorandom value used to initialize a cryptographic primitive, such as a block cipher or stream cipher. The primary purpose of an IV is to ensure that identical plaintexts, when encrypted with the same key, produce distinct ciphertexts. This is crucial for achieving semantic security, which prevents an attacker from inferring relationships between different segments of an encrypted message.  
 __key derivation function (KDF)__ A cryptographic algorithm that derives _one or more secret keys_ from a secret value such as a master key, a password, or a passphrase using a pseudorandom function.  
 __key management__ This involves the generation, exchange, storage, use, and replacement of cryptographic keys. Effective key management is crucial for maintaining the security of a cryptographic system.  
 __OpenSSL__ An open-source cryptographic toolkit that enables secure communications over networks, supports the TLS and SSL protocols, and allows for the creation of CSRs and private keys.  
