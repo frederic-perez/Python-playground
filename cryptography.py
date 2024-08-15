@@ -27,20 +27,20 @@ def hash_a_combined_password_with_salt_and_pepper_using_sha256() -> None:
     print(f"Hashed Password: {hashed_password} (length: {len(hashed_password)})")
 
 
-def hash_a_combined_password_with_salt_and_pepper_using_scrypt() -> None:
-    # Generate a random salt
-    salt: Final[bytes] = os.urandom(16)
-
+def hash_a_combined_password_with_pepper_using_scrypt_with_salt() -> None:
     # Define the pepper (kept secure, not stored in the database)
-    pepper: Final[bytes] = b'your_secret_pepper'
+    pepper: Final[bytes] = bytes(PEPPER, 'utf-8')
 
     # User's password
     password: Final[bytes] = b'your_password'
 
     # Combine password, salt, and pepper
-    combined_password: Final[bytes] = password + salt + pepper
+    combined_password: Final[bytes] = password + pepper
 
-    # Hash the combined string using scrypt
+    # Generate a random salt
+    salt: Final[bytes] = os.urandom(16)
+
+    # Hash the combined string using scrypt, noticing that salt is a parameter
     hashed_password: Final[bytes] = scrypt.hash(combined_password, salt, N=16384, r=8, p=1)
 
     # Store the salt and hashed password in the database
@@ -52,7 +52,7 @@ def hash_a_combined_password_with_salt_and_pepper_using_scrypt() -> None:
 
 def main():
     hash_a_combined_password_with_salt_and_pepper_using_sha256()
-    hash_a_combined_password_with_salt_and_pepper_using_scrypt()
+    hash_a_combined_password_with_pepper_using_scrypt_with_salt()
 
 
 if __name__ == '__main__':
