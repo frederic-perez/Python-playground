@@ -1,16 +1,27 @@
 # Cryptography
 
+## Books
+
+- Books on [Security & Privacy](https://github.com/EbookFoundation/free-programming-books/blob/main/books/free-programming-books-subjects.md#security--privacy) compiled by the [Free Ebook Foundation](https://github.com/EbookFoundation)
+
 ## Acronyms
 
 __AES__ (_vs_ DES) Advanced Encryption Standard, AKA the Rijndael algorithm. It supersedes the DES which was published in 1977.  
+__BIO__ In OpenSSL, BIO stands for Basic I/O abstraction, used to handle various data streaming types, such as files, memory buffers, and network connections.  
 __CSR__ Certificate Signing Request. An encoded message sent from an applicant to a Certificate Authority (CA) to apply for an SSL/TLS certificate. It typically contains the public key, identifying information like a domain name, and proof of authenticity, and it must be generated on the server where the certificate will be used.  
 __DES__ (_vs_ AES) Data Encryption Standard.  
 __ECC__ Elliptic Curve Cryptography.  
 __IV__ Initialization vector.  
 __KDF__ Key derivation function.  
+__MAC__ Message authentication code.  
+__MD5__ The MD5 (Message-Digest Algorithm 5) is a cryptographic hash function that was developed in 1991 by Ronald Rivest as an improvement over its predecessor, MD4 3. It is specifically designed to produce a 128-bit hash value from any amount of data, making it suitable for various applications, including data integrity checks and digital signature verification.  
+__PEM__ Privacy-enhanced mail, although its use has expanded beyond email. It’s a Base64-encoded format for storing various cryptographic objects.  
 __RSA__ Rivest-Shamir-Adleman, a widely used public-key cryptosystem that enables secure data transmission and is foundational in modern cryptography.  
+__SHA__ Secure hash algorithm.  
+__SHA-2__ The SHA-2 family is a group of cryptographic hash functions that includes SHA-224, SHA-256, SHA-384, and SHA-512. These functions were developed by the National Security Agency (NSA) and first published in 2001. The SHA-2 family is notable for its improved security over its predecessor, SHA-1.  
+__SHA-256__ This is a specific member of the SHA-2 family of hash algorithms. The “256” indicates that it produces a 256-bit (32-byte) hash value.
 __SSL__ Secure Sockets Layer, a networking protocol that secures connections between web clients and servers through encryption.  
-__TLS__ Transport Layer Security. A cryptographic protocol designed to provide secure communications over a network by encrypting data to prevent eavesdropping and tampering.
+__TLS__ Transport Layer Security. A cryptographic protocol designed to provide secure communications over a network by encrypting data to prevent eavesdropping and tampering.  
 
 ## Glossary
 
@@ -22,9 +33,11 @@ __cryptographic key__ A piece of information, typically a string of numbers or l
 __cryptography__ [:scroll: Derived from the Greek words “kryptos” (κρυπτός), meaning “hidden” or “secret,” and “graphia” (γραφή), meaning “writing” or “description.”] The practice of securing information by transforming it into a format that is unreadable to unauthorized users.  
 __cyphertext__ The result of encryption performed on plaintext using an algorithm, known as a cipher.  
 __decryption__ (_vs_ encryption) The reverse of encryption, converting ciphertext back into readable plain text.  
+__digest__ A digest, also known as a hash, is a fixed-size string of bytes that is generated from an arbitrary block of data. The primary purpose of a digest is to ensure data integrity and authenticity.  
 __digital signature__ Digital signatures are used to verify the authenticity and integrity of a message, software, or digital document. They use asymmetric cryptography to create a signature that can be verified by anyone with the public key. Usage example (see _public key_): Bob can sign a message with his private key. Anyone with Bob’s public key can verify that the message is indeed from Bob and hasn’t been altered.  
 __encryption__ (_vs_ decryption) The process of converting plain text into a coded format (ciphertext) to prevent unauthorized access.  
-__hash functions__ These are algorithms that take an input and produce a fixed-size string of bytes. The output, called a hash, is unique to each unique input. A _hash function_ is a mathematical algorithm that transforms input data of any size into a fixed-size output, known as a hash value or message digest. This process is one-way, meaning it is computationally infeasible to reverse the hash value to obtain the original input data. Hash functions are crucial in various security applications, including password storage, data integrity checks, and digital signatures.  
+__hash__ See _digest_.  
+__hash algorithm/function__ These are algorithms that take an input and produce a fixed-size string of bytes. The output, called a hash, is unique to each unique input. A _hash function_ is a mathematical algorithm that transforms input data of any size into a fixed-size output, known as a hash value or message digest. This process is one-way, meaning it is computationally infeasible to reverse the hash value to obtain the original input data. Hash functions are crucial in various security applications, including password storage, data integrity checks, and digital signatures.  
 __initialization vector__ (IV) A random or pseudorandom value used to initialize a cryptographic primitive, such as a block cipher or stream cipher. The primary purpose of an IV is to ensure that identical plaintexts, when encrypted with the same key, produce distinct ciphertexts. This is crucial for achieving semantic security, which prevents an attacker from inferring relationships between different segments of an encrypted message.  
 __key derivation function (KDF)__ A cryptographic algorithm that derives _one or more secret keys_ from a secret value such as a master key, a password, or a passphrase using a pseudorandom function.  
 __key management__ This involves the generation, exchange, storage, use, and replacement of cryptographic keys. Effective key management is crucial for maintaining the security of a cryptographic system.  
