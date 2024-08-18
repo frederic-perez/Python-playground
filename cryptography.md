@@ -1,8 +1,23 @@
 # Cryptography
 
-## Books
+## Resources
 
-- Books on [Security & Privacy](https://github.com/EbookFoundation/free-programming-books/blob/main/books/free-programming-books-subjects.md#security--privacy) compiled by the [Free Ebook Foundation](https://github.com/EbookFoundation)
+### Books
+
+- [Awesome Cryptography](https://github.com/sobolevn/awesome-cryptography)’s [Books Section](https://github.com/sobolevn/awesome-cryptography?tab=readme-ov-file#books)
+- [Free Ebook Foundation](https://github.com/EbookFoundation)’s compiled [Books on Security & Privacy](https://github.com/EbookFoundation/free-programming-books/blob/main/books/free-programming-books-subjects.md#security--privacy)
+- [Internet Archive](https://archive.org/)’s [Introduction to Modern Cryptography](https://ia600907.us.archive.org/1/items/strategic_intelligence_network/communication/encryption/introduction_to_modern_cryptography.pdf) by Jonathan Katz and Yehuda Lindell
+
+### Libraries
+
+- [Botan](https://botan.randombit.net/) — Crypto and TLS for Modern C++: [GitHub](https://github.com/randombit/botan); [Handbook](https://botan.randombit.net/handbook/)
+- Crypto++: [GitHub](https://github.com/weidai11/cryptopp)
+- OpenSSL: [GitHub](https://github.com/openssl/openssl)
+
+### Miscellany
+
+- [Awesome Cryptography](https://github.com/sobolevn/awesome-cryptography)
+- [Comparison of cryptography libraries](https://en.wikipedia.org/wiki/Comparison_of_cryptography_libraries)
 
 ## Acronyms
 
