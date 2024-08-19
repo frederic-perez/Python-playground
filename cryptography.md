@@ -7,6 +7,7 @@
 - [Awesome Cryptography](https://github.com/sobolevn/awesome-cryptography)’s [Books Section](https://github.com/sobolevn/awesome-cryptography?tab=readme-ov-file#books)
 - [Free Ebook Foundation](https://github.com/EbookFoundation)’s compiled [Books on Security & Privacy](https://github.com/EbookFoundation/free-programming-books/blob/main/books/free-programming-books-subjects.md#security--privacy)
 - [Internet Archive](https://archive.org/)’s [Introduction to Modern Cryptography](https://ia600907.us.archive.org/1/items/strategic_intelligence_network/communication/encryption/introduction_to_modern_cryptography.pdf) by Jonathan Katz and Yehuda Lindell
+- Svetlin Nakov’s (unfinished) [Practical Cryptography for Developers](https://cryptobook.nakov.com/); [GitHub](https://github.com/nakov/Practical-Cryptography-for-Developers-Book)
 
 ### Libraries
 
@@ -26,25 +27,32 @@ __BIO__ In OpenSSL, BIO stands for Basic I/O abstraction, used to handle various
 __CSR__ Certificate Signing Request. An encoded message sent from an applicant to a Certificate Authority (CA) to apply for an SSL/TLS certificate. It typically contains the public key, identifying information like a domain name, and proof of authenticity, and it must be generated on the server where the certificate will be used.  
 __DES__ (_vs_ AES) Data Encryption Standard.  
 __ECC__ Elliptic Curve Cryptography.  
+__ECDSA__ Elliptic Curve Digital Signature Algorithm.  
+__HMAC__ Keyed-hashing message authentication.  
 __IV__ Initialization vector.  
 __KDF__ Key derivation function.  
 __MAC__ Message authentication code.  
 __MD5__ The MD5 (Message-Digest Algorithm 5) is a cryptographic hash function that was developed in 1991 by Ronald Rivest as an improvement over its predecessor, MD4 3. It is specifically designed to produce a 128-bit hash value from any amount of data, making it suitable for various applications, including data integrity checks and digital signature verification.  
 __PEM__ Privacy-enhanced mail, although its use has expanded beyond email. It’s a Base64-encoded format for storing various cryptographic objects.  
+__PKCS__ Public key cryptography standards.  
+__PRNG__ Pseudo-random number generator.  
 __RSA__ Rivest-Shamir-Adleman, a widely used public-key cryptosystem that enables secure data transmission and is foundational in modern cryptography.  
 __SHA__ Secure hash algorithm.  
 __SHA-2__ The SHA-2 family is a group of cryptographic hash functions that includes SHA-224, SHA-256, SHA-384, and SHA-512. These functions were developed by the National Security Agency (NSA) and first published in 2001. The SHA-2 family is notable for its improved security over its predecessor, SHA-1.  
-__SHA-256__ This is a specific member of the SHA-2 family of hash algorithms. The “256” indicates that it produces a 256-bit (32-byte) hash value.
+__SHA-256__ This is a specific member of the SHA-2 family of hash algorithms. The “256” indicates that it produces a 256-bit (32-byte) hash value.  
 __SSL__ Secure Sockets Layer, a networking protocol that secures connections between web clients and servers through encryption.  
 __TLS__ Transport Layer Security. A cryptographic protocol designed to provide secure communications over a network by encrypting data to prevent eavesdropping and tampering.  
+__X.509__	Standard for public-key infrastructure.  
 
 ## Glossary
 
 __asymmetric cryptography__ (_vs_ symmetric cryptography). See _public-key cryptography_.  
+__brute-force attack__ (and _exhaustive key search_) [[Wikipedia]](https://en.wikipedia.org/wiki/Brute-force_attack)  
 __cipher__ _v_ (cypher) Convert ordinary language into a coded format or to write in a secret code.   
 __crypto-__ (crypt-) Secret, hidden, or concealed.  
 __cryptogram__ (_vs_ plaintext) A message or writing in code or cipher.  
 __cryptographic key__ A piece of information, typically a string of numbers or letters _stored in a file_, used to encode or decode cryptographic data through a cryptographic algorithm. They are used for (1) encryption, (2) decryption, (3) authentication (to verify the identity of users or devices in a system), and (4) digital signatures (keys help ensure the integrity of messages and confirm the identity of the sender).  
+__cryptographic scheme__ A structured set of algorithms and protocols designed to achieve specific security goals, such as confidentiality, data integrity, authentication, and non-repudiation. These schemes typically involve a combination of cryptographic primitives, such as encryption and decryption algorithms, hash functions, digital signatures, and key exchange mechanisms. Examples of cryptographic schemes include RSA, AES, Diffie-Hellman Key Exchange, and ECDSA.  
 __cryptography__ [:scroll: Derived from the Greek words “kryptos” (κρυπτός), meaning “hidden” or “secret,” and “graphia” (γραφή), meaning “writing” or “description.”] The practice of securing information by transforming it into a format that is unreadable to unauthorized users.  
 __cyphertext__ The result of encryption performed on plaintext using an algorithm, known as a cipher.  
 __decryption__ (_vs_ encryption) The reverse of encryption, converting ciphertext back into readable plain text.  
@@ -61,8 +69,9 @@ __OpenSSL__ An open-source cryptographic toolkit that enables secure communicati
 __pepper__ (_vs_ salt) A secret value that is added to a password before it is hashed, enhancing the security of the stored password hashes. Unlike salt, which is unique for each user and stored alongside the hash, a pepper is typically a fixed, secret string that is not stored in the database. This separation aims to provide an additional layer of security against attacks.  
 __plaintext__ (_vs_ cryptogram) The intelligible original message of a cryptogram, as opposed to the coded or enciphered version.  
 __private key__ (_vs_ public key) Usage: Private keys are used to decrypt data that has been encrypted with the _corresponding_ public key. They must be kept secret. Function: The private key is also used to create digital signatures, which verify the authenticity and integrity of a message.  
+__private-key cryptography__ (symmetric cryptography) _A private-key encryption scheme, or cipher, is comprised of three algorithms: the first is a procedure for generating keys, the second a procedure for encrypting, and the third a procedure for decrypting._  
 __public key__ (_vs_ private key) Usage: Public keys are used to encrypt data. They can be freely shared with anyone. Function: When someone wants to send you a secure message, they use your public key to encrypt it. Only the corresponding private key can decrypt this message. If Alice wants to send a secure message to Bob, she encrypts it using Bob’s public key. Only Bob’s private key can decrypt it.  
-__public-key cryptography__ [[Wikipedia](https://en.wikipedia.org/wiki/Public-key_cryptography)] The field of cryptographic systems that use pairs of related keys (a public key for encryption and a private key for decryption). Examples include RSA and ECC.  
+__public-key cryptography__ (asymmetric cryptography) [[Wikipedia](https://en.wikipedia.org/wiki/Public-key_cryptography)] The field of cryptographic systems that use pairs of related keys (a public key for encryption and a private key for decryption). Examples include RSA and ECC.  
 __salt__ (_vs_ pepper) A random value that is added to the input of a cryptographic function, particularly when hashing passwords. Its primary purpose is to ensure that even if two users have the same password, their hashed outputs will be different due to the unique salt values used for each password. [:scroll: It draws an analogy from cooking, where salt is used to enhance flavor and preserve food. In a similar vein, adding “salt” enhances security by making hashed outputs more robust against attacks. Just as a pinch of salt can transform a dish by adding complexity and depth, adding a random value (salt) transforms simple password hashes into complex outputs that are much harder to reverse-engineer or crack.]
 __scrypt__ A password-based KDF designed to produce a secure cryptographic key from a password. Key features of scrypt include _deterministic output_ (given the same input parameters (password, salt, cost factor, etc.), scrypt will always produce the same output key) and _irreversibility_ (scrypt is a password-based key derivation function (KDF) designed to produce a secure cryptographic key from a password).  
 __symmetric cryptography__ (_vs_ asymmetric cryptography ) Uses the same key for both encryption and decryption. Examples include DES and AES.  
