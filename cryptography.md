@@ -23,6 +23,7 @@
 ## Acronyms
 
 __AES__ (_vs_ DES) Advanced Encryption Standard, AKA the Rijndael algorithm. It supersedes the DES which was published in 1977.  
+__ASIC__ (pronounced “__A__ sik”) Application-specific integrated circuit. A chip that is custom designed for a specific purpose.  
 __BIO__ In OpenSSL, BIO stands for Basic I/O abstraction, used to handle various data streaming types, such as files, memory buffers, and network connections.  
 __CSR__ Certificate Signing Request. An encoded message sent from an applicant to a Certificate Authority (CA) to apply for an SSL/TLS certificate. It typically contains the public key, identifying information like a domain name, and proof of authenticity, and it must be generated on the server where the certificate will be used.  
 __DES__ (_vs_ AES) Data Encryption Standard.  
@@ -36,7 +37,7 @@ __MD5__ The MD5 (Message-Digest Algorithm 5) is a cryptographic hash function th
 __PEM__ Privacy-enhanced mail, although its use has expanded beyond email. It’s a Base64-encoded format for storing various cryptographic objects.  
 __PKCS__ Public key cryptography standards.  
 __PRNG__ Pseudo-random number generator.  
-__RSA__ Rivest-Shamir-Adleman, a widely used public-key cryptosystem that enables secure data transmission and is foundational in modern cryptography.  
+__RSA (cryptosystem)__ [[Wikipedia]](https://en.m.wikipedia.org/wiki/RSA_(cryptosystem)) Rivest-Shamir-Adleman, a widely used public-key cryptosystem that enables secure data transmission and is foundational in modern cryptography.  
 __SHA__ Secure hash algorithm.  
 __SHA-2__ The SHA-2 family is a group of cryptographic hash functions that includes SHA-224, SHA-256, SHA-384, and SHA-512. These functions were developed by the National Security Agency (NSA) and first published in 2001. The SHA-2 family is notable for its improved security over its predecessor, SHA-1.  
 __SHA-256__ This is a specific member of the SHA-2 family of hash algorithms. The “256” indicates that it produces a 256-bit (32-byte) hash value.  
@@ -55,6 +56,7 @@ __cryptographic key__ A piece of information, typically a string of numbers or l
 __cryptographic scheme__ A structured set of algorithms and protocols designed to achieve specific security goals, such as confidentiality, data integrity, authentication, and non-repudiation. These schemes typically involve a combination of cryptographic primitives, such as encryption and decryption algorithms, hash functions, digital signatures, and key exchange mechanisms. Examples of cryptographic schemes include RSA, AES, Diffie-Hellman Key Exchange, and ECDSA.  
 __cryptography__ [:scroll: Derived from the Greek words “kryptos” (κρυπτός), meaning “hidden” or “secret,” and “graphia” (γραφή), meaning “writing” or “description.”] The practice of securing information by transforming it into a format that is unreadable to unauthorized users.  
 __cyphertext__ The result of encryption performed on plaintext using an algorithm, known as a cipher.  
+__cryptosystem__ [[Wikipedia]](https://en.m.wikipedia.org/wiki/Cryptosystem)  
 __decryption__ (_vs_ encryption) The reverse of encryption, converting ciphertext back into readable plain text.  
 __digest__ A digest, also known as a hash, is a fixed-size string of bytes that is generated from an arbitrary block of data. The primary purpose of a digest is to ensure data integrity and authenticity.  
 __digital signature__ Digital signatures are used to verify the authenticity and integrity of a message, software, or digital document. They use asymmetric cryptography to create a signature that can be verified by anyone with the public key. Usage example (see _public key_): Bob can sign a message with his private key. Anyone with Bob’s public key can verify that the message is indeed from Bob and hasn’t been altered.  
