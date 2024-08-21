@@ -4,6 +4,7 @@ import logging
 import numpy as np
 import subprocess
 
+from pathlib import Path
 from sphere import get_sphere, Sphere
 from timer import Timer
 from typing import Callable, Final, Generator, Sequence, TypeAlias
@@ -14,6 +15,30 @@ logging.basicConfig(
     level=logging.DEBUG)
 
 logger = logging.getLogger(__name__)
+
+
+def print_the_current_directory() -> None:
+    current_directory : Final = Path.cwd()
+    logger.info(f"Current directory is '{current_directory}'")
+
+
+def check_if_file_exists_and_check_its_magic_numbers(filename_relative_path : str) -> None:
+    def get_magic_bytes(a_file_path: Path, num_bytes=4) -> str:
+        with open(a_file_path, 'rb') as file:
+            magic_bytes : Final = file.read(num_bytes)
+            return magic_bytes.hex().upper()
+
+    file_path : Final = Path.cwd() / Path(filename_relative_path)
+    if not file_path.is_file():
+        logger.error(f"The file '{file_path}' does not exist")
+        return
+
+    file_magic_bytes : Final = get_magic_bytes(file_path, 8)
+    png_magic_bytes : Final = "89504E470D0A1A0A"
+    if file_magic_bytes == png_magic_bytes:
+        logger.info(f"Magic bytes of '{filename_relative_path}' match the ones expected from a PNG file")
+    else:
+        logger.error(f"The magic bytes of '{filename_relative_path}' do not match the ones expected from a PNG file")
 
 
 def play_with_numpy_random_numbers() -> None:
@@ -98,6 +123,9 @@ def fibonacci_generator(n: int) -> Generator[int, None, None]:  # the function r
 
 
 def main():
+    print_the_current_directory()
+    check_if_file_exists_and_check_its_magic_numbers('images/snap-240425-0035-fractals--Julia.png')
+
     play_with_numpy_random_numbers()
 
     array_of_description_and_points: Final = \
