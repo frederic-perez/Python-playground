@@ -6,7 +6,7 @@ See the companion `.md` file.
 
 import hashlib
 import os
-import scrypt
+import scrypt  # type: ignore[import-untyped]
 
 from typing import Final
 

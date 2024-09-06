@@ -3,7 +3,7 @@
 import gettext
 import os
 import pyautogui as pg
-import pyperclip
+import pyperclip  # type: ignore[import-untyped]
 import time
 
 from colorama import Fore, Style
@@ -15,8 +15,8 @@ title_FYI: Final[str] = '🤖💬 FYI'
 
 def go_to_the_middle_of_the_window_and_do_click() -> None:
     # noinspection PyUnresolvedReferences
-    pg.alert('🤖💬 I am going to move the cursor to the middle of the screen, and print its location',
-             title=title_FYI)
+    pg.alert(  # type: ignore[attr-defined]
+        '🤖💬 I am going to move the cursor to the middle of the screen, and print its location', title=title_FYI)
     screen_width, screen_height = pg.size()
     pg.moveTo(screen_width / 2, screen_height / 2, duration=.25)
     print(pg.position())
@@ -30,7 +30,7 @@ def paste_text(text: str) -> None:
 
 def move_window_to_origin(window_title: str) -> None:
     # Try to find the window
-    windows: Final = pg.getWindowsWithTitle(window_title)
+    windows: Final = pg.getWindowsWithTitle(window_title)  # type: ignore[attr-defined]
     if len(windows) == 0:
         return
     window: Final = windows[0]
@@ -47,9 +47,10 @@ def move_window_to_origin(window_title: str) -> None:
 
 def play_a_bit_with_notepad_plus_plus() -> None:
     # noinspection PyUnresolvedReferences
-    pg.alert('🤖💬 I am going to open notepad++.exe, move the window, create a new buffer, type something, '
-             'and quit without saving.',
-             title=title_FYI)
+    pg.alert(  # type: ignore[attr-defined]
+        '🤖💬 I am going to open notepad++.exe, move the window, create a new buffer, type something, '
+        'and quit without saving.',
+        title=title_FYI)
     pg.PAUSE = 1
     pg.press('win')
     pg.typewrite('notepad', interval=.025)
@@ -93,9 +94,10 @@ def translate_hello_world() -> None:
     list_of_languages_plus_quit.append('Quit')
     while True:
         # noinspection PyUnresolvedReferences
-        language_str = pg.confirm(text='🤖💬 Choose the target language to translate Hello, world! to',
-                                  title='Language selection',
-                                  buttons=list_of_languages_plus_quit)
+        language_str = pg.confirm(  # type: ignore[attr-defined]
+            text='🤖💬 Choose the target language to translate Hello, world! to',
+            title='Language selection',
+            buttons=list_of_languages_plus_quit)
         if language_str in languages_str:
             map_language_to_translator[language_str].install()  # The 'magic' happens here
             print('» ' + Fore.LIGHTYELLOW_EX + f'{language_str}' + Style.RESET_ALL + ': ' +
