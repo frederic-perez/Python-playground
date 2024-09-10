@@ -45,10 +45,30 @@ def move_window_to_origin(window_title: str) -> None:
     window.move(new_x - current_x, new_y - current_y)
 
 
+def move_window_to_bottom_right(window_title: str) -> None:
+    # Try to find the window
+    windows: Final = pg.getWindowsWithTitle(window_title)  # type: ignore[attr-defined]
+    if len(windows) == 0:
+        return
+    window: Final = windows[0]
+
+    # Get the current position of the window
+    current_x, current_y = window.left, window.top
+
+    # Calculate the new position to move the window to
+    screen_width, screen_height = pg.size()
+    current_width = window.width
+    current_height = window.height
+    new_x, new_y = screen_width - current_width, screen_height - current_height
+
+    # Move the window to the new position
+    window.move(new_x - current_x, new_y - current_y)
+
+
 def play_a_bit_with_notepad_plus_plus() -> None:
     # noinspection PyUnresolvedReferences
     pg.alert(  # type: ignore[attr-defined]
-        '🤖💬 I am going to open notepad++.exe, move the window, create a new buffer, type something, '
+        '🤖💬 I am going to open notepad++.exe, move the window twice, create a new buffer, type something, '
         'and quit without saving.',
         title=title_FYI)
     pg.PAUSE = 1
@@ -61,6 +81,8 @@ def play_a_bit_with_notepad_plus_plus() -> None:
 
     pg.hotkey('ctrl', 'n')  # 'New'
     move_window_to_origin('new 1 - Notepad++')
+    time.sleep(1)
+    move_window_to_bottom_right('new 1 - Notepad++')
     pg.typewrite('Hello, world!\nI will close this tab in 1 second...', interval=.025)
     time.sleep(1)
     pg.hotkey('ctrl', 'w')  # 'Close'
