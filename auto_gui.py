@@ -3,6 +3,7 @@
 import gettext
 import os
 import pyautogui as pg
+import pygetwindow as gw  # type: ignore[import-untyped]
 import pyperclip  # type: ignore[import-untyped]
 import time
 
@@ -80,9 +81,18 @@ def play_a_bit_with_notepad_plus_plus() -> None:
     pg.press('enter')
 
     pg.hotkey('ctrl', 'n')  # 'New'
-    move_window_to_origin('new 1 - Notepad++')
+
+    # Get the list of all Notepad++ windows
+    notepad_windows: Final = gw.getWindowsWithTitle('Notepad++')
+    # Get the titles of the open Notepad++ windows
+    titles: Final = [window.title for window in notepad_windows]
+    # The newest tab will be the last one in the list
+    # Assuming the last created tab is the one we just opened
+    newest_tab_title: Final = titles[-1] if titles else None
+
+    move_window_to_origin(newest_tab_title)  # do not use 'new 1 - Notepad++' because that can fail
     time.sleep(1)
-    move_window_to_bottom_right('new 1 - Notepad++')
+    move_window_to_bottom_right(newest_tab_title)
     pg.typewrite('Hello, world!\nI will close this tab in 1 second...', interval=.025)
     time.sleep(1)
     pg.hotkey('ctrl', 'w')  # 'Close'
