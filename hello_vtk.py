@@ -7,8 +7,14 @@
 import vtkmodules.vtkInteractionStyle
 # noinspection PyUnresolvedReferences
 import vtkmodules.vtkRenderingOpenGL2
+
 from vtkmodules.vtkCommonColor import vtkNamedColors
-from vtkmodules.vtkFiltersSources import vtkCylinderSource
+from vtkmodules.vtkCommonCore import VTK_UNSIGNED_CHAR
+from vtkmodules.vtkCommonDataModel import vtkImageData
+from vtkmodules.vtkFiltersSources import vtkOutlineCornerFilter
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackballCamera
+
+from vtkmodules.vtkFiltersSources import vtkCubeSource
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
     vtkPolyDataMapper,
@@ -17,63 +23,71 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderer
 )
 
-def cylinder_example() -> None:
+def image_data_example() -> None:
     """
     Originally based on the code from
-    https://examples.vtk.org/site/Python/GeometricObjects/CylinderExample/
+    https://examples.vtk.org/site/Python/ImageData/WriteReadVtkImageData/
     """
     colors = vtkNamedColors()
     # Set the background color.
     colors.SetColor("BkgColor", colors.GetColor3d("MidnightBlue"))
 
-    # This creates a polygonal cylinder model with eight circumferential
-    # facets.
-    cylinder = vtkCylinderSource()
-    cylinder.SetResolution(32)
+    image_data = vtkImageData()
+    image_data.SetDimensions(4, 3, 2)
+    image_data.SetSpacing(1, 1, 1)
+    image_data.SetOrigin(0, 0, 0)
 
-    # The mapper is responsible for pushing the geometry into the graphics
-    # library. It may also do color mapping, if scalars or other
-    # attributes are defined.
-    cylinderMapper = vtkPolyDataMapper()
-    cylinderMapper.SetInputConnection(cylinder.GetOutputPort())
+    image_data.AllocateScalars(VTK_UNSIGNED_CHAR, 1)
 
-    # The actor is a grouping mechanism: besides the geometry (mapper), it
-    # also has a property, transformation matrix, and/or texture map.
-    # Here we set its color and rotate it -22.5 degrees.
-    cylinderActor = vtkActor()
-    cylinderActor.SetMapper(cylinderMapper)
-    cylinderActor.GetProperty().SetColor(colors.GetColor3d("Orange"))
-    cylinderActor.RotateX(30.0)
-    cylinderActor.RotateY(-45.0)
+    outline_filter = vtkOutlineCornerFilter()
+    outline_filter.SetInputData(image_data)
 
-    # Create the graphics structure. The renderer renders into the render
-    # window. The render window interactor captures mouse events and will
-    # perform appropriate camera or actor manipulation depending on the
-    # nature of the events.
-    ren = vtkRenderer()
-    renWin = vtkRenderWindow()
-    renWin.AddRenderer(ren)
-    iren = vtkRenderWindowInteractor()
-    iren.SetRenderWindow(renWin)
+    # Set up the mapper and actor for rendering
+    mapper = vtkPolyDataMapper()
+    mapper.SetInputConnection(outline_filter.GetOutputPort())
 
-    # Add the actors to the renderer, set the background and size
-    ren.AddActor(cylinderActor)
-    ren.SetBackground(colors.GetColor3d("BkgColor"))
-    renWin.SetSize(500, 500)
-    renWin.SetWindowName('CylinderExample')
+    actor = vtkActor()
+    actor.SetMapper(mapper)
+    actor.GetProperty().SetColor(1, 1, 1)
 
-    # This allows the interactor to initalize itself. It has to be
-    # called before an event loop.
-    iren.Initialize()
+    # -- box begin
+    #
+    box = vtkCubeSource()
+    box.SetXLength(1.0)
+    box.SetYLength(1.0)
+    box.SetZLength(1.0)
+    box.Update()
 
-    # We'll zoom in a little by accessing the camera and invoking a "Zoom"
-    # method on it.
-    ren.ResetCamera()
-    ren.GetActiveCamera().Zoom(1.5)
-    renWin.Render()
+    box_mapper = vtkPolyDataMapper()
+    box_mapper.SetInputConnection(box.GetOutputPort())
 
-    # Start the event loop.
-    iren.Start()
+    box_actor = vtkActor()
+    box_actor.SetMapper(box_mapper)
+    box_actor.GetProperty().SetColor(colors.GetColor3d("Orange"))
+    box_actor.GetProperty().SetRepresentationToWireframe()
+    #
+    # -- box end
+
+    # Create a renderer, render window, and interactor
+    renderer = vtkRenderer()
+    renderer.AddActor(actor)
+    renderer.AddActor(box_actor)
+    renderer.SetBackground(0.1, 0.2, 0.3)  # Set background color
+
+    render_window = vtkRenderWindow()
+    render_window.AddRenderer(renderer)
+    render_window.SetSize(300, 300)  # Set window size
+
+    interactor = vtkRenderWindowInteractor()
+    interactor.SetRenderWindow(render_window)
+
+    style = vtkInteractorStyleTrackballCamera()
+    interactor.SetInteractorStyle(style)
+
+    # Start the rendering
+    interactor.Initialize()
+    render_window.Render()
+    interactor.Start()
 
 if __name__ == '__main__':
-    cylinder_example()
+    image_data_example()
