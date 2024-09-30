@@ -4,7 +4,7 @@
 # creation.
 
 # noinspection PyUnresolvedReferences
-import vtkmodules.vtkInteractionStyle
+import vtkmodules.vtkRenderingFreeType
 # noinspection PyUnresolvedReferences
 import vtkmodules.vtkRenderingOpenGL2
 
@@ -20,7 +20,8 @@ from vtkmodules.vtkRenderingCore import (
     vtkPolyDataMapper,
     vtkRenderWindow,
     vtkRenderWindowInteractor,
-    vtkRenderer
+    vtkRenderer,
+    vtkTextActor
 )
 
 def image_data_example() -> None:
@@ -29,8 +30,6 @@ def image_data_example() -> None:
     https://examples.vtk.org/site/Python/ImageData/WriteReadVtkImageData/
     """
     colors = vtkNamedColors()
-    # Set the background color.
-    colors.SetColor("BkgColor", colors.GetColor3d("MidnightBlue"))
 
     image_data = vtkImageData()
     image_data.SetDimensions(4, 3, 2)
@@ -38,6 +37,23 @@ def image_data_example() -> None:
     image_data.SetOrigin(0, 0, 0)
 
     image_data.AllocateScalars(VTK_UNSIGNED_CHAR, 1)
+
+    # Extract information from the vtkImageData object
+    origin = image_data.GetOrigin()
+    dimensions = image_data.GetDimensions()
+    spacing = image_data.GetSpacing()
+    bounds = image_data.GetBounds()
+    origin_str = f"Origin: {origin}"
+    dimensions_str = f"Dimensions: {dimensions}"
+    spacing_str = f"Spacing: {spacing}"
+    bounds_str = f"Bounds: {bounds}"
+
+    # Create a text actor to display the information
+    text_actor = vtkTextActor()
+    text_actor.SetInput(f"{origin_str}\n{dimensions_str}\n{spacing_str}\n{bounds_str}")
+    text_actor_property = text_actor.GetTextProperty()
+    text_actor_property.SetFontSize(14)
+    text_actor_property.SetColor(1.0, 1.0, 1.0)  # White color
 
     outline_filter = vtkOutlineCornerFilter()
     outline_filter.SetInputData(image_data)
@@ -63,20 +79,23 @@ def image_data_example() -> None:
 
     box_actor = vtkActor()
     box_actor.SetMapper(box_mapper)
-    box_actor.GetProperty().SetColor(colors.GetColor3d("Orange"))
-    box_actor.GetProperty().SetRepresentationToWireframe()
+    box_actor_property = box_actor.GetProperty()
+    box_actor_property.SetColor(colors.GetColor3d("Orange"))
+    box_actor_property.SetRepresentationToSurface()
+    box_actor_property.SetOpacity(.5)
     #
     # -- box end
 
     # Create a renderer, render window, and interactor
     renderer = vtkRenderer()
     renderer.AddActor(actor)
+    renderer.AddActor2D(text_actor)
     renderer.AddActor(box_actor)
-    renderer.SetBackground(0.1, 0.2, 0.3)  # Set background color
+    renderer.SetBackground(colors.GetColor3d("MidnightBlue"))
 
     render_window = vtkRenderWindow()
     render_window.AddRenderer(renderer)
-    render_window.SetSize(300, 300)  # Set window size
+    render_window.SetSize(1024, 576)  # Set window size
 
     interactor = vtkRenderWindowInteractor()
     interactor.SetRenderWindow(render_window)
