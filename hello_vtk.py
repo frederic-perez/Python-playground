@@ -11,13 +11,14 @@ import vtkmodules.vtkRenderingOpenGL2
 from vtkmodules.vtkCommonColor import vtkNamedColors
 from vtkmodules.vtkCommonCore import (
     VTK_UNSIGNED_CHAR,
-    vtkPoints
+    vtkLookupTable,
+    vtkPoints,
+    vtkUnsignedCharArray
 )
 from vtkmodules.vtkCommonDataModel import (
     vtkImageData,
     vtkPolyData
 )
-from vtkmodules.vtkFiltersCore import vtkGlyph3D
 from vtkmodules.vtkFiltersSources import (
     vtkCubeSource,
     vtkOutlineCornerFilter,
@@ -26,6 +27,7 @@ from vtkmodules.vtkFiltersSources import (
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackballCamera
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
+    vtkGlyph3DMapper,
     vtkPolyDataMapper,
     vtkRenderWindow,
     vtkRenderWindowInteractor,
@@ -56,6 +58,63 @@ def image_data_example() -> None:
     dims_str = f"Dimensions: {dims}"
     spacing_str = f"Spacing: {spacing}"
     bounds_str = f"Bounds: {bounds}"
+
+    # Calculate the total number of pixels
+    total_points = dims[0] * dims[1] * dims[2]
+
+    # Create an array to store pixel values
+    scalar_array = vtkUnsignedCharArray()
+    scalar_array.SetName("Scalars")
+    scalar_array.SetNumberOfComponents(1)  # Single component per point
+    scalar_array.SetNumberOfTuples(total_points)  # Total number of pixels
+    scalar_array.Fill(0)
+
+    index = image_data.ComputePointId((0, 0, 0))
+    scalar_array.SetValue(index, 4)
+
+    for z in 0,:
+        for y in 0,:
+            for x in range(1, dims[0]):
+                index = z * dims[1] * dims[0] + y * dims[0] + x  # (z * width * height + y * width + x)
+                scalar_array.SetValue(index, 1)
+
+    for z in 0,:
+        for y in range(1, dims[1]):
+            for x in 0,:
+                index = z * dims[1] * dims[0] + y * dims[0] + x  # (z * width * height + y * width + x)
+                scalar_array.SetValue(index, 2)
+
+    for z in range(1, dims[2]):
+        for y in 0,:
+            for x in 0,:
+                index = z * dims[1] * dims[0] + y * dims[0] + x  # (z * width * height + y * width + x)
+                scalar_array.SetValue(index, 3)
+
+    # Attach array to image data
+    image_data.GetPointData().SetScalars(scalar_array)
+
+    # Optionally, you can print the values to verify
+    for z in range(dims[2]):
+        for y in range(dims[1]):
+            for x in range(dims[0]):
+                val = image_data.GetScalarComponentAsDouble(x, y, z, 0)
+                print(f"Value at ({x}, {y}, {z}): {val}")
+
+    # Map the scalar data using a lookup table
+    lookup_table = vtkLookupTable()
+    lookup_table.SetNumberOfTableValues(5)
+    lookup_table.Build()
+
+    # Define colors for each index
+    palette_colors = [
+        (0.5, 0.5, 0.5),  # Gray
+        (1.0, 0.0, 0.0),  # Red
+        (0.0, 1.0, 0.0),  # Green
+        (0.0, 0.0, 1.0),  # Blue
+        (1.0, 1.0, 1.0)  # White
+    ]
+    for i, color in enumerate(palette_colors):
+        lookup_table.SetTableValue(i, *color, 1.0)  # (r, g, b, opacity)
 
     # Create a text actor to display the information
     text_actor = vtkTextActor()
@@ -96,14 +155,14 @@ def image_data_example() -> None:
     sphere_source.SetRadius(.1)
     sphere_source.SetThetaResolution(20)  # Increase theta resolution
     sphere_source.SetPhiResolution(20)  # Increase phi resolution
-    # Create a glyph to represent each point as a sphere
-    glyph = vtkGlyph3D()
-    glyph.SetSourceConnection(sphere_source.GetOutputPort())
-    glyph.SetInputData(point_polydata)
-    glyph.Update()
     # Create a mapper
-    glyph_mapper = vtkPolyDataMapper()
-    glyph_mapper.SetInputConnection(glyph.GetOutputPort())
+    glyph_mapper = vtkGlyph3DMapper()
+    glyph_mapper.SetInputData(image_data)
+    glyph_mapper.SetSourceConnection(sphere_source.GetOutputPort())
+    glyph_mapper.SetLookupTable(lookup_table)
+    glyph_mapper.SetScalarRange(0, 4)  # Map from 0 to 4
+    glyph_mapper.ScalarVisibilityOn()
+    glyph_mapper.SetColorModeToMapScalars()
     # Create an actor
     glyph_actor = vtkActor()
     glyph_actor.SetMapper(glyph_mapper)
@@ -122,7 +181,7 @@ def image_data_example() -> None:
     box_actor = vtkActor()
     box_actor.SetMapper(box_mapper)
     box_actor_property = box_actor.GetProperty()
-    box_actor_property.SetColor(colors.GetColor3d("Orange"))
+    box_actor_property.SetColor(colors.GetColor3d("White"))
     box_actor_property.SetRepresentationToSurface()
     box_actor_property.SetOpacity(.5)
     #
