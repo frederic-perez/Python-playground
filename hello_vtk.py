@@ -43,7 +43,8 @@ def image_data_example() -> None:
     colors = vtkNamedColors()
 
     image_data = vtkImageData()
-    image_data.SetDimensions(4, 3, 2)
+    offset = 1
+    image_data.SetDimensions(4 + offset, 3 + offset, 2 + offset)
     image_data.SetSpacing(1, 1, 1)
     image_data.SetOrigin(0, 0, 0)
 
@@ -107,11 +108,11 @@ def image_data_example() -> None:
 
     # Define colors for each index
     palette_colors = [
-        (0.5, 0.5, 0.5),  # Gray
-        (1.0, 0.0, 0.0),  # Red
-        (0.0, 1.0, 0.0),  # Green
-        (0.0, 0.0, 1.0),  # Blue
-        (1.0, 1.0, 1.0)  # White
+        colors.GetColor3d("Gray"),
+        colors.GetColor3d("OrangeRed"),
+        colors.GetColor3d("LimeGreen"),
+        colors.GetColor3d("RoyalBlue"),
+        colors.GetColor3d("White")
     ]
     for i, color in enumerate(palette_colors):
         lookup_table.SetTableValue(i, *color, 1.0)  # (r, g, b, opacity)
@@ -166,6 +167,8 @@ def image_data_example() -> None:
     # Create an actor
     glyph_actor = vtkActor()
     glyph_actor.SetMapper(glyph_mapper)
+    glyph_actor.GetProperty().SetSpecular(0.65)
+    glyph_actor.GetProperty().SetSpecularPower(100)  # Set the specular power, larger values mean more shiny
 
     # -- box begin
     #
