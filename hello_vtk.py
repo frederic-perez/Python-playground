@@ -19,12 +19,14 @@ from vtkmodules.vtkCommonDataModel import (
     vtkImageData,
     vtkPolyData
 )
+from vtkmodules.vtkFiltersModeling import vtkOutlineFilter
 from vtkmodules.vtkFiltersSources import (
     vtkCubeSource,
-    vtkOutlineCornerFilter,
+    # vtkOutlineCornerFilter, We now favor vtkOutlineFilter
     vtkSphereSource
 )
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackballCamera
+from vtkmodules.vtkRenderingAnnotation import vtkAxesActor
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
     vtkGlyph3DMapper,
@@ -41,6 +43,21 @@ def image_data_example() -> None:
     https://examples.vtk.org/site/Python/ImageData/WriteReadVtkImageData/
     """
     colors = vtkNamedColors()
+
+    color_x = colors.GetColor3d("OrangeRed")
+    color_y = colors.GetColor3d("LimeGreen")
+    color_z = colors.GetColor3d("RoyalBlue")
+
+    axes_actor = vtkAxesActor()
+    axes_actor.SetTotalLength(1, 1, 1)  # Set the length of the axes
+    axes_actor.SetShaftType(vtkAxesActor.CYLINDER_SHAFT)
+    axes_actor.SetAxisLabels(0)  # Set to 0 to disable axis labels
+    axes_actor.GetXAxisShaftProperty().SetColor(color_x)
+    axes_actor.GetXAxisTipProperty().SetColor(color_x)
+    axes_actor.GetYAxisShaftProperty().SetColor(color_y)
+    axes_actor.GetYAxisTipProperty().SetColor(color_y)
+    axes_actor.GetZAxisShaftProperty().SetColor(color_z)
+    axes_actor.GetZAxisTipProperty().SetColor(color_z)
 
     image_data = vtkImageData()
     offset = 1
@@ -109,9 +126,9 @@ def image_data_example() -> None:
     # Define colors for each index
     palette_colors = [
         colors.GetColor3d("Gray"),
-        colors.GetColor3d("OrangeRed"),
-        colors.GetColor3d("LimeGreen"),
-        colors.GetColor3d("RoyalBlue"),
+        color_x,
+        color_y,
+        color_z,
         colors.GetColor3d("White")
     ]
     for i, color in enumerate(palette_colors):
@@ -124,7 +141,7 @@ def image_data_example() -> None:
     text_actor_property.SetFontSize(14)
     text_actor_property.SetColor(1.0, 1.0, 1.0)  # White color
 
-    outline_filter = vtkOutlineCornerFilter()
+    outline_filter = vtkOutlineFilter()  # vtkOutlineCornerFilter()
     outline_filter.SetInputData(image_data)
 
     # Set up the mapper and actor for rendering
@@ -193,6 +210,7 @@ def image_data_example() -> None:
     # Create a renderer, render window, and interactor
     renderer = vtkRenderer()
     renderer.AddActor(actor)
+    renderer.AddActor(axes_actor)
     renderer.AddActor(glyph_actor)
     renderer.AddActor2D(text_actor)
     renderer.AddActor(box_actor)
