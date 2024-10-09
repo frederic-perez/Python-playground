@@ -136,21 +136,27 @@ def image_data_example() -> None:
 
     # Create a text actor to display the information
     text_actor = vtkTextActor()
+    text_actor.SetTextScaleModeToNone()
+    text_actor.GetPositionCoordinate().SetCoordinateSystemToNormalizedDisplay()
     text_actor.SetInput(f"{origin_str}\n{dims_str}\n{spacing_str}\n{bounds_str}")
     text_actor_property = text_actor.GetTextProperty()
     text_actor_property.SetFontSize(14)
     text_actor_property.SetColor(1.0, 1.0, 1.0)  # White color
+    # Set the position with margins (e.g., 0.1 for left margin and 0.1 for bottom margin)
+    left_margin = 0.01
+    bottom_margin = left_margin * 1024 / 576
+    text_actor.SetPosition(left_margin, bottom_margin)
 
     outline_filter = vtkOutlineFilter()  # vtkOutlineCornerFilter()
     outline_filter.SetInputData(image_data)
 
     # Set up the mapper and actor for rendering
-    mapper = vtkPolyDataMapper()
-    mapper.SetInputConnection(outline_filter.GetOutputPort())
+    outline_mapper = vtkPolyDataMapper()
+    outline_mapper.SetInputConnection(outline_filter.GetOutputPort())
 
-    actor = vtkActor()
-    actor.SetMapper(mapper)
-    actor.GetProperty().SetColor(1, 1, 1)
+    outline_actor = vtkActor()
+    outline_actor.SetMapper(outline_mapper)
+    outline_actor.GetProperty().SetColor(1, 1, 1)
 
     #
     # Create a vtkPoints object to hold the voxel centers
@@ -170,7 +176,7 @@ def image_data_example() -> None:
     point_polydata.SetPoints(points)
     # Create the sphere source
     sphere_source = vtkSphereSource()
-    sphere_source.SetRadius(.1)
+    sphere_source.SetRadius(.05)
     sphere_source.SetThetaResolution(20)  # Increase theta resolution
     sphere_source.SetPhiResolution(20)  # Increase phi resolution
     # Create a mapper
@@ -209,12 +215,27 @@ def image_data_example() -> None:
 
     # Create a renderer, render window, and interactor
     renderer = vtkRenderer()
-    renderer.AddActor(actor)
-    renderer.AddActor(axes_actor)
-    renderer.AddActor(glyph_actor)
     renderer.AddActor2D(text_actor)
+    renderer.AddActor(axes_actor)
     renderer.AddActor(box_actor)
+    renderer.AddActor(glyph_actor)
+    renderer.AddActor(outline_actor)
     renderer.SetBackground(colors.GetColor3d("MidnightBlue"))  # Charcoal
+
+    # Configure the camera
+    center = (
+        (bounds[1] + bounds[0]) / 2.0,
+        (bounds[3] + bounds[2]) / 2.0,
+        (bounds[5] + bounds[4]) / 2.0
+    )
+    camera = renderer.GetActiveCamera()
+    distance_multiplier = 1.5  # Adjust as needed for how far away the camera is
+    camera.SetPosition(
+        center[0] + distance_multiplier * 0.9 * (bounds[1] - bounds[0]),
+        center[1] + distance_multiplier * 1.2 * (bounds[3] - bounds[2]),
+        center[2] + distance_multiplier * 0.1 * (bounds[5] - bounds[4]))
+    camera.SetFocalPoint(center)
+    camera.SetViewUp(0, 0, 1)
 
     render_window = vtkRenderWindow()
     render_window.AddRenderer(renderer)
