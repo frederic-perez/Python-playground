@@ -67,17 +67,8 @@ def image_data_example() -> None:
 
     image_data.AllocateScalars(VTK_UNSIGNED_CHAR, 1)
 
-    # Extract information from the vtkImageData object
-    origin = image_data.GetOrigin()
-    dims = image_data.GetDimensions()
-    spacing = image_data.GetSpacing()
-    bounds = image_data.GetBounds()
-    origin_str = f"Origin: {origin}"
-    dims_str = f"Dimensions: {dims}"
-    spacing_str = f"Spacing: {spacing}"
-    bounds_str = f"Bounds: {bounds}"
-
     # Calculate the total number of pixels
+    dims = image_data.GetDimensions()
     total_points = dims[0] * dims[1] * dims[2]
 
     # Create an array to store pixel values
@@ -134,11 +125,23 @@ def image_data_example() -> None:
     for i, color in enumerate(palette_colors):
         lookup_table.SetTableValue(i, *color, 1.0)  # (r, g, b, opacity)
 
+    # Extract information from the vtkImageData object
+    spacing = image_data.GetSpacing()
+    bounds = image_data.GetBounds()
+    scalars = image_data.GetPointData().GetScalars()
+    scalars_range = scalars.GetRange()
+    scalars_type_str = scalars.GetDataTypeAsString()
+    dims_str = f"Dimensions: {dims}"
+    spacing_str = f"Spacing: {spacing}"
+    bounds_str = f"Bounds: [{bounds[0]}, {bounds[1]}] x [{bounds[2]}, {bounds[3]}] x [{bounds[4]}, {bounds[5]}]"
+    delta_str = f"Delta: [{bounds[1] - bounds[0]}, {bounds[3] - bounds[2]}, {bounds[5] - bounds[4]}]"
+    scalars_range_str = f"Scalars range: {scalars_range} [{scalars_type_str}]"
+
     # Create a text actor to display the information
     text_actor = vtkTextActor()
     text_actor.SetTextScaleModeToNone()
     text_actor.GetPositionCoordinate().SetCoordinateSystemToNormalizedDisplay()
-    text_actor.SetInput(f"{origin_str}\n{dims_str}\n{spacing_str}\n{bounds_str}")
+    text_actor.SetInput(f"{dims_str}\n{spacing_str}\n{bounds_str}\n{delta_str}\n{scalars_range_str}")
     text_actor_property = text_actor.GetTextProperty()
     text_actor_property.SetFontSize(14)
     text_actor_property.SetColor(1.0, 1.0, 1.0)  # White color
@@ -176,7 +179,7 @@ def image_data_example() -> None:
     point_polydata.SetPoints(points)
     # Create the sphere source
     sphere_source = vtkSphereSource()
-    sphere_source.SetRadius(.05)
+    sphere_source.SetRadius(.075)
     sphere_source.SetThetaResolution(20)  # Increase theta resolution
     sphere_source.SetPhiResolution(20)  # Increase phi resolution
     # Create a mapper
