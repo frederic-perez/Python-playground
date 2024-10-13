@@ -17,11 +17,12 @@ from vtkmodules.vtkCommonCore import (
 )
 from vtkmodules.vtkCommonDataModel import (
     vtkImageData,
+    vtkPiecewiseFunction,
     vtkPolyData
 )
+from vtkmodules.vtkFiltersCore import vtkExtractEdges
 from vtkmodules.vtkFiltersModeling import vtkOutlineFilter
 from vtkmodules.vtkFiltersSources import (
-    vtkCubeSource,
     # vtkOutlineCornerFilter, We now favor vtkOutlineFilter
     vtkSphereSource
 )
@@ -29,13 +30,17 @@ from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackballCamera
 from vtkmodules.vtkRenderingAnnotation import vtkAxesActor
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
+    vtkColorTransferFunction,
     vtkGlyph3DMapper,
     vtkPolyDataMapper,
     vtkRenderWindow,
     vtkRenderWindowInteractor,
     vtkRenderer,
-    vtkTextActor
+    vtkTextActor,
+    vtkVolume,
+    vtkVolumeProperty
 )
+from vtkmodules.vtkRenderingVolumeOpenGL2 import vtkSmartVolumeMapper
 
 def image_data_example() -> None:
     """
@@ -47,6 +52,9 @@ def image_data_example() -> None:
     color_x = colors.GetColor3d("OrangeRed")
     color_y = colors.GetColor3d("LimeGreen")
     color_z = colors.GetColor3d("RoyalBlue")
+    color_black = colors.GetColor3d("Black")
+    color_gray = colors.GetColor3d("Gray")
+    color_white = colors.GetColor3d("White")
 
     axes_actor = vtkAxesActor()
     axes_actor.SetTotalLength(1, 1, 1)  # Set the length of the axes
@@ -61,7 +69,7 @@ def image_data_example() -> None:
 
     image_data = vtkImageData()
     offset = 1
-    image_data.SetDimensions(4 + offset, 3 + offset, 2 + offset)
+    image_data.SetDimensions(1 + offset, 1 + offset, 1 + offset) # (4 + offset, 3 + offset, 2 + offset)
     image_data.SetSpacing(1, 1, 1)
     image_data.SetOrigin(0, 0, 0)
 
@@ -116,11 +124,11 @@ def image_data_example() -> None:
 
     # Define colors for each index
     palette_colors = [
-        colors.GetColor3d("Gray"),
+        color_gray,
         color_x,
         color_y,
         color_z,
-        colors.GetColor3d("White")
+        color_white
     ]
     for i, color in enumerate(palette_colors):
         lookup_table.SetTableValue(i, *color, 1.0)  # (r, g, b, opacity)
@@ -144,7 +152,7 @@ def image_data_example() -> None:
     text_actor.SetInput(f"{dims_str}\n{spacing_str}\n{bounds_str}\n{delta_str}\n{scalars_range_str}")
     text_actor_property = text_actor.GetTextProperty()
     text_actor_property.SetFontSize(14)
-    text_actor_property.SetColor(1.0, 1.0, 1.0)  # White color
+    text_actor_property.SetColor(*color_white)
     # Set the position with margins (e.g., 0.1 for left margin and 0.1 for bottom margin)
     left_margin = 0.01
     bottom_margin = left_margin * 1024 / 576
@@ -159,7 +167,8 @@ def image_data_example() -> None:
 
     outline_actor = vtkActor()
     outline_actor.SetMapper(outline_mapper)
-    outline_actor.GetProperty().SetColor(1, 1, 1)
+    outline_actor.GetProperty().SetColor(color_white)
+    outline_actor.GetProperty().SetLineWidth(3)  # Optionally, set the line width for better visibility
 
     #
     # Create a vtkPoints object to hold the voxel centers
@@ -196,33 +205,62 @@ def image_data_example() -> None:
     glyph_actor.GetProperty().SetSpecular(0.65)
     glyph_actor.GetProperty().SetSpecularPower(100)  # Set the specular power, larger values mean more shiny
 
-    # -- box begin
+    # -- edges begin
     #
-    box = vtkCubeSource()
-    box.SetXLength(1.0)
-    box.SetYLength(1.0)
-    box.SetZLength(1.0)
-    box.Update()
+    extract_edges = vtkExtractEdges()
+    extract_edges.SetInputData(image_data)
 
-    box_mapper = vtkPolyDataMapper()
-    box_mapper.SetInputConnection(box.GetOutputPort())
+    edges_mapper = vtkPolyDataMapper()
+    edges_mapper.SetInputConnection(extract_edges.GetOutputPort())
 
-    box_actor = vtkActor()
-    box_actor.SetMapper(box_mapper)
-    box_actor_property = box_actor.GetProperty()
-    box_actor_property.SetColor(colors.GetColor3d("White"))
-    box_actor_property.SetRepresentationToSurface()
-    box_actor_property.SetOpacity(.5)
+    edges_actor = vtkActor()
+    edges_actor.SetMapper(edges_mapper)
+    edges_actor.GetProperty().SetColor(color_white)
+    edges_actor.GetProperty().SetLineWidth(1)  # Optionally, set the line width for better visibility
     #
-    # -- box end
+    # -- edges end
+
+    # -- volume begin
+    #
+    volume_mapper = vtkSmartVolumeMapper()
+    volume_mapper.SetInputData(image_data)
+
+    volume_actor = vtkVolume()
+    volume_actor.SetMapper(volume_mapper)
+
+    color_func = vtkColorTransferFunction()
+    color_func.AddRGBPoint(0.0, *color_black)
+    color_func.AddRGBPoint(1.0, *color_x)
+    color_func.AddRGBPoint(2.0, *color_y)
+    color_func.AddRGBPoint(3.0, *color_z)
+    color_func.AddRGBPoint(4.0, *color_white)
+    color_func.AddRGBPoint(5.0, *color_black)
+
+    opacity_func = vtkPiecewiseFunction()
+    opacity_func.AddPoint(0.0, 0.0)
+    opacity_func.AddPoint(1.0, 0.75)
+    opacity_func.AddPoint(2.0, 0.75)
+    opacity_func.AddPoint(3.0, 0.75)
+    opacity_func.AddPoint(4.0, 0.75)
+    opacity_func.AddPoint(5.0, 0.0)
+
+    volume_property = vtkVolumeProperty()
+    volume_property.SetColor(color_func)
+    volume_property.SetScalarOpacity(opacity_func)
+    volume_property.SetInterpolationTypeToNearest()
+
+    volume_actor.SetProperty(volume_property)
+    #
+    # -- volume end
 
     # Create a renderer, render window, and interactor
     renderer = vtkRenderer()
     renderer.AddActor2D(text_actor)
     renderer.AddActor(axes_actor)
-    renderer.AddActor(box_actor)
+    renderer.AddActor(edges_actor)
     renderer.AddActor(glyph_actor)
     renderer.AddActor(outline_actor)
+    renderer.AddActor(volume_actor)
     renderer.SetBackground(colors.GetColor3d("MidnightBlue"))  # Charcoal
 
     # Configure the camera
